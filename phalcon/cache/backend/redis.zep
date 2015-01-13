@@ -162,12 +162,13 @@ class Redis extends \Phalcon\Cache\Backend implements \Phalcon\Cache\BackendInte
 	 * @param int|string keyName
 	 * @param string content
 	 * @param long lifetime
+	 * @param int|string|array tags
 	 * @param boolean stopBuffer
 	 */
-	public function save(keyName=null, content=null, lifetime=null, stopBuffer=true)
+	public function save(keyName = null, content = null, lifetime = null, stopBuffer = true, tags = null)
 	{
 		var prefixedKey, lastKey, prefix, frontend, redis, cachedContent, preparedContent, tmp, tt1, success, options,
-			specialKey, isBuffering;
+			specialKey, isBuffering, prefixedTag, tag;
 
 		if !keyName {
 			let lastKey = this->_lastKey;
@@ -240,6 +241,22 @@ class Redis extends \Phalcon\Cache\Backend implements \Phalcon\Cache\BackendInte
 
 		redis->sAdd(specialKey, prefixedKey);
 
+		if(!empty tags){
+			if typeof tags != "array" {
+				let prefixedTag = "_TG_" . tags;
+				if(redis->sAdd(prefixedTag, prefixedKey)){
+				    redis->sAdd(specialKey, prefixedTag);
+				}
+			} else {
+				for tag in tags {
+					let prefixedTag = "_TG_" . tag;
+					if(redis->sAdd(prefixedTag, prefixedKey)){
+						redis->sAdd(specialKey, prefixedTag);
+					}
+				}
+			}
+		}
+
 		let isBuffering = frontend->isBuffering();
 
 		if !stopBuffer {
@@ -261,8 +278,7 @@ class Redis extends \Phalcon\Cache\Backend implements \Phalcon\Cache\BackendInte
 	 */
 	public function delete(keyName)
 	{
-		var redis, prefix, prefixedKey, lastKey, options, specialKey, key;
-		var lastKeys = [];
+		var redis, prefix, prefixedKey, lastKey, options, specialKey, key, lastKeys = [];
 
 		let redis = this->_redis;
 		if typeof redis != "object" {
@@ -294,6 +310,64 @@ class Redis extends \Phalcon\Cache\Backend implements \Phalcon\Cache\BackendInte
 		*/
 		return redis->delete(lastKey);
 	}
+	/**
+	 * Deletes a value from the cache by its tags
+	 *
+	 * @param int|string|array tags
+	 * @return long
+	 */
+	public function deleteByTags(tags = null)
+	{
+		var options, specialKey, prefix, prefixedKey, lastKey, redis, keys, key, tag, i = 0, lastKeys = [], prefixedTag;
+
+		let options = this->_options;
+		let prefix = this->_prefix;
+
+		if !isset options["statsKey"] {
+			throw new Exception("Unexpected inconsistency in options");
+		}
+
+		let specialKey = options["statsKey"];
+
+		let redis = this->_redis;
+
+		if typeof redis != "object" {
+			this->_connect();
+			let redis = this->_redis;
+		}
+
+		if typeof tags == "array" && !empty tags {
+			for tag in tags{
+				let prefixedTag = "_TG_" . tag;
+				let keys = redis->sMembers(prefixedTag);
+				if typeof keys == "array" {
+					for key in keys {
+						redis->sRem(prefixedTag, key);
+						redis->sRem(specialKey, prefixedTag);
+						let prefixedKey = prefix . key;
+						let lastKey = "_PHCR" . prefixedKey;
+						let lastKeys[] = lastKey;
+					}
+					let i += redis->delete(lastKeys);
+				}
+			}
+			return i;
+		}
+		let prefixedTag = "_TG_" . tags;
+		let keys = redis->sMembers(prefixedTag);
+		if typeof keys == "array" {
+			for key in keys {
+				redis->sRem(prefixedTag, key);
+				redis->sRem(specialKey, prefixedTag);
+				let prefixedKey = prefix . key;
+				let lastKey = "_PHCR" . prefixedKey;
+				let lastKeys[] = lastKey;
+			}
+			let i += redis->delete(lastKeys);
+		}
+		return i;
+	}
+
 
 	/**
 	 * Query the existing cached keys
@@ -462,12 +536,16 @@ class Redis extends \Phalcon\Cache\Backend implements \Phalcon\Cache\BackendInte
 		let keys = redis->sMembers(specialKey);
 		if typeof keys == "array" {
 			for key in keys {
-				let lastKey = "_PHCR" . key;
-				redis->sRem(specialKey, key);
-				redis->delete(lastKey);
+				if strpos(key, "_TG_") === false {
+					let lastKey = "_PHCR" . key;
+					redis->delete(lastKey);
+				}else{
+					let lastKey = key;
+					redis->delete(lastKey);
+				}
+			redis->sRem(specialKey, key);
 			}
 		}
-
 		return true;
 	}
 }
