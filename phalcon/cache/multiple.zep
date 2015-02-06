@@ -143,12 +143,12 @@ class Multiple
 	* @param long lifetime
 	* @param boolean stopBuffer
 	*/
-	public function save(var keyName = null, content = null, lifetime = null, stopBuffer = null) -> void
+	public function save(var keyName = null, content = null, lifetime = null, stopBuffer = null, tags = null) -> void
 	{
 		var backend;
 
 		for backend in this->_backends {
-			backend->save(keyName, content, lifetime, stopBuffer);
+			backend->save(keyName, content, lifetime, stopBuffer, tags);
 		}
 	}
 
