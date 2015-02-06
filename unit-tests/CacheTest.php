@@ -401,7 +401,6 @@ class CacheTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($cachedContent, 'value3');
 	}
 
-
 	public function testCacheRedisFlush()
 	{
 		$redis = $this->_prepareRedis();
