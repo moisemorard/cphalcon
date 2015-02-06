@@ -78,8 +78,9 @@ class Apc extends Backend implements BackendInterface
 	 * @param string content
 	 * @param long lifetime
 	 * @param boolean stopBuffer
+	 * @TODO implement tags completely
 	 */
-	public function save(var keyName = null, var content = null, var lifetime = null, boolean stopBuffer = true)
+	public function save(var keyName = null, var content = null, var lifetime = null, boolean stopBuffer = true, tags = null)
 	{
 		var lastKey, frontend, cachedContent, preparedContent, ttl, isBuffering;
 

@@ -102,7 +102,7 @@ interface BackendInterface
 	 * @param long lifetime
 	 * @param boolean stopBuffer
 	 */
-	public function save(keyName = null, content = null, lifetime = null, stopBuffer = true);
+	public function save(keyName = null, content = null, lifetime = null, stopBuffer = true, tags = null);
 
 	/**
 	 * Deletes a value from the cache by its key

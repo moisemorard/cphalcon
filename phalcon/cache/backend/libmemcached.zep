@@ -161,8 +161,9 @@ class Libmemcached extends Backend implements BackendInterface
 	 * @param string content
 	 * @param long lifetime
 	 * @param boolean stopBuffer
+	 * @TODO implement tags completely
 	 */
-	public function save(keyName = null, content = null, lifetime = null, stopBuffer = true)
+	public function save(keyName = null, content = null, lifetime = null, stopBuffer = true, tags = null)
 	{
 		var lastKey, frontend, memcache, cachedContent, preparedContent, tmp, tt1, success, options,
 			specialKey, keys, isBuffering;

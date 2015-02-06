@@ -365,6 +365,43 @@ class CacheTest extends PHPUnit_Framework_TestCase
 	}
 
 
+	public function testTagsRedisCache()
+	{
+		$redis = $this->_prepareRedis();
+		if (!$redis) {
+			return false;
+		}
+
+		$frontCache = new Phalcon\Cache\Frontend\Data();
+		$cache = new Phalcon\Cache\Backend\Redis($frontCache, array(
+			'host' => 'localhost',
+			'port' => 6379
+		));
+
+		$cache->save('key1', 'value1', 120, null, array('tag1','tag2','tag3'));
+		$cache->save('key2', 'value2', 120, null, array('tag2','tag3'));
+		$cache->save('key3', 'value3', 120, null, array('tag1'));
+		$cache->save('key4', 'value4', 120, null, array('tag3','tag4'));
+		$cache->save('key5', 'value5', 120, null, array('tag4'));
+
+
+		$cachedContent = $cache->get('key1');
+		$this->assertEquals($cachedContent, 'value1');
+		$return = $cache->deleteByTags('tag2');
+		$this->assertEquals($return, 2);
+		$cachedContent = $cache->get('key1');
+		$this->assertEquals($cachedContent, null);
+		$return = $cache->deleteByTags(array('tag3','tag4'));
+		$this->assertEquals($return, 2);
+		$cachedContent = $cache->get('key4');
+		$this->assertEquals($cachedContent, null);
+		$cachedContent = $cache->get('key5');
+		$this->assertEquals($cachedContent, null);
+		$cachedContent = $cache->get('key3');
+		$this->assertEquals($cachedContent, 'value3');
+	}
+
+
 	public function testCacheRedisFlush()
 	{
 		$redis = $this->_prepareRedis();

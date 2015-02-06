@@ -168,8 +168,9 @@ class File extends \Phalcon\Cache\Backend implements \Phalcon\Cache\BackendInter
 	 * @param string content
 	 * @param int lifetime
 	 * @param boolean stopBuffer
+	 * @TODO implement tags completely
 	 */
-	public function save(var keyName = null, var content = null, lifetime = null, stopBuffer = true) -> void
+	public function save(var keyName = null, var content = null, lifetime = null, stopBuffer = true, tags = null) -> void
 	{
 		var lastKey, frontend, cacheDir, isBuffering, cacheFile, cachedContent, preparedContent, status;
 

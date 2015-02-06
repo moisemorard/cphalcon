@@ -82,8 +82,9 @@ class Memory extends Backend implements BackendInterface
 	 * @param string content
 	 * @param long lifetime
 	 * @param boolean stopBuffer
+	 * @TODO implement tags completely
 	 */
-	public function save(var keyName = null, var content = null, lifetime = null, stopBuffer = true) -> void
+	public function save(var keyName = null, var content = null, lifetime = null, stopBuffer = true, tags = null) -> void
 	{
 		var lastKey, frontend, cachedContent, preparedContent;
 
