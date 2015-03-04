@@ -67,7 +67,9 @@ class Tracker
             }
 
             if uidEtag == true && uidCookie == true {
-                header("HTTP/1.1 304 Not Modified");
+                if uidEtag == uidCookie {
+                    header("HTTP/1.1 304 Not Modified");
+                }
                 return uidCookie;
             }
         }
