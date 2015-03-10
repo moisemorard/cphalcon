@@ -3,9 +3,15 @@ namespace Phalcon;
 
 use Phalcon\Crypt;
 
+/**
+ * Class Tracker
+ * @package Nonli\Utils
+ */
 class Tracker
 {
-
+    /**
+     * @return string
+     */
     protected static function _uuid4()
     {
         var rand, i, uuid, uuid6, uuid8, uuidString;
@@ -29,56 +35,65 @@ class Tracker
         return uuidString;
     }
 
-    public static function init(boolean! withEtag = true, contentType = null, string! cookieKey = "#1dj8$=dp?.akFGa", string! etagKey = "@kSFd5hd7s.)U&-4")
+    /**
+     * @param bool $withEtag
+     * @param string $cookieKey
+     * @param string $etagKey
+     * @return bool|string
+     */
+    public static function init(boolean! withEtag = false, string! cookieKey = "#1dj8$=dp?.akFGa", string! etagKey = "@kSFd5hd7s.)U&-4")
     {
-        var cryptCookie, cryptEtag, uidCookie, uidEtag, uid;
-        let cryptCookie = new Crypt();
-        cryptCookie->setKey(cookieKey);
-        let uidCookie = isset _COOKIE["uid"] ? cryptCookie->decryptBase64(_COOKIE["uid"]) : false;
+        var doNotTrack, cryptCookie, cryptEtag, uidCookie, uidEtag, uid;
 
-        if withEtag == true {
-            let cryptEtag = new Crypt();
-            cryptEtag->setKey(etagKey);
-            let uidEtag = isset _SERVER["HTTP_IF_NONE_MATCH"] ? cryptEtag->decryptBase64(_SERVER["HTTP_IF_NONE_MATCH"]) : false;
-        }
+        let doNotTrack = isset _COOKIE["dnt"] || isset _SERVER["HTTP_DNT"] ? true : false;
 
-        header("Cache-Control: private, must-revalidate, proxy-revalidate");
-        if contentType !== null {
-            header("Content-type: ".contentType);
-        }
+        if !doNotTrack {
+            let cryptCookie = new Crypt();
+            cryptCookie->setKey(cookieKey);
+            let uidCookie = isset _COOKIE["nli"] ? cryptCookie->decryptBase64(_COOKIE["nli"]) : false;
 
-        if withEtag == true {
-            if uidEtag == false && uidCookie == false {
+            if withEtag == true {
+                let cryptEtag = new Crypt();
+                cryptEtag->setKey(etagKey);
+                let uidEtag = isset _SERVER["HTTP_IF_NONE_MATCH"] ? cryptEtag->decryptBase64(_SERVER["HTTP_IF_NONE_MATCH"]) : false;
+            }
+
+            header("Cache-Control: no-cache");
+
+            if withEtag == true {
+                if uidEtag == false && uidCookie == false {
+                    let uid = self::_uuid4();
+                    header("ETag: " . cryptEtag->encryptBase64(uid));
+                    setcookie("nli", cryptCookie->encryptBase64(uid), time() + 365 * 86400, "/");
+                    return uid;
+                }
+
+                if uidEtag == true && uidCookie == false {
+                    setcookie("nli", cryptCookie->encryptBase64(uidEtag), time() + 365 * 86400, "/");
+                    header("HTTP/1.1 304 Not Modified");
+                    return uidEtag;
+                }
+
+                if uidEtag == false && uidCookie == true {
+                    header("ETag: " . cryptEtag->encryptBase64(uidCookie));
+                    return uidCookie;
+                }
+
+                if uidEtag == true && uidCookie == true {
+                    if uidEtag == uidCookie {
+                        header("HTTP/1.1 304 Not Modified");
+                    }
+                    return uidCookie;
+                }
+            }
+
+            if uidCookie == false {
                 let uid = self::_uuid4();
-                header("ETag: " . cryptEtag->encryptBase64(uid));
-                setcookie("uid", cryptCookie->encryptBase64(uid), time() + 365 * 86400, "/");
+                setcookie("nli", cryptCookie->encryptBase64(uid), time() + 365 * 86400, "/");
                 return uid;
             }
-
-            if uidEtag == true && uidCookie == false {
-                setcookie("uid", cryptCookie->encryptBase64(uidEtag), time() + 365 * 86400, "/");
-                header("HTTP/1.1 304 Not Modified");
-                return uidEtag;
-            }
-
-            if uidEtag == false && uidCookie == true {
-                header("ETag: " . cryptEtag->encryptBase64(uidCookie));
-                return uidCookie;
-            }
-
-            if uidEtag == true && uidCookie == true {
-                if uidEtag == uidCookie {
-                    header("HTTP/1.1 304 Not Modified");
-                }
-                return uidCookie;
-            }
+            setcookie("nli", _COOKIE["nli"], time() + 365 * 86400, "/");
+            return uidCookie;
         }
-
-        if uidCookie == false {
-            let uid = self::_uuid4();
-            setcookie("uid", cryptCookie->encryptBase64(uid), time() + 365 * 86400, "/");
-            return uid;
-        }
-        return uidCookie;
     }
 }
