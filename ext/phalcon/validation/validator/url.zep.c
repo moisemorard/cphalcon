@@ -12,32 +12,14 @@
 #include <Zend/zend_interfaces.h>
 
 #include "kernel/main.h"
-#include "kernel/object.h"
-#include "kernel/exception.h"
 #include "kernel/fcall.h"
 #include "kernel/memory.h"
 #include "kernel/operators.h"
 #include "kernel/array.h"
 #include "ext/spl/spl_exceptions.h"
+#include "kernel/exception.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Validation\Validator\Url
  *
@@ -69,7 +51,7 @@ ZEPHIR_INIT_CLASS(Phalcon_Validation_Validator_Url) {
  */
 PHP_METHOD(Phalcon_Validation_Validator_Url, validate) {
 
-	zephir_nts_static zephir_fcall_cache_entry *_6 = NULL;
+	zephir_nts_static zephir_fcall_cache_entry *_6 = NULL, *_8 = NULL;
 	zend_bool _2;
 	int ZEPHIR_LAST_CALL_STATUS;
 	zval *field = NULL;
@@ -91,10 +73,6 @@ PHP_METHOD(Phalcon_Validation_Validator_Url, validate) {
 	}
 
 
-	if (!(zephir_instance_of_ev(validation, phalcon_validation_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Parameter 'validation' must be an instance of 'Phalcon\\Validation'", "", 0);
-		return;
-	}
 	ZEPHIR_CALL_METHOD(&value, validation, "getvalue", NULL, field);
 	zephir_check_call_status();
 	ZEPHIR_INIT_VAR(_1);
@@ -129,7 +107,7 @@ PHP_METHOD(Phalcon_Validation_Validator_Url, validate) {
 		zephir_check_temp_parameter(_1);
 		zephir_check_call_status();
 		ZEPHIR_INIT_VAR(replacePairs);
-		array_init_size(replacePairs, 2);
+		zephir_create_array(replacePairs, 1, 0 TSRMLS_CC);
 		zephir_array_update_string(&replacePairs, SL(":field"), &label, PH_COPY | PH_SEPARATE);
 		if (ZEPHIR_IS_EMPTY(message)) {
 			ZEPHIR_INIT_NVAR(_1);
@@ -144,7 +122,7 @@ PHP_METHOD(Phalcon_Validation_Validator_Url, validate) {
 		zephir_check_call_status();
 		ZEPHIR_INIT_VAR(_7);
 		ZVAL_STRING(_7, "Url", ZEPHIR_TEMP_PARAM_COPY);
-		ZEPHIR_CALL_METHOD(NULL, _1, "__construct", NULL, _5, field, _7);
+		ZEPHIR_CALL_METHOD(NULL, _1, "__construct", &_8, _5, field, _7);
 		zephir_check_temp_parameter(_7);
 		zephir_check_call_status();
 		ZEPHIR_CALL_METHOD(NULL, validation, "appendmessage", NULL, _1);

@@ -61,7 +61,7 @@ int phannot_get_token(phannot_scanner_state *s, phannot_scanner_token *token) {
 
 		} else {
 
-		
+
 // 66 "scanner.c"
 		{
 			JJCTYPE jjch;

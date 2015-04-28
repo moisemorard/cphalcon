@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -20,6 +20,7 @@
 namespace Phalcon\Http;
 
 use Phalcon\DiInterface;
+use Phalcon\CryptInterface;
 use Phalcon\Di\InjectionAwareInterface;
 use Phalcon\Http\Response\Exception;
 use Phalcon\Session\AdapterInterface as SessionInterface;
@@ -69,7 +70,6 @@ class Cookie implements InjectionAwareInterface
 	 */
 	public function __construct(string! name, value = null, expire = 0, path = "/", secure = null, domain = null, httpOnly = null)
 	{
-
 		let this->_name = name;
 
 		if value !== null {
@@ -97,8 +97,6 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Sets the dependency injector
-	 *
-	 * @param Phalcon\DiInterface dependencyInjector
 	 */
 	public function setDI(<DiInterface> dependencyInjector)
 	{
@@ -107,8 +105,6 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Returns the internal dependency injector
-	 *
-	 * @return Phalcon\DiInterface
 	 */
 	public function getDI() -> <DiInterface>
 	{
@@ -204,8 +200,6 @@ class Cookie implements InjectionAwareInterface
 	/**
 	 * Sends the cookie to the HTTP client
 	 * Stores the cookie definition in session
-	 *
-	 * @return Phalcon\Http\Cookie
 	 */
 	public function send() -> <Cookie>
 	{
@@ -264,7 +258,7 @@ class Cookie implements InjectionAwareInterface
 					throw new Exception("A dependency injection object is required to access the 'filter' service");
 				}
 
-				let crypt = <\Phalcon\CryptInterface> dependencyInjector->getShared("crypt");
+				let crypt = <CryptInterface> dependencyInjector->getShared("crypt");
 
 				/**
 				 * Encrypt the value also coding it with base64
@@ -289,8 +283,6 @@ class Cookie implements InjectionAwareInterface
 	/**
 	 * Reads the cookie-related info from the SESSION to restore the cookie as it was set
 	 * This method is automatically called internally so normally you don't need to call it
-	 *
-	 * @return Phalcon\Http\Cookie
 	 */
 	public function restore() -> <Cookie>
 	{
@@ -338,7 +330,6 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Deletes the cookie by setting an expire time in the past
-	 *
 	 */
 	public function delete()
 	{
@@ -362,11 +353,8 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Sets if the cookie must be encrypted/decrypted automatically
-	 *
-	 * @param boolean useEncryption
-	 * @return Phalcon\Http\Cookie
 	 */
-	public function useEncryption(boolean useEncryption) -> <\Phalcon\Http\Cookie>
+	public function useEncryption(boolean useEncryption) -> <Cookie>
 	{
 		let this->_useEncryption = useEncryption;
 		return this;
@@ -374,8 +362,6 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Check if the cookie is using implicit encryption
-	 *
-	 * @return boolean
 	 */
 	public function isUsingEncryption() -> boolean
 	{
@@ -384,9 +370,6 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Sets the cookie's expiration time
-	 *
-	 * @param int expire
-	 * @return Phalcon\Http\Cookie
 	 */
 	public function setExpiration(int expire) -> <Cookie>
 	{
@@ -399,8 +382,6 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Returns the current expiration time
-	 *
-	 * @return string
 	 */
 	public function getExpiration() -> string
 	{
@@ -412,11 +393,8 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Sets the cookie's expiration time
-	 *
-	 * @param string path
-	 * @return Phalcon\Http\Cookie
 	 */
-	public function setPath(string! path)
+	public function setPath(string! path) -> <Cookie>
 	{
 		if !this->_restored {
 			this->restore();
@@ -427,8 +405,6 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Returns the current cookie's name
-	 *
-	 * @return string
 	 */
 	public function getName() -> string
 	{
@@ -437,8 +413,6 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Returns the current cookie's path
-	 *
-	 * @return string
 	 */
 	public function getPath() -> string
 	{
@@ -450,9 +424,6 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Sets the domain that the cookie is available to
-	 *
-	 * @param string domain
-	 * @return Phalcon\Http\Cookie
 	 */
 	public function setDomain(string! domain) -> <Cookie>
 	{
@@ -465,8 +436,6 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Returns the domain that the cookie is available to
-	 *
-	 * @return string
 	 */
 	public function getDomain() -> string
 	{
@@ -478,9 +447,6 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Sets if the cookie must only be sent when the connection is secure (HTTPS)
-	 *
-	 * @param boolean secure
-	 * @return Phalcon\Http\Cookie
 	 */
 	public function setSecure(boolean secure) -> <Cookie>
 	{
@@ -493,10 +459,8 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Returns whether the cookie must only be sent when the connection is secure (HTTPS)
-	 *
-	 * @return boolean
 	 */
-	public function getSecure()
+	public function getSecure() -> boolean
 	{
 		if !this->_restored {
 			this->restore();
@@ -506,9 +470,6 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Sets if the cookie is accessible only through the HTTP protocol
-	 *
-	 * @param boolean httpOnly
-	 * @return Phalcon\Http\Cookie
 	 */
 	public function setHttpOnly(boolean httpOnly) -> <Cookie>
 	{
@@ -521,8 +482,6 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Returns if the cookie is accessible only through the HTTP protocol
-	 *
-	 * @return boolean
 	 */
 	public function getHttpOnly() -> boolean
 	{
@@ -534,8 +493,6 @@ class Cookie implements InjectionAwareInterface
 
 	/**
 	 * Magic __toString method converts the cookie's value to string
-	 *
-	 * @return string
 	 */
 	public function __toString() -> string
 	{

@@ -13,28 +13,10 @@
 
 #include "kernel/main.h"
 #include "kernel/object.h"
-#include "kernel/exception.h"
 #include "kernel/memory.h"
 #include "kernel/operators.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Acl\Adapter
  *
@@ -119,8 +101,6 @@ PHP_METHOD(Phalcon_Acl_Adapter, getActiveAccess) {
 
 /**
  * Sets the events manager
- *
- * @param Phalcon\Events\ManagerInterface eventsManager
  */
 PHP_METHOD(Phalcon_Acl_Adapter, setEventsManager) {
 
@@ -130,18 +110,12 @@ PHP_METHOD(Phalcon_Acl_Adapter, setEventsManager) {
 
 
 
-	if (!(zephir_instance_of_ev(eventsManager, phalcon_events_managerinterface_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STRW(spl_ce_InvalidArgumentException, "Parameter 'eventsManager' must be an instance of 'Phalcon\\Events\\ManagerInterface'", "", 0);
-		return;
-	}
 	zephir_update_property_this(this_ptr, SL("_eventsManager"), eventsManager TSRMLS_CC);
 
 }
 
 /**
  * Returns the internal event manager
- *
- * @return Phalcon\Events\ManagerInterface
  */
 PHP_METHOD(Phalcon_Acl_Adapter, getEventsManager) {
 
@@ -152,8 +126,6 @@ PHP_METHOD(Phalcon_Acl_Adapter, getEventsManager) {
 
 /**
  * Sets the default access level (Phalcon\Acl::ALLOW or Phalcon\Acl::DENY)
- *
- * @param int defaultAccess
  */
 PHP_METHOD(Phalcon_Acl_Adapter, setDefaultAction) {
 
@@ -173,8 +145,6 @@ PHP_METHOD(Phalcon_Acl_Adapter, setDefaultAction) {
 
 /**
  * Returns the default ACL access level
- *
- * @return int
  */
 PHP_METHOD(Phalcon_Acl_Adapter, getDefaultAction) {
 

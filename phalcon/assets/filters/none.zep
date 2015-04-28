@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -31,11 +31,8 @@ class None implements FilterInterface
 
 	/**
 	 * Returns the content without be touched
-	 *
-	 * @param string content
-	 * @return string
 	 */
-	public function filter(string! content)
+	public function filter(string! content) -> string
 	{
 		return content;
 	}

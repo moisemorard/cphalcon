@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -19,6 +19,7 @@
 
 namespace Phalcon\Session;
 
+use Phalcon\Di;
 use Phalcon\DiInterface;
 use Phalcon\Di\InjectionAwareInterface;
 
@@ -89,7 +90,7 @@ class Bag implements InjectionAwareInterface, BagInterface
 
 			let dependencyInjector = this->_dependencyInjector;
 			if typeof dependencyInjector != "object" {
-				let dependencyInjector = \Phalcon\DI::getDefault();
+				let dependencyInjector = Di::getDefault();
 				if typeof dependencyInjector != "object" {
 					throw new Exception("A dependency injection object is required to access the 'session' service");
 				}
@@ -271,5 +272,4 @@ class Bag implements InjectionAwareInterface, BagInterface
 	{
 		return this->remove(property);
 	}
-
 }

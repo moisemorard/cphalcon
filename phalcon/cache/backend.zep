@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -68,7 +68,7 @@ abstract class Backend
 	 * Starts a cache. The keyname allows to identify the created fragment
 	 *
 	 * @param   int|string keyName
-	 * @param   long lifetime
+	 * @param   int lifetime
 	 * @return  mixed
 	 */
 	public function start(var keyName, lifetime = null)

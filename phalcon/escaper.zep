@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -51,8 +51,6 @@ class Escaper implements EscaperInterface
 	 *<code>
 	 * $escaper->setEncoding('utf-8');
 	 *</code>
-	 *
-	 * @param string encoding
 	 */
 	public function setEncoding(string encoding) -> void
 	{
@@ -61,8 +59,6 @@ class Escaper implements EscaperInterface
 
 	/**
 	 * Returns the internal encoding used by the escaper
-	 *
-	 * @return string
 	 */
 	public function getEncoding() -> string
 	{
@@ -75,8 +71,6 @@ class Escaper implements EscaperInterface
 	 *<code>
 	 * $escaper->setHtmlQuoteType(ENT_XHTML);
 	 *</code>
-	 *
-	 * @param int quoteType
 	 */
 	public function setHtmlQuoteType(int quoteType) -> void
 	{
@@ -86,11 +80,8 @@ class Escaper implements EscaperInterface
 	/**
 	 * Detect the character encoding of a string to be handled by an encoder
 	 * Special-handling for chr(172) and chr(128) to chr(159) which fail to be detected by mb_detect_encoding()
-	 *
-	 * @param string str
-	 * @return string/null
 	 */
-	public function detectEncoding(str)
+	public function detectEncoding(string str) -> string|null
 	{
 		var charset;
 
@@ -127,11 +118,8 @@ class Escaper implements EscaperInterface
 
 	/**
 	 * Utility to normalize a string's encoding to UTF-32.
-	 *
-	 * @param string str
-	 * @return string
 	 */
-	public function normalizeEncoding(str) -> string
+	public function normalizeEncoding(string str) -> string
 	{
 		/**
 		 * mbstring is required here
@@ -149,9 +137,6 @@ class Escaper implements EscaperInterface
 
 	/**
 	 * Escapes a HTML string. Internally uses htmlspecialchars
-	 *
-	 * @param string text
-	 * @return string
 	 */
 	public function escapeHtml(string text) -> string
 	{
@@ -160,9 +145,6 @@ class Escaper implements EscaperInterface
 
 	/**
 	 * Escapes a HTML attribute string
-	 *
-	 * @param string attribute
-	 * @return string
 	 */
 	public function escapeHtmlAttr(string attribute) -> string
 	{
@@ -171,9 +153,6 @@ class Escaper implements EscaperInterface
 
 	/**
 	 * Escape CSS strings by replacing non-alphanumeric chars by their hexadecimal escaped representation
-	 *
-	 * @param string css
-	 * @return string
 	 */
 	public function escapeCss(string css) -> string
 	{
@@ -186,9 +165,6 @@ class Escaper implements EscaperInterface
 
 	/**
 	 * Escape javascript strings by replacing non-alphanumeric chars by their hexadecimal escaped representation
-	 *
-	 * @param string js
-	 * @return string
 	 */
 	public function escapeJs(string js) -> string
 	{
@@ -201,9 +177,6 @@ class Escaper implements EscaperInterface
 
 	/**
 	 * Escapes a URL. Internally uses rawurlencode
-	 *
-	 * @param string url
-	 * @return string
 	 */
 	public function escapeUrl(string url) -> string
 	{

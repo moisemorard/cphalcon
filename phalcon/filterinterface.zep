@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -29,27 +29,17 @@ interface FilterInterface
 
 	/**
 	 * Adds a user-defined filter
-	 *
-	 * @param string name
-	 * @param callable handler
-	 * @return Phalcon\FilterInterface
 	 */
 	public function add(string! name, handler) -> <\Phalcon\FilterInterface>;
 
 	/**
 	 * Sanizites a value with a specified single or set of filters
-	 *
-	 * @param  mixed value
-	 * @param  mixed filters
-	 * @return mixed
 	 */
 	public function sanitize(value, filters);
 
 	/**
 	 * Return the user-defined filters in the instance
-	 *
-	 * @return object[]
 	 */
-	public function getFilters();
+	public function getFilters() -> array;
 
 }

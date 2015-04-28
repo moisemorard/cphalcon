@@ -12,33 +12,16 @@
 #include <Zend/zend_interfaces.h>
 
 #include "kernel/main.h"
-#include "kernel/object.h"
-#include "kernel/exception.h"
 #include "kernel/operators.h"
 #include "kernel/fcall.h"
 #include "kernel/array.h"
 #include "kernel/memory.h"
+#include "kernel/exception.h"
+#include "kernel/object.h"
 #include "kernel/hash.h"
 #include "ext/spl/spl_exceptions.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Mvc\Model\Behavior\SoftDelete
  *
@@ -56,12 +39,10 @@ ZEPHIR_INIT_CLASS(Phalcon_Mvc_Model_Behavior_SoftDelete) {
 
 /**
  * Listens for notifications from the models manager
- *
- * @param string type
- * @param Phalcon\Mvc\ModelInterface model
  */
 PHP_METHOD(Phalcon_Mvc_Model_Behavior_SoftDelete, notify) {
 
+	zephir_fcall_cache_entry *_7 = NULL;
 	HashTable *_5;
 	HashPosition _4;
 	int ZEPHIR_LAST_CALL_STATUS;
@@ -84,21 +65,17 @@ PHP_METHOD(Phalcon_Mvc_Model_Behavior_SoftDelete, notify) {
 	}
 
 
-	if (!(zephir_instance_of_ev(model, phalcon_mvc_modelinterface_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Parameter 'model' must be an instance of 'Phalcon\\Mvc\\ModelInterface'", "", 0);
-		return;
-	}
 	if (ZEPHIR_IS_STRING(type, "beforeDelete")) {
 		ZEPHIR_CALL_METHOD(&options, this_ptr, "getoptions", NULL);
 		zephir_check_call_status();
 		ZEPHIR_OBS_VAR(value);
 		if (!(zephir_array_isset_string_fetch(&value, options, SS("value"), 0 TSRMLS_CC))) {
-			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_mvc_model_exception_ce, "The option 'value' is required", "phalcon/mvc/model/behavior/softdelete.zep", 54);
+			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_mvc_model_exception_ce, "The option 'value' is required", "phalcon/mvc/model/behavior/softdelete.zep", 51);
 			return;
 		}
 		ZEPHIR_OBS_VAR(field);
 		if (!(zephir_array_isset_string_fetch(&field, options, SS("field"), 0 TSRMLS_CC))) {
-			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_mvc_model_exception_ce, "The option 'field' is required", "phalcon/mvc/model/behavior/softdelete.zep", 61);
+			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_mvc_model_exception_ce, "The option 'field' is required", "phalcon/mvc/model/behavior/softdelete.zep", 58);
 			return;
 		}
 		ZEPHIR_INIT_VAR(_0);
@@ -119,13 +96,13 @@ PHP_METHOD(Phalcon_Mvc_Model_Behavior_SoftDelete, notify) {
 			if (!(zephir_is_true(_2))) {
 				ZEPHIR_CALL_METHOD(&_3, updateModel, "getmessages", NULL);
 				zephir_check_call_status();
-				zephir_is_iterable(_3, &_5, &_4, 0, 0, "phalcon/mvc/model/behavior/softdelete.zep", 93);
+				zephir_is_iterable(_3, &_5, &_4, 0, 0, "phalcon/mvc/model/behavior/softdelete.zep", 90);
 				for (
 				  ; zephir_hash_get_current_data_ex(_5, (void**) &_6, &_4) == SUCCESS
 				  ; zephir_hash_move_forward_ex(_5, &_4)
 				) {
 					ZEPHIR_GET_HVALUE(message, _6);
-					ZEPHIR_CALL_METHOD(NULL, model, "appendmessage", NULL, message);
+					ZEPHIR_CALL_METHOD(NULL, model, "appendmessage", &_7, message);
 					zephir_check_call_status();
 				}
 				RETURN_MM_BOOL(0);

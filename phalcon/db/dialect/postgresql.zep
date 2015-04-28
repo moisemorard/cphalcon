@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -25,6 +25,7 @@ use Phalcon\Db\Dialect;
 use Phalcon\Db\DialectInterface;
 use Phalcon\Db\ColumnInterface;
 use Phalcon\Db\ReferenceInterface;
+use Phalcon\Db\IndexInterface;
 
 /**
  * Phalcon\Db\Dialect\Postgresql
@@ -38,17 +39,10 @@ class Postgresql extends Dialect implements DialectInterface
 
 	/**
 	 * Gets the column name in PostgreSQL
-	 *
-	 * @param Phalcon\Db\ColumnInterface column
-	 * @return string
 	 */
 	public function getColumnDefinition(<ColumnInterface> column) -> string
 	{
-		var size, columnType, columnSql, typeValues;
-
-		if typeof column != "object" {
-			throw new Exception("Column definition must be an object compatible with Phalcon\\Db\\ColumnInterface");
-		}
+		var size, columnType, columnSql, typeValues;		
 
 		let size = column->getSize();
 		let columnType = column->getType();
@@ -59,54 +53,64 @@ class Postgresql extends Dialect implements DialectInterface
 		}
 
 		switch columnType {
+
 			case 0:
 				if empty columnSql {
 					let columnSql .= "INT";
 				}
 				break;
+
 			case 1:
 				if empty columnSql {
 					let columnSql .= "DATE";
 				}
 				break;
+
 			case 2:
 				if empty columnSql {
 					let columnSql .= "CHARACTER VARYING";
 				}
 				let columnSql .= "(" . size . ")";
 				break;
+
 			case 3:
 				if empty columnSql {
 					let columnSql .= "NUMERIC";
 				}
 				let columnSql .= "(" . size . "," . column->getScale() . ")";
 				break;
+
 			case 4:
 				if empty columnSql {
 					let columnSql .= "TIMESTAMP";
 				}
 				break;
+
 			case 5:
 				if empty columnSql {
 					let columnSql .= "CHARACTER";
 				}
 				let columnSql .= "(" . size . ")";
 				break;
+
 			case 6:
 				if empty columnSql {
 					let columnSql .= "TEXT";
 				}
 				break;
+
 			case 7:
 				if empty columnSql {
 					let columnSql .= "FLOAT";
 				}
 				break;
+
 			case 8:
 				if empty columnSql {
 					let columnSql .= "SMALLINT(1)";
 				}
 				break;
+
 			default:
 				if empty columnSql {
 					throw new Exception("Unrecognized PostgreSQL data type");
@@ -177,7 +181,7 @@ class Postgresql extends Dialect implements DialectInterface
 	 * @param	Phalcon\Db\IndexInterface index
 	 * @return	string
 	 */
-	public function addIndex(tableName, schemaName, <\Phalcon\Db\IndexInterface> index)
+	public function addIndex(tableName, schemaName, <IndexInterface> index)
 	{
 		throw new Exception("Not implemented yet");
 	}
@@ -203,7 +207,7 @@ class Postgresql extends Dialect implements DialectInterface
 	 * @param	Phalcon\Db\IndexInterface index
 	 * @return	string
 	 */
-	public function addPrimaryKey(tableName, schemaName, <\Phalcon\Db\IndexInterface> index)
+	public function addPrimaryKey(tableName, schemaName, <IndexInterface> index)
 	{
 		throw new Exception("Not implemented yet");
 	}
@@ -265,7 +269,7 @@ class Postgresql extends Dialect implements DialectInterface
 	 * @param	array definition
 	 * @return 	string
 	 */
-	public function createTable(tableName, schemaName, array! definition)
+	public function createTable(tableName, schemaName, array! definition) -> string
 	{
 		throw new Exception("Not implemented yet");
 	}
@@ -278,7 +282,7 @@ class Postgresql extends Dialect implements DialectInterface
 	 * @param  boolean ifExists
 	 * @return boolean
 	 */
-	public function dropTable(tableName, schemaName, ifExists=true) -> string
+	public function dropTable(tableName, schemaName, ifExists = true) -> string
 	{
 		var table, sql;
 
@@ -407,14 +411,13 @@ class Postgresql extends Dialect implements DialectInterface
 	}
 
 	/**
-	 * List all tables on database
+	 * List all tables in database
 	 *
 	 *<code>
 	 *	print_r(dialect->listTables("blog")) ?>
 	 *</code>
 	 *
 	 * @param       string schemaName
-	 * @return      array
 	 */
 	public function listTables(schemaName = null) -> string
 	{
@@ -487,5 +490,4 @@ class Postgresql extends Dialect implements DialectInterface
 	{
 		return "";
 	}
-
 }

@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -88,8 +88,9 @@ class Tag
 	 * Obtains the 'escaper' service if required
 	 *
 	 * @param array params
+	 * @return EscaperInterface
 	 */
-	public static function getEscaper(params)
+	public static function getEscaper(array! params)
 	{
 		var result, autoescape;
 
@@ -108,10 +109,6 @@ class Tag
 
 	/**
 	 * Renders parameters keeping order in their HTML attributes
-	 *
-	 * @param string code
-	 * @param array attributes
-	 * @return string
 	 */
 	public static function renderAttributes(string! code, array! attributes) -> string
 	{
@@ -150,6 +147,9 @@ class Tag
 		let newCode = code;
 		for key, value in attrs {
 			if typeof key == "string" && value !== null {
+				if typeof value == "array" || typeof value == "resource" {
+					throw new Exception("Value at index: '" . key . "' type: '" . gettype(value) . "' cannot be rendered");
+				}
 				if escaper {
 					let escaped = escaper->escapeHtmlAttr(value);
 				} else {
@@ -164,8 +164,6 @@ class Tag
 
 	/**
 	 * Sets the dependency injector container.
-	 *
-	 * @param Phalcon\DiInterface dependencyInjector
 	 */
 	public static function setDI(<DiInterface> dependencyInjector)
 	{
@@ -174,8 +172,6 @@ class Tag
 
 	/**
 	 * Internally gets the request dispatcher
-	 *
-	 * @return Phalcon\DiInterface
 	 */
 	public static function getDI() -> <DiInterface>
 	{
@@ -189,8 +185,6 @@ class Tag
 
 	/**
 	 * Returns a URL service from the default DI
-	 *
-	 * @return Phalcon\Mvc\UrlInterface
 	 */
 	public static function getUrlService() -> <UrlInterface>
 	{
@@ -216,8 +210,6 @@ class Tag
 
 	/**
 	 * Returns an Escaper service from the default DI
-	 *
-	 * @return Phalcon\EscaperInterface
 	 */
 	public static function getEscaperService() -> <EscaperInterface>
 	{
@@ -243,8 +235,6 @@ class Tag
 
 	/**
 	 * Set autoescape mode in generated html
-	 *
-	 * @param boolean autoescape
 	 */
 	public static function setAutoescape(boolean autoescape) -> void
 	{
@@ -285,9 +275,6 @@ class Tag
 	 * //Later in the view
 	 * echo Phalcon\Tag::textField("name"); //Will have the value "peter" by default
 	 * </code>
-	 *
-	 * @param array values
-	 * @param boolean merge
 	 */
 	public static function setDefaults(array! values, boolean merge = false) -> void
 	{
@@ -555,16 +542,16 @@ class Tag
 		 */
 		if fetch currentValue, params["value"] {
 			unset params["value"];
-			
+
 			let value = self::getValue(id, params);
-			
+
 			if value && currentValue == value {
 				let params["checked"] = "checked";
 			}
 			let params["value"] = currentValue;
 		} else {
 			let value = self::getValue(id, params);
-			
+
 			/**
 			* Evaluate the value in POST
 			*/
@@ -1046,8 +1033,6 @@ class Tag
 
 	/**
 	 * Builds a HTML close FORM tag
-	 *
-	 * @return	string
 	 */
 	public static function endForm() -> string
 	{
@@ -1060,8 +1045,6 @@ class Tag
 	 *<code>
 	 * Phalcon\Tag::setTitle("Welcome to my Page");
 	 *</code>
-	 *
-	 * @param string title
 	 */
 	public static function setTitle(string title) -> void
 	{
@@ -1074,8 +1057,6 @@ class Tag
 	 *<code>
 	 * Phalcon\Tag::setTitleSeparator("-");
 	 *</code>
-	 *
-	 * @param string titleSeparator
 	 */
 	public static function setTitleSeparator(string titleSeparator) -> void
 	{
@@ -1084,8 +1065,6 @@ class Tag
 
 	/**
 	 * Appends a text to current document title
-	 *
-	 * @param string title
 	 */
 	public static function appendTitle(string title) -> void
 	{
@@ -1094,8 +1073,6 @@ class Tag
 
 	/**
 	 * Prepends a text to current document title
-	 *
-	 * @param string title
 	 */
 	public static function prependTitle(string title) -> void
 	{
@@ -1112,8 +1089,6 @@ class Tag
 	 * <code>
 	 * 	{{ get_title() }}
 	 * </code>
-	 *
-	 * @return string
 	 */
 	public static function getTitle(boolean tags = true) -> string
 	{
@@ -1135,8 +1110,6 @@ class Tag
 	 * <code>
 	 *         {{ get_title_separator() }}
 	 * </code>
-	 *
-	 * @return string
 	 */
 	public static function getTitleSeparator() -> string
 	{
@@ -1306,6 +1279,9 @@ class Tag
 			let params = [parameters];
 		} else {
 			let params = parameters;
+			if isset params[1] {
+				let local = (boolean) params[1];
+			}
 		}
 
 		if !isset params["src"] {
@@ -1395,8 +1371,6 @@ class Tag
 
 	/**
 	 * Set the document type of content
-	 *
-	 * @param integer doctype
 	 */
 	public static function setDocType(int doctype) -> void
 	{
@@ -1409,8 +1383,6 @@ class Tag
 
 	/**
 	 * Get the document type declaration of content
-	 *
-	 * @return string
 	 */
 	public static function getDocType() -> string
 	{
@@ -1508,17 +1480,12 @@ class Tag
 	 *<code>
 	 *        echo Phalcon\Tag::tagHtmlClose("script", true)
 	 *</code>
-	 *
-	 * @param string tagName
-	 * @param boolean useEol
-	 * @return string
 	 */
-	public static function tagHtmlClose(string tagName, useEol = false) -> string
+	public static function tagHtmlClose(string tagName, boolean useEol = false) -> string
 	{
 		if useEol {
 			return "</" . tagName . ">" . PHP_EOL;
 		}
 		return "</" . tagName . ">";
 	}
-
 }

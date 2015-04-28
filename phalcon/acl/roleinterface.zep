@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -29,31 +29,22 @@ interface RoleInterface
 
 	/**
 	 * Phalcon\Acl\Role constructor
-	 *
-	 * @param string name
-	 * @param string description
 	 */
-	public function __construct(name, description=null);
+	public function __construct(string! name, string description = null);
 
 	/**
 	 * Returns the role name
-	 *
-	 * @return string
 	 */
-	public function getName();
+	public function getName() -> string;
 
 	/**
 	 * Returns role description
-	 *
-	 * @return string
 	 */
-	public function getDescription();
+	public function getDescription() -> string;
 
 	/**
 	 * Magic method __toString
-	 *
-	 * @return string
 	 */
-	public function __toString();
+	public function __toString() -> string;
 
 }

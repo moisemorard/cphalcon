@@ -13,32 +13,15 @@
 
 #include "kernel/main.h"
 #include "kernel/object.h"
-#include "kernel/exception.h"
 #include "kernel/memory.h"
 #include "kernel/operators.h"
 #include "kernel/array.h"
 #include "kernel/fcall.h"
+#include "kernel/exception.h"
 #include "ext/spl/spl_exceptions.h"
 #include "kernel/hash.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Http\Response\Cookies
  *
@@ -65,8 +48,6 @@ ZEPHIR_INIT_CLASS(Phalcon_Http_Response_Cookies) {
 
 /**
  * Sets the dependency injector
- *
- * @param Phalcon\DiInterface dependencyInjector
  */
 PHP_METHOD(Phalcon_Http_Response_Cookies, setDI) {
 
@@ -76,18 +57,12 @@ PHP_METHOD(Phalcon_Http_Response_Cookies, setDI) {
 
 
 
-	if (!(zephir_instance_of_ev(dependencyInjector, phalcon_diinterface_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STRW(spl_ce_InvalidArgumentException, "Parameter 'dependencyInjector' must be an instance of 'Phalcon\\DiInterface'", "", 0);
-		return;
-	}
 	zephir_update_property_this(this_ptr, SL("_dependencyInjector"), dependencyInjector TSRMLS_CC);
 
 }
 
 /**
  * Returns the internal dependency injector
- *
- * @return Phalcon\DiInterface
  */
 PHP_METHOD(Phalcon_Http_Response_Cookies, getDI) {
 
@@ -98,9 +73,6 @@ PHP_METHOD(Phalcon_Http_Response_Cookies, getDI) {
 
 /**
  * Set if cookies in the bag must be automatically encrypted/decrypted
- *
- * @param boolean useEncryption
- * @return Phalcon\Http\Response\Cookies
  */
 PHP_METHOD(Phalcon_Http_Response_Cookies, useEncryption) {
 
@@ -119,8 +91,6 @@ PHP_METHOD(Phalcon_Http_Response_Cookies, useEncryption) {
 
 /**
  * Returns if the bag is automatically encrypting/decrypting cookies
- *
- * @return boolean
  */
 PHP_METHOD(Phalcon_Http_Response_Cookies, isUsingEncryption) {
 
@@ -144,8 +114,9 @@ PHP_METHOD(Phalcon_Http_Response_Cookies, isUsingEncryption) {
  */
 PHP_METHOD(Phalcon_Http_Response_Cookies, set) {
 
+	zephir_nts_static zephir_fcall_cache_entry *_2 = NULL, *_4 = NULL, *_5 = NULL, *_6 = NULL, *_7 = NULL, *_8 = NULL, *_9 = NULL, *_10 = NULL, *_11 = NULL;
 	int expire, ZEPHIR_LAST_CALL_STATUS;
-	zval *name_param = NULL, *value = NULL, *expire_param = NULL, *path_param = NULL, *secure = NULL, *domain_param = NULL, *httpOnly = NULL, *cookie = NULL, *encryption, *dependencyInjector, *response = NULL, *_0, *_1 = NULL, *_2;
+	zval *name_param = NULL, *value = NULL, *expire_param = NULL, *path_param = NULL, *secure = NULL, *domain_param = NULL, *httpOnly = NULL, *cookie = NULL, *encryption, *dependencyInjector, *response = NULL, *_0, *_1 = NULL, *_3;
 	zval *name = NULL, *path = NULL, *domain = NULL;
 
 	ZEPHIR_MM_GROW();
@@ -209,38 +180,38 @@ PHP_METHOD(Phalcon_Http_Response_Cookies, set) {
 		object_init_ex(cookie, phalcon_http_cookie_ce);
 		ZEPHIR_INIT_VAR(_1);
 		ZVAL_LONG(_1, expire);
-		ZEPHIR_CALL_METHOD(NULL, cookie, "__construct", NULL, name, value, _1, path, secure, domain, httpOnly);
+		ZEPHIR_CALL_METHOD(NULL, cookie, "__construct", &_2, name, value, _1, path, secure, domain, httpOnly);
 		zephir_check_call_status();
-		_2 = zephir_fetch_nproperty_this(this_ptr, SL("_dependencyInjector"), PH_NOISY_CC);
-		ZEPHIR_CALL_METHOD(NULL, cookie, "setdi", NULL, _2);
+		_3 = zephir_fetch_nproperty_this(this_ptr, SL("_dependencyInjector"), PH_NOISY_CC);
+		ZEPHIR_CALL_METHOD(NULL, cookie, "setdi", &_4, _3);
 		zephir_check_call_status();
 		if (zephir_is_true(encryption)) {
-			ZEPHIR_CALL_METHOD(NULL, cookie, "useencryption", NULL, encryption);
+			ZEPHIR_CALL_METHOD(NULL, cookie, "useencryption", &_5, encryption);
 			zephir_check_call_status();
 		}
 		zephir_update_property_array(this_ptr, SL("_cookies"), name, cookie TSRMLS_CC);
 	} else {
-		ZEPHIR_CALL_METHOD(NULL, cookie, "setvalue", NULL, value);
+		ZEPHIR_CALL_METHOD(NULL, cookie, "setvalue", &_6, value);
 		zephir_check_call_status();
 		ZEPHIR_INIT_NVAR(_1);
 		ZVAL_LONG(_1, expire);
-		ZEPHIR_CALL_METHOD(NULL, cookie, "setexpiration", NULL, _1);
+		ZEPHIR_CALL_METHOD(NULL, cookie, "setexpiration", &_7, _1);
 		zephir_check_call_status();
-		ZEPHIR_CALL_METHOD(NULL, cookie, "setpath", NULL, path);
+		ZEPHIR_CALL_METHOD(NULL, cookie, "setpath", &_8, path);
 		zephir_check_call_status();
-		ZEPHIR_CALL_METHOD(NULL, cookie, "setsecure", NULL, secure);
+		ZEPHIR_CALL_METHOD(NULL, cookie, "setsecure", &_9, secure);
 		zephir_check_call_status();
-		ZEPHIR_CALL_METHOD(NULL, cookie, "setdomain", NULL, domain);
+		ZEPHIR_CALL_METHOD(NULL, cookie, "setdomain", &_10, domain);
 		zephir_check_call_status();
-		ZEPHIR_CALL_METHOD(NULL, cookie, "sethttponly", NULL, httpOnly);
+		ZEPHIR_CALL_METHOD(NULL, cookie, "sethttponly", &_11, httpOnly);
 		zephir_check_call_status();
 	}
-	_2 = zephir_fetch_nproperty_this(this_ptr, SL("_registered"), PH_NOISY_CC);
-	if (ZEPHIR_IS_FALSE_IDENTICAL(_2)) {
+	_3 = zephir_fetch_nproperty_this(this_ptr, SL("_registered"), PH_NOISY_CC);
+	if (ZEPHIR_IS_FALSE_IDENTICAL(_3)) {
 		ZEPHIR_OBS_VAR(dependencyInjector);
 		zephir_read_property_this(&dependencyInjector, this_ptr, SL("_dependencyInjector"), PH_NOISY_CC);
 		if (Z_TYPE_P(dependencyInjector) != IS_OBJECT) {
-			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_http_cookie_exception_ce, "A dependency injection object is required to access the 'response' service", "phalcon/http/response/cookies.zep", 145);
+			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_http_cookie_exception_ce, "A dependency injection object is required to access the 'response' service", "phalcon/http/response/cookies.zep", 138);
 			return;
 		}
 		ZEPHIR_INIT_NVAR(_1);
@@ -257,12 +228,10 @@ PHP_METHOD(Phalcon_Http_Response_Cookies, set) {
 
 /**
  * Gets a cookie from the bag
- *
- * @param string name
- * @return Phalcon\Http\Cookie
  */
 PHP_METHOD(Phalcon_Http_Response_Cookies, get) {
 
+	zephir_nts_static zephir_fcall_cache_entry *_1 = NULL, *_2 = NULL, *_3 = NULL;
 	int ZEPHIR_LAST_CALL_STATUS;
 	zval *name_param = NULL, *dependencyInjector, *encryption, *cookie = NULL, *_0;
 	zval *name = NULL;
@@ -290,17 +259,17 @@ PHP_METHOD(Phalcon_Http_Response_Cookies, get) {
 	}
 	ZEPHIR_INIT_NVAR(cookie);
 	object_init_ex(cookie, phalcon_http_cookie_ce);
-	ZEPHIR_CALL_METHOD(NULL, cookie, "__construct", NULL, name);
+	ZEPHIR_CALL_METHOD(NULL, cookie, "__construct", &_1, name);
 	zephir_check_call_status();
 	ZEPHIR_OBS_VAR(dependencyInjector);
 	zephir_read_property_this(&dependencyInjector, this_ptr, SL("_dependencyInjector"), PH_NOISY_CC);
 	if (Z_TYPE_P(dependencyInjector) == IS_OBJECT) {
-		ZEPHIR_CALL_METHOD(NULL, cookie, "setdi", NULL, dependencyInjector);
+		ZEPHIR_CALL_METHOD(NULL, cookie, "setdi", &_2, dependencyInjector);
 		zephir_check_call_status();
 		ZEPHIR_OBS_VAR(encryption);
 		zephir_read_property_this(&encryption, this_ptr, SL("_useEncryption"), PH_NOISY_CC);
 		if (zephir_is_true(encryption)) {
-			ZEPHIR_CALL_METHOD(NULL, cookie, "useencryption", NULL, encryption);
+			ZEPHIR_CALL_METHOD(NULL, cookie, "useencryption", &_3, encryption);
 			zephir_check_call_status();
 		}
 	}
@@ -311,9 +280,6 @@ PHP_METHOD(Phalcon_Http_Response_Cookies, get) {
 
 /**
  * Check if a cookie is defined in the bag or exists in the _COOKIE superglobal
- *
- * @param string name
- * @return boolean
  */
 PHP_METHOD(Phalcon_Http_Response_Cookies, has) {
 
@@ -351,9 +317,6 @@ PHP_METHOD(Phalcon_Http_Response_Cookies, has) {
 /**
  * Deletes a cookie by its name
  * This method does not removes cookies from the _COOKIE superglobal
- *
- * @param string name
- * @return boolean
  */
 PHP_METHOD(Phalcon_Http_Response_Cookies, delete) {
 
@@ -391,8 +354,6 @@ PHP_METHOD(Phalcon_Http_Response_Cookies, delete) {
 /**
  * Sends the cookies to the client
  * Cookies aren't sent if headers are sent in the current request
- *
- * @return boolean
  */
 PHP_METHOD(Phalcon_Http_Response_Cookies, send) {
 
@@ -408,7 +369,7 @@ PHP_METHOD(Phalcon_Http_Response_Cookies, send) {
 	zephir_check_call_status();
 	if (!(zephir_is_true(_0))) {
 		_2 = zephir_fetch_nproperty_this(this_ptr, SL("_cookies"), PH_NOISY_CC);
-		zephir_is_iterable(_2, &_4, &_3, 0, 0, "phalcon/http/response/cookies.zep", 262);
+		zephir_is_iterable(_2, &_4, &_3, 0, 0, "phalcon/http/response/cookies.zep", 243);
 		for (
 		  ; zephir_hash_get_current_data_ex(_4, (void**) &_5, &_3) == SUCCESS
 		  ; zephir_hash_move_forward_ex(_4, &_3)
@@ -425,8 +386,6 @@ PHP_METHOD(Phalcon_Http_Response_Cookies, send) {
 
 /**
  * Reset set cookies
- *
- * @return Phalcon\Http\Response\Cookies
  */
 PHP_METHOD(Phalcon_Http_Response_Cookies, reset) {
 

@@ -21,23 +21,6 @@
 #include "ext/spl/spl_exceptions.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Config\Adapter\Yaml
  *
@@ -72,17 +55,15 @@ ZEPHIR_INIT_CLASS(Phalcon_Config_Adapter_Yaml) {
 /**
  * Phalcon\Config\Adapter\Yaml constructor
  *
- * @param  string                    $filePath
- * @param  array                     $callbacks
  * @throws \Phalcon\Config\Exception
  */
 PHP_METHOD(Phalcon_Config_Adapter_Yaml, __construct) {
 
 	zephir_fcall_cache_entry *_5 = NULL;
-	int ZEPHIR_LAST_CALL_STATUS, ndocs = 0;
-	zephir_nts_static zephir_fcall_cache_entry *_2 = NULL, *_7 = NULL;
+	zephir_nts_static zephir_fcall_cache_entry *_2 = NULL, *_7 = NULL, *_8 = NULL;
+	int ndocs = 0, ZEPHIR_LAST_CALL_STATUS;
 	zval *callbacks = NULL;
-	zval *filePath_param = NULL, *callbacks_param = NULL, _0, *_1 = NULL, *yamlConfig = NULL, *_3 = NULL, *_4 = NULL, *_6;
+	zval *filePath_param = NULL, *callbacks_param = NULL, *yamlConfig = NULL, _0, *_1 = NULL, *_3 = NULL, *_4 = NULL, *_6;
 	zval *filePath = NULL;
 
 	ZEPHIR_MM_GROW();
@@ -113,7 +94,7 @@ PHP_METHOD(Phalcon_Config_Adapter_Yaml, __construct) {
 	ZEPHIR_CALL_FUNCTION(&_1, "extension_loaded", &_2, &_0);
 	zephir_check_call_status();
 	if (!(zephir_is_true(_1))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_config_exception_ce, "Yaml extension not loaded", "phalcon/config/adapter/yaml.zep", 61);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_config_exception_ce, "Yaml extension not loaded", "phalcon/config/adapter/yaml.zep", 62);
 		return;
 	}
 	if (!ZEPHIR_IS_STRING_IDENTICAL(callbacks, "")) {
@@ -136,13 +117,13 @@ PHP_METHOD(Phalcon_Config_Adapter_Yaml, __construct) {
 		zephir_basename(_4, filePath TSRMLS_CC);
 		ZEPHIR_INIT_VAR(_6);
 		ZEPHIR_CONCAT_SVS(_6, "Configuration file ", _4, " can't be loaded");
-		ZEPHIR_CALL_METHOD(NULL, _3, "__construct", NULL, _6);
+		ZEPHIR_CALL_METHOD(NULL, _3, "__construct", &_7, _6);
 		zephir_check_call_status();
-		zephir_throw_exception_debug(_3, "phalcon/config/adapter/yaml.zep", 73 TSRMLS_CC);
+		zephir_throw_exception_debug(_3, "phalcon/config/adapter/yaml.zep", 72 TSRMLS_CC);
 		ZEPHIR_MM_RESTORE();
 		return;
 	}
-	ZEPHIR_CALL_PARENT(NULL, phalcon_config_adapter_yaml_ce, this_ptr, "__construct", &_7, yamlConfig);
+	ZEPHIR_CALL_PARENT(NULL, phalcon_config_adapter_yaml_ce, this_ptr, "__construct", &_8, yamlConfig);
 	zephir_check_call_status();
 	ZEPHIR_MM_RESTORE();
 

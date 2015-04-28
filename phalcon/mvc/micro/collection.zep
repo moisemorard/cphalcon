@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -58,16 +58,13 @@ class Collection implements CollectionInterface
 	 * @param mixed handler
 	 * @param string name
 	 */
-	private function _addMap(string! method, var routePattern, var handler, var name)
+	protected function _addMap(string! method, var routePattern, var handler, var name)
 	{
 		let this->_handlers[] = [method, routePattern, handler, name];
 	}
 
 	/**
 	 * Sets a prefix for all routes added to the collection
-	 *
-	 * @param string prefix
-	 * @return Phalcon\Mvc\Micro\Collection
 	 */
 	public function setPrefix(string! prefix) -> <Collection>
 	{
@@ -77,8 +74,6 @@ class Collection implements CollectionInterface
 
 	/**
 	 * Returns the collection prefix if any
-	 *
-	 * @return string
 	 */
 	public function getPrefix() -> string
 	{
@@ -110,9 +105,6 @@ class Collection implements CollectionInterface
 
 	/**
 	 * Sets if the main handler must be lazy loaded
-	 *
-	 * @param boolean lazy
-	 * @return Phalcon\Mvc\Micro\Collection
 	 */
 	public function setLazy(boolean! lazy) -> <Collection>
 	{
@@ -122,8 +114,6 @@ class Collection implements CollectionInterface
 
 	/**
 	 * Returns if the main handler must be lazy loaded
-	 *
-	 * @return boolean
 	 */
 	public function isLazy() -> boolean
 	{

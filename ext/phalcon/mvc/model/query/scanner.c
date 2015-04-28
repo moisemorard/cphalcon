@@ -40,7 +40,7 @@ int phql_get_token(phql_scanner_state *s, phql_scanner_token *token) {
 
 	while (PHQL_SCANNER_RETCODE_IMPOSSIBLE == status) {
 
-		
+
 // 45 "scanner.c"
 		{
 			YYCTYPE yych;

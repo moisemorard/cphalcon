@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -34,7 +34,7 @@ interface RouteInterface
 	 * @param array paths
 	 * @param array|string httpMethods
 	 */
-	public function __construct(pattern, paths=null, httpMethods=null);
+	public function __construct(pattern, paths = null, httpMethods = null);
 
 	/**
 	 * Replaces placeholders from pattern returning a valid PCRE regular expression
@@ -57,7 +57,7 @@ interface RouteInterface
 	 * @param string pattern
 	 * @param array paths
 	 */
-	public function reConfigure(pattern, paths=null);
+	public function reConfigure(pattern, paths = null);
 
 	/**
 	 * Returns the route's name

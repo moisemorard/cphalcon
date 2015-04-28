@@ -19,23 +19,6 @@
 #include "kernel/memory.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Acl\Role
  *
@@ -57,6 +40,7 @@ ZEPHIR_INIT_CLASS(Phalcon_Acl_Role) {
 	 */
 	zend_declare_property_null(phalcon_acl_role_ce, SL("_description"), ZEND_ACC_PROTECTED TSRMLS_CC);
 
+	zend_class_implements(phalcon_acl_role_ce TSRMLS_CC, 1, phalcon_acl_roleinterface_ce);
 	return SUCCESS;
 
 }
@@ -96,9 +80,6 @@ PHP_METHOD(Phalcon_Acl_Role, getDescription) {
 
 /**
  * Phalcon\Acl\Role constructor
- *
- * @param string name
- * @param string description
  */
 PHP_METHOD(Phalcon_Acl_Role, __construct) {
 
@@ -128,7 +109,7 @@ PHP_METHOD(Phalcon_Acl_Role, __construct) {
 
 
 	if (ZEPHIR_IS_STRING(name, "*")) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_acl_exception_ce, "Role name cannot be '*'", "phalcon/acl/role.zep", 52);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_acl_exception_ce, "Role name cannot be '*'", "phalcon/acl/role.zep", 49);
 		return;
 	}
 	zephir_update_property_this(this_ptr, SL("_name"), name TSRMLS_CC);

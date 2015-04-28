@@ -19,27 +19,8 @@
 #include "ext/spl/spl_exceptions.h"
 #include "kernel/exception.h"
 #include "kernel/operators.h"
-#include "kernel/object.h"
 
 
-/*
-+------------------------------------------------------------------------+
-| Phalcon Framework                                                      |
-+------------------------------------------------------------------------+
-| Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
-+------------------------------------------------------------------------+
-| This source file is subject to the New BSD License that is bundled     |
-| with this package in the file docs/LICENSE.txt.                        |
-|                                                                        |
-| If you did not receive a copy of the license and are unable to         |
-| obtain it through the world-wide-web, please send an email             |
-| to license@phalconphp.com so we can send you a copy immediately.       |
-+------------------------------------------------------------------------+
-| Authors: Andres Gutierrez <andres@phalconphp.com>                      |
-|          Eduar Carvajal <eduar@phalconphp.com>                         |
-|          Vladimir Kolesnikov <vladimir@extrememember.com>              |
-+------------------------------------------------------------------------+
-*/
 /**
  * Phalcon\Annotations\Adapter\Xcache
  *
@@ -133,10 +114,6 @@ PHP_METHOD(Phalcon_Annotations_Adapter_Xcache, write) {
 	}
 
 
-	if (!(zephir_instance_of_ev(data, phalcon_annotations_reflection_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Parameter 'data' must be an instance of 'Phalcon\\Annotations\\Reflection'", "", 0);
-		return;
-	}
 	ZEPHIR_INIT_VAR(_0);
 	ZEPHIR_INIT_VAR(_1);
 	ZEPHIR_CONCAT_SV(_1, "_PHAN", key);

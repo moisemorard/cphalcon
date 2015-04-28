@@ -19,23 +19,6 @@
 #include "kernel/memory.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Acl\Resource
  *
@@ -96,9 +79,6 @@ PHP_METHOD(Phalcon_Acl_Resource, getDescription) {
 
 /**
  * Phalcon\Acl\Resource constructor
- *
- * @param string name
- * @param string description
  */
 PHP_METHOD(Phalcon_Acl_Resource, __construct) {
 
@@ -128,7 +108,7 @@ PHP_METHOD(Phalcon_Acl_Resource, __construct) {
 
 
 	if (ZEPHIR_IS_STRING(name, "*")) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_acl_exception_ce, "Resource name cannot be '*'", "phalcon/acl/resource.zep", 53);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_acl_exception_ce, "Resource name cannot be '*'", "phalcon/acl/resource.zep", 50);
 		return;
 	}
 	zephir_update_property_this(this_ptr, SL("_name"), name TSRMLS_CC);

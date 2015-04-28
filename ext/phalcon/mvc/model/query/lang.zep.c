@@ -12,6 +12,7 @@
 #include <Zend/zend_interfaces.h>
 
 #include "kernel/main.h"
+#include "kernel/fcall.h"
 #include "ext/spl/spl_exceptions.h"
 #include "kernel/exception.h"
 #include "kernel/operators.h"
@@ -20,23 +21,6 @@
 #include "phalcon/mvc/model/query/phql.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Mvc\Model\Query\Lang
  *
@@ -70,6 +54,7 @@ ZEPHIR_INIT_CLASS(Phalcon_Mvc_Model_Query_Lang) {
  */
 PHP_METHOD(Phalcon_Mvc_Model_Query_Lang, parsePHQL) {
 
+	int ZEPHIR_LAST_CALL_STATUS;
 	zval *phql_param = NULL;
 	zval *phql = NULL;
 
@@ -89,9 +74,8 @@ PHP_METHOD(Phalcon_Mvc_Model_Query_Lang, parsePHQL) {
 	}
 
 
-	if (phql_parse_phql(return_value, phql TSRMLS_CC) == FAILURE) {
-		RETURN_MM();
-	}
+	ZEPHIR_LAST_CALL_STATUS = phql_parse_phql(return_value, phql TSRMLS_CC);
+	zephir_check_call_status();
 	RETURN_MM();
 
 }

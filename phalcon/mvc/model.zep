@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -27,6 +27,8 @@ use Phalcon\Di\InjectionAwareInterface;
 use Phalcon\Mvc\Model\ManagerInterface;
 use Phalcon\Mvc\Model\MetaDataInterface;
 use Phalcon\Db\AdapterInterface;
+use Phalcon\Mvc\Model\Criteria;
+use Phalcon\Mvc\Model\CriteriaInterface;
 use Phalcon\Mvc\Model\TransactionInterface;
 use Phalcon\Mvc\Model\Resultset;
 use Phalcon\Mvc\Model\Query\Builder;
@@ -37,6 +39,7 @@ use Phalcon\Mvc\Model\Exception;
 use Phalcon\Mvc\Model\MetadataInterface;
 use Phalcon\Mvc\Model\MessageInterface;
 use Phalcon\Events\ManagerInterface as EventsManagerInterface;
+use Phalcon\Db\Column;
 
 /**
  * Phalcon\Mvc\Model
@@ -115,9 +118,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Phalcon\Mvc\Model constructor
-	 *
-	 * @param Phalcon\DiInterface dependencyInjector
-	 * @param Phalcon\Mvc\Model\ManagerInterface modelsManager
 	 */
 	public final function __construct(<DiInterface> dependencyInjector = null, <ManagerInterface> modelsManager = null)
 	{
@@ -165,8 +165,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Sets the dependency injection container
-	 *
-	 * @param Phalcon\DiInterface dependencyInjector
 	 */
 	public function setDI(<DiInterface> dependencyInjector)
 	{
@@ -175,8 +173,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Returns the dependency injection container
-	 *
-	 * @return Phalcon\DiInterface
 	 */
 	public function getDI() -> <DiInterface>
 	{
@@ -185,8 +181,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Sets a custom events manager
-	 *
-	 * @param Phalcon\Events\ManagerInterface eventsManager
 	 */
 	protected function setEventsManager(<EventsManagerInterface> eventsManager)
 	{
@@ -195,8 +189,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Returns the custom events manager
-	 *
-	 * @return Phalcon\Events\ManagerInterface
 	 */
 	protected function getEventsManager() -> <EventsManagerInterface>
 	{
@@ -205,10 +197,8 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Returns the models meta-data service related to the entity instance
-	 *
-	 * @return Phalcon\Mvc\Model\MetaDataInterface
 	 */
-	public function getModelsMetaData() -> <MetadataInterface>
+	public function getModelsMetaData() -> <MetaDataInterface>
 	{
 		var metaData, dependencyInjector;
 
@@ -241,8 +231,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Returns the models manager related to the entity instance
-	 *
-	 * @return Phalcon\Mvc\Model\ManagerInterface
 	 */
 	public function getModelsManager() -> <ManagerInterface>
 	{
@@ -284,9 +272,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 	 *}
 	 *
 	 *</code>
-	 *
-	 * @param Phalcon\Mvc\Model\TransactionInterface $transaction
-	 * @return Phalcon\Mvc\Model
 	 */
 	public function setTransaction(<TransactionInterface> transaction) -> <Model>
 	{
@@ -299,9 +284,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Sets table name which model should be mapped
-	 *
-	 * @param string source
-	 * @return Phalcon\Mvc\Model
 	 */
 	protected function setSource(string! source) -> <Model>
 	{
@@ -311,8 +293,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Returns table name mapped in the model
-	 *
-	 * @return string
 	 */
 	public function getSource() -> string
 	{
@@ -321,9 +301,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Sets schema name where table mapped is located
-	 *
-	 * @param string schema
-	 * @return Phalcon\Mvc\Model
 	 */
 	protected function setSchema(string! schema) -> <Model>
 	{
@@ -332,8 +309,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Returns schema name where table mapped is located
-	 *
-	 * @return string
 	 */
 	public function getSchema() -> string
 	{
@@ -342,9 +317,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Sets the DependencyInjection connection service name
-	 *
-	 * @param string connectionService
-	 * @return Phalcon\Mvc\Model
 	 */
 	public function setConnectionService(string! connectionService) -> <Model>
 	{
@@ -354,9 +326,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Sets the DependencyInjection connection service name used to read data
-	 *
-	 * @param string connectionService
-	 * @return Phalcon\Mvc\Model
 	 */
 	public function setReadConnectionService(string! connectionService) -> <Model>
 	{
@@ -366,9 +335,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Sets the DependencyInjection connection service name used to write data
-	 *
-	 * @param string connectionService
-	 * @return Phalcon\Mvc\Model
 	 */
 	public function setWriteConnectionService(string! connectionService) -> <Model>
 	{
@@ -377,8 +343,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Returns the DependencyInjection connection service name used to read data related the model
-	 *
-	 * @return string
 	 */
 	public function getReadConnectionService() -> string
 	{
@@ -387,8 +351,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Returns the DependencyInjection connection service name used to write data related to the model
-	 *
-	 * @return string
 	 */
 	public function getWriteConnectionService() -> string
 	{
@@ -397,11 +359,8 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Sets the dirty state of the object using one of the DIRTY_STATE_* constants
-	 *
-	 * @param int dirtyState
-	 * @return Phalcon\Mvc\Model
 	 */
-	public function setDirtyState(int dirtyState) -> <\Phalcon\Mvc\Model>
+	public function setDirtyState(int dirtyState) -> <ModelInterface>
 	{
 		let this->_dirtyState = dirtyState;
 		return this;
@@ -409,8 +368,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Returns one of the DIRTY_STATE_* constants telling if the record exists in the database or not
-	 *
-	 * @return int
 	 */
 	public function getDirtyState() -> int
 	{
@@ -419,8 +376,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Gets the connection used to read data for the model
-	 *
-	 * @return Phalcon\Db\AdapterInterface
 	 */
 	public function getReadConnection() -> <AdapterInterface>
 	{
@@ -429,8 +384,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Gets the connection used to write data to the model
-	 *
-	 * @return Phalcon\Db\AdapterInterface
 	 */
 	public function getWriteConnection() -> <AdapterInterface>
 	{
@@ -764,15 +717,15 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 		let builder = new Builder(params);
 		builder->from(get_called_class());
 
-		let query = builder->getQuery(),
-			bindParams = null,
-			bindTypes = null;
+		let query = builder->getQuery();
 
 		/**
 		 * Check for bind parameters
 		 */
 		if fetch bindParams, params["bind"] {
 			fetch bindTypes, params["bindTypes"];
+		} else {
+			let bindTypes = null;
 		}
 
 		/**
@@ -874,11 +827,8 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Create a criteria for a specific model
-	 *
-	 * @param Phalcon\DiInterface dependencyInjector
-	 * @return Phalcon\Mvc\Model\Criteria
 	 */
-	public static function query(<DiInterface> dependencyInjector = null) -> <\Phalcon\Mvc\Model\Criteria>
+	public static function query(<DiInterface> dependencyInjector = null) -> <Criteria>
 	{
 		var criteria;
 
@@ -889,8 +839,16 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 			let dependencyInjector = \Phalcon\Di::getDefault();
 		}
 
-		let criteria = new \Phalcon\Mvc\Model\Criteria();
-		criteria->setDI(dependencyInjector);
+		/**
+		 * Gets Criteria instance from DI container
+		 */
+		if dependencyInjector instanceof DiInterface {
+			let criteria = <CriteriaInterface> dependencyInjector->get("\Phalcon\Mvc\Model\Criteria");
+		} else {
+			let criteria = new \Phalcon\Mvc\Model\Criteria();
+			criteria->setDI(dependencyInjector);
+		}
+
 		criteria->setModelName(get_called_class());
 
 		return criteria;
@@ -1245,13 +1203,9 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Fires an event, implicitly calls behaviors and listeners in the events manager are notified
-	 *
-	 * @param string eventName
-	 * @return boolean
 	 */
 	public function fireEvent(string! eventName) -> boolean
 	{
-
 		/**
 		 * Check if there is a method with the same name of the event
 		 */
@@ -1268,13 +1222,9 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 	/**
 	 * Fires an event, implicitly calls behaviors and listeners in the events manager are notified
 	 * This method stops if one of the callbacks/listeners returns boolean false
-	 *
-	 * @param string eventName
-	 * @return boolean
 	 */
-	public function fireEventCancel(string! eventName)
+	public function fireEventCancel(string! eventName) -> boolean
 	{
-
 		/**
 		 * Check if there is a method with the same name of the event
 		 */
@@ -1296,7 +1246,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Cancel the current operation
-	 *
 	 */
 	protected function _cancelOperation()
 	{
@@ -1325,9 +1274,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 	 *   }
 	 * }
 	 * </code>
-	 *
-	 * @param Phalcon\Mvc\Model\MessageInterface message
-	 * @return Phalcon\Mvc\Model
 	 */
 	public function appendMessage(<MessageInterface> message) -> <Model>
 	{
@@ -1406,8 +1352,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 	 *
 	 *}
 	 *</code>
-	 *
-	 * @return boolean
 	 */
 	public function validationHasFailed() -> boolean
 	{
@@ -1458,8 +1402,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 	/**
 	 * Reads "belongs to" relations and check the virtual foreign keys when inserting or updating records
 	 * to verify that inserted/updated values are present in the related entity
-	 *
-	 * @return boolean
 	 */
 	protected function _checkForeignKeysRestrict() -> boolean
 	{
@@ -1586,8 +1528,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Reads both "hasMany" and "hasOne" relations and checks the virtual foreign keys (cascade) when deleting records
-	 *
-	 * @return boolean
 	 */
 	protected function _checkForeignKeysReverseCascade() -> boolean
 	{
@@ -1696,8 +1636,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Reads both "hasMany" and "hasOne" relations and checks the virtual foreign keys (restrict) when deleting records
-	 *
-	 * @return boolean
 	 */
 	protected function _checkForeignKeysReverseRestrict() -> boolean
 	{
@@ -2037,10 +1975,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Executes internal events after save a record
-	 *
-	 * @param boolean success
-	 * @param boolean exists
-	 * @return boolean
 	 */
 	protected function _postSave(boolean success, boolean exists) -> boolean
 	{
@@ -2234,7 +2168,7 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 	 * @param string|array table
 	 * @return boolean
 	 */
-	protected function _doLowUpdate(<\Phalcon\Mvc\Model\MetaDataInterface> metaData, <AdapterInterface> connection, var table) -> boolean
+	protected function _doLowUpdate(<MetaDataInterface> metaData, <AdapterInterface> connection, var table) -> boolean
 	{
 		var bindSkip, fields, values, bindTypes, manager, bindDataTypes, field,
 			automaticAttributes, snapshotValue, uniqueKey, uniqueParams, uniqueTypes,
@@ -2314,7 +2248,48 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 						if !fetch snapshotValue, snapshot[attributeField] {
 							let changed = true;
 						} else {
-							let changed = value != snapshotValue;
+							/**
+							 * See https://github.com/phalcon/cphalcon/issues/3247
+							 * Take a TEXT column with value '4' and replace it by
+							 * the value '4.0'. For PHP '4' and '4.0' are the same.
+							 * We can't use simple comparison...
+							 *
+							 * We must use the type of snapshotValue.
+							 */
+							if value === null {
+								let changed = snapshotValue !== null;
+							} else {
+								if snapshotValue === null {
+									let changed = true;
+								} else {
+									switch (bindType) {
+										case Column::TYPE_BOOLEAN:
+											let changed = (boolean)snapshotValue !== (boolean)value;
+											break;
+										case Column::TYPE_INTEGER:
+											let changed = (int)snapshotValue !== (int)value;
+											break;
+										case Column::TYPE_DECIMAL:
+										case Column::TYPE_FLOAT:
+											let changed = floatval(snapshotValue) !== floatval(value);
+											break;
+										case Column::TYPE_DATE:
+										case Column::TYPE_VARCHAR:
+										case Column::TYPE_DATETIME:
+										case Column::TYPE_CHAR:
+										case Column::TYPE_TEXT:
+										case Column::TYPE_VARCHAR:
+											let changed = (string)snapshotValue !== (string)value;
+											break;
+
+										/**
+										 * Any other type is not really supported...
+										 */
+										default:
+											let changed = value != snapshotValue;
+									}
+								}
+							}
 						}
 
 						/**
@@ -2458,7 +2433,7 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 							/**
 							 * Set the related model
 							 */
-							if typeof record == "object" {
+							if typeof message == "object" {
 								message->setModel(record);
 							}
 
@@ -2644,7 +2619,7 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 								/**
 								 * Set the related model
 								 */
-								if typeof message != "object" {
+								if typeof message == "object" {
 									message->setModel(record);
 								}
 
@@ -2929,8 +2904,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 	 *   $robot->delete();
 	 *}
 	 * </code>
-	 *
-	 * @return boolean
 	 */
 	public function delete() -> boolean
 	{
@@ -3046,7 +3019,7 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 		 * Join the conditions in the array using an AND operator
 		 * Do the deletion
 		 */
-		let success = writeConnection->delete(table, join(" AND ", $conditions), values, bindTypes);
+		let success = writeConnection->delete(table, join(" AND ", conditions), values, bindTypes);
 
 		/**
 		 * Check if there is virtual foreign keys with cascade action
@@ -3074,8 +3047,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 	/**
 	 * Returns the type of the latest operation performed by the ORM
 	 * Returns one of the OP_* class constants
-	 *
-	 * @return int
 	 */
 	public function getOperationMade() -> int
 	{
@@ -3084,8 +3055,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Refreshes the model attributes re-querying the record from the database
-	 *
-	 * @return \Phalcon\Mvc\Model
 	 */
 	public function refresh() -> <Model>
 	{
@@ -3157,8 +3126,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Skips the current operation forcing a success state
-	 *
-	 * @param boolean skip
 	 */
 	public function skipOperation(boolean skip)
 	{
@@ -3215,8 +3182,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 	 *
 	 *}
 	 *</code>
-	 *
-	 * @param array attributes
 	 */
 	protected function skipAttributes(array! attributes)
 	{
@@ -3249,8 +3214,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 	 *
 	 *}
 	 *</code>
-	 *
-	 * @param array attributes
 	 */
 	protected function skipAttributesOnCreate(array! attributes) -> void
 	{
@@ -3281,8 +3244,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 	 *
 	 *}
 	 *</code>
-	 *
-	 * @param array attributes
 	 */
 	protected function skipAttributesOnUpdate(array! attributes) -> void
 	{
@@ -3452,8 +3413,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 	 *
 	 *}
 	 *</code>
-	 *
-	 * @param Phalcon\Mvc\Model\BehaviorInterface behavior
 	 */
 	protected function addBehavior(<BehaviorInterface> behavior) -> void
 	{
@@ -3476,8 +3435,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 	 *
 	 *}
 	 *</code>
-	 *
-	 * @param boolean keepSnapshots
 	 */
 	protected function keepSnapshots(boolean keepSnapshot) -> void
 	{
@@ -3529,8 +3486,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Checks if the object has internal snapshot data
-	 *
-	 * @return boolean
 	 */
 	public function hasSnapshotData() -> boolean
 	{
@@ -3544,8 +3499,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Returns the internal snapshot data
-	 *
-	 * @return array
 	 */
 	public function getSnapshotData() -> array
 	{
@@ -3664,8 +3617,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Returns a list of changed values
-	 *
-	 * @return array
 	 */
 	public function getChangedFields() -> array
 	{
@@ -3754,8 +3705,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 	 *
 	 *}
 	 *</code>
-	 *
-	 * @param boolean dynamicUpdate
 	 */
 	protected function useDynamicUpdate(boolean dynamicUpdate) -> void
 	{
@@ -4105,9 +4054,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Magic method to check if a property is a valid relation
-	 *
-	 * @param string property
-	 * @return boolean
 	 */
 	public function __isset(string! property) -> boolean
 	{
@@ -4125,8 +4071,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Serializes the object ignoring connections, services, related objects or static properties
-	 *
-	 * @return string
 	 */
 	public function serialize() -> string
 	{
@@ -4281,8 +4225,6 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 
 	/**
 	 * Enables/disables options in the ORM
-	 *
-	 * @param array options
 	 */
 	public static function setup(array! options) -> void
 	{
@@ -4330,5 +4272,14 @@ abstract class Model implements ModelInterface, ResultInterface, InjectionAwareI
 		if fetch phqlLiterals, options["phqlLiterals"] {
 			globals_set("orm.enable_literals", phqlLiterals);
 		}
+	}
+
+	/**
+	 * Reset a model instance data
+	 */
+	public function reset()
+	{
+		let this->_uniqueParams = null;
+		let this->_snapshot = null;
 	}
 }

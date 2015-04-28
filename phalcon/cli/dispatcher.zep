@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -20,7 +20,9 @@
 
 namespace Phalcon\Cli;
 
+use Phalcon\Cli\Task;
 use Phalcon\Events\ManagerInterface;
+use Phalcon\Cli\Dispatcher\Exception;
 
 /**
  * Phalcon\Cli\Dispatcher
@@ -113,11 +115,11 @@ class Dispatcher extends \Phalcon\Dispatcher
 	 * @param string message
 	 * @param int exceptionCode
 	 */
-	protected function _throwDispatchException(string message, int exceptionCode=0)
+	protected function _throwDispatchException(string message, int exceptionCode = 0)
 	{
 		var exception;
 
-		let exception = new \Phalcon\Cli\Dispatcher\Exception(message, exceptionCode);
+		let exception = new Exception(message, exceptionCode);
 
 		if this->_handleException(exception) === false {
 			return false;
@@ -147,7 +149,7 @@ class Dispatcher extends \Phalcon\Dispatcher
 	 *
 	 * @return Phalcon\CLI\Task
 	 */
-	public function getLastTask() -> <\Phalcon\Cli\Task>
+	public function getLastTask() -> <Task>
 	{
 		return this->_lastHandler;
 	}
@@ -157,7 +159,7 @@ class Dispatcher extends \Phalcon\Dispatcher
 	 *
 	 * @return Phalcon\CLI\Task
 	 */
-	public function getActiveTask() -> <\Phalcon\Cli\Task>
+	public function getActiveTask() -> <Task>
 	{
 		return this->_activeHandler;
 	}
@@ -181,5 +183,4 @@ class Dispatcher extends \Phalcon\Dispatcher
 	{
 		return this->_options;
 	}
-
 }

@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -36,7 +36,7 @@ interface RelationInterface
 	 * @param string|array referencedFields
 	 * @param array options
 	 */
-	public function __construct(type, referencedModel, fields, referencedFields, options=null);
+	public function __construct(type, referencedModel, fields, referencedFields, options = null);
 
 	/**
 	 * Sets the intermediate model dat for has-*-through relations
@@ -49,22 +49,16 @@ interface RelationInterface
 
 	/**
 	 * Check if records returned by getting belongs-to/has-many are implicitly cached during the current request
-	 *
-	 * @return boolean
 	 */
 	public function isReusable() -> boolean;
 
 	/**
 	 * Returns the relations type
-	 *
-	 * @return int
 	 */
 	public function getType() -> int;
 
 	/**
 	 * Returns the referenced model
-	 *
-	 * @return string
 	 */
 	public function getReferencedModel() -> string;
 
@@ -91,8 +85,6 @@ interface RelationInterface
 
 	/**
 	 * Check whether the relation act as a foreign key
-	 *
-	 * @return boolean
 	 */
 	public function isForeignKey() -> boolean;
 
@@ -105,8 +97,6 @@ interface RelationInterface
 
 	/**
 	 * Check whether the relation is a 'many-to-many' relation or not
-	 *
-	 * @return boolean
 	 */
 	public function isThrough() -> boolean;
 
@@ -119,8 +109,6 @@ interface RelationInterface
 
 	/**
 	 * Gets the intermediate model for has-*-through relations
-	 *
-	 * @return string
 	 */
 	public function getIntermediateModel() -> string;
 

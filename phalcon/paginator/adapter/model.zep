@@ -130,7 +130,7 @@ class Model implements AdapterInterface
 		if n > 0 {
 
 			/**
-			 * Seek to the desired position</comment>
+			 * Seek to the desired position
 			 */
 			if start <= n {
 				items->seek(start);
@@ -194,9 +194,9 @@ class Model implements AdapterInterface
 
 		let page->last = pagesTotal,
 			page->total_pages = pagesTotal,
-			page->total_items = n;
+			page->total_items = n,
+			page->limit = this->_limitRows;
 
 		return page;
 	}
-
 }

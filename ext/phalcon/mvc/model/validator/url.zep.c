@@ -12,31 +12,13 @@
 #include <Zend/zend_interfaces.h>
 
 #include "kernel/main.h"
-#include "kernel/object.h"
-#include "kernel/exception.h"
 #include "kernel/fcall.h"
 #include "kernel/memory.h"
+#include "kernel/exception.h"
 #include "kernel/operators.h"
 #include "kernel/array.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Mvc\Model\Validator\Url
  *
@@ -73,9 +55,6 @@ ZEPHIR_INIT_CLASS(Phalcon_Mvc_Model_Validator_Url) {
 
 /**
  * Executes the validator
- *
- * @param Phalcon\Mvc\ModelInterface record
- * @return boolean
  */
 PHP_METHOD(Phalcon_Mvc_Model_Validator_Url, validate) {
 
@@ -90,17 +69,13 @@ PHP_METHOD(Phalcon_Mvc_Model_Validator_Url, validate) {
 
 
 
-	if (!(zephir_instance_of_ev(record, phalcon_mvc_modelinterface_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Parameter 'record' must be an instance of 'Phalcon\\Mvc\\ModelInterface'", "", 0);
-		return;
-	}
 	ZEPHIR_INIT_VAR(_0);
 	ZVAL_STRING(_0, "field", ZEPHIR_TEMP_PARAM_COPY);
 	ZEPHIR_CALL_METHOD(&field, this_ptr, "getoption", NULL, _0);
 	zephir_check_temp_parameter(_0);
 	zephir_check_call_status();
-	if (Z_TYPE_P(field) == IS_STRING) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_mvc_model_exception_ce, "Field name must be a string", "phalcon/mvc/model/validator/url.zep", 66);
+	if (Z_TYPE_P(field) != IS_STRING) {
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_mvc_model_exception_ce, "Field name must be a string", "phalcon/mvc/model/validator/url.zep", 63);
 		return;
 	}
 	ZEPHIR_CALL_METHOD(&value, record, "readattribute", NULL, field);
@@ -132,7 +107,7 @@ PHP_METHOD(Phalcon_Mvc_Model_Validator_Url, validate) {
 			ZVAL_STRING(message, ":field does not have a valid url format", 1);
 		}
 		ZEPHIR_INIT_VAR(_5);
-		array_init_size(_5, 2);
+		zephir_create_array(_5, 1, 0 TSRMLS_CC);
 		zephir_array_update_string(&_5, SL(":field"), &field, PH_COPY | PH_SEPARATE);
 		ZEPHIR_CALL_FUNCTION(&_6, "strtr", &_7, message, _5);
 		zephir_check_call_status();

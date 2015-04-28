@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -28,44 +28,44 @@ namespace Phalcon;
 class Version
 {
 
-    /**
-     * The constant referencing the major version. Returns 0
-     * <code>
-     * echo Phalcon\Version::getPart(Phalcon\Version::VERSION_MAJOR);
-     * </code>
-     */
+	/**
+	 * The constant referencing the major version. Returns 0
+	 * <code>
+	 * echo Phalcon\Version::getPart(Phalcon\Version::VERSION_MAJOR);
+	 * </code>
+	 */
 	const VERSION_MAJOR = 0;
 
-    /**
-     * The constant referencing the major version. Returns 1
-     * <code>
-     * echo Phalcon\Version::getPart(Phalcon\Version::VERSION_MEDIUM);
-     * </code>
-     */
+	/**
+	 * The constant referencing the major version. Returns 1
+	 * <code>
+	 * echo Phalcon\Version::getPart(Phalcon\Version::VERSION_MEDIUM);
+	 * </code>
+	 */
 	const VERSION_MEDIUM = 1;
 
-    /**
-     * The constant referencing the major version. Returns 2
-     * <code>
-     * echo Phalcon\Version::getPart(Phalcon\Version::VERSION_MINOR);
-     * </code>
-     */
+	/**
+	 * The constant referencing the major version. Returns 2
+	 * <code>
+	 * echo Phalcon\Version::getPart(Phalcon\Version::VERSION_MINOR);
+	 * </code>
+	 */
 	const VERSION_MINOR = 2;
 
-    /**
-     * The constant referencing the major version. Returns 3
-     * <code>
-     * echo Phalcon\Version::getPart(Phalcon\Version::VERSION_SPECIAL);
-     * </code>
-     */
+	/**
+	 * The constant referencing the major version. Returns 3
+	 * <code>
+	 * echo Phalcon\Version::getPart(Phalcon\Version::VERSION_SPECIAL);
+	 * </code>
+	 */
 	const VERSION_SPECIAL = 3;
 
-    /**
-     * The constant referencing the major version. Returns 4
-     * <code>
-     * echo Phalcon\Version::getPart(Phalcon\Version::VERSION_SPECIAL_NUMBER);
-     * </code>
-     */
+	/**
+	 * The constant referencing the major version. Returns 4
+	 * <code>
+	 * echo Phalcon\Version::getPart(Phalcon\Version::VERSION_SPECIAL_NUMBER);
+	 * </code>
+	 */
 	const VERSION_SPECIAL_NUMBER = 4;
 
 	/**
@@ -80,19 +80,17 @@ class Version
 	 */
 	protected static function _getVersion() -> array
 	{
-		return [2, 0, 0, 3, 1];
+		return [2, 0, 0, 4, 0];
 	}
 
 	/**
 	 * Translates a number to a special release
 	 *
 	 * If Special release = 1 this function will return ALPHA
-	 *
-	 * @return string
 	 */
-    protected final static function _getSpecial(int special) -> string
-    {
-        var suffix = "";
+	protected final static function _getSpecial(int special) -> string
+	{
+		var suffix = "";
 
 		switch special {
 			case 1:
@@ -107,7 +105,7 @@ class Version
 		}
 
 		return suffix;
-    }
+	}
 
 	/**
 	 * Returns the active version (string)
@@ -115,8 +113,6 @@ class Version
 	 * <code>
 	 * echo Phalcon\Version::get();
 	 * </code>
-	 *
-	 * @return string
 	 */
 	public static function get() -> string
 	{
@@ -135,7 +131,7 @@ class Version
 		let suffix  = self::_getSpecial(special);
 
 		if suffix != "" {
-		    let result .= suffix . " " . specialNumber;
+			let result .= suffix . " " . specialNumber;
 		}
 
 		return trim(result);
@@ -147,8 +143,6 @@ class Version
 	 * <code>
 	 * echo Phalcon\Version::getId();
 	 * </code>
-	 *
-	 * @return string
 	 */
 	public static function getId() -> string
 	{
@@ -173,33 +167,31 @@ class Version
 	 * <code>
 	 * echo Phalcon\Version::getPart(Phalcon\Version::VERSION_MAJOR);
 	 * </code>
-	 *
-	 * @return string
 	 */
-    public static function getPart(int part) -> string
-    {
+	public static function getPart(int part) -> string
+	{
 		var version, result;
 
 		let version = self::_getVersion();
 
-        switch part {
+		switch part {
 
-            case self::VERSION_MAJOR:
-            case self::VERSION_MEDIUM:
-            case self::VERSION_MINOR:
-            case self::VERSION_SPECIAL_NUMBER:
-                let result = version[part];
-                break;
+			case self::VERSION_MAJOR:
+			case self::VERSION_MEDIUM:
+			case self::VERSION_MINOR:
+			case self::VERSION_SPECIAL_NUMBER:
+				let result = version[part];
+				break;
 
-            case self::VERSION_SPECIAL:
-                let result = self::_getSpecial(version[self::VERSION_SPECIAL]);
-                break;
+			case self::VERSION_SPECIAL:
+				let result = self::_getSpecial(version[self::VERSION_SPECIAL]);
+				break;
 
-            default:
-                let result = self::get();
-                break;
-        }
+			default:
+				let result = self::get();
+				break;
+		}
 
-        return result;
-    }
+		return result;
+	}
 }

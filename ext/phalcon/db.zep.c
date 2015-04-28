@@ -18,23 +18,6 @@
 #include "kernel/exception.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Db
  *
@@ -89,8 +72,6 @@ ZEPHIR_INIT_CLASS(Phalcon_Db) {
 
 /**
  * Enables/disables options in the Database component
- *
- * @param array options
  */
 PHP_METHOD(Phalcon_Db, setup) {
 
@@ -106,6 +87,7 @@ PHP_METHOD(Phalcon_Db, setup) {
 
 	ZEPHIR_OBS_VAR(escapeIdentifiers);
 	if (zephir_array_isset_string_fetch(&escapeIdentifiers, options, SS("escapeSqlIdentifiers"), 0 TSRMLS_CC)) {
+		ZEPHIR_GLOBAL(db).escape_identifiers = zend_is_true(escapeIdentifiers);
 	}
 	ZEPHIR_MM_RESTORE();
 

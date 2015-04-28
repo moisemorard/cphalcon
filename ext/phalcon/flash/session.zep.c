@@ -13,8 +13,8 @@
 
 #include "kernel/main.h"
 #include "kernel/object.h"
-#include "kernel/exception.h"
 #include "kernel/memory.h"
+#include "kernel/exception.h"
 #include "kernel/fcall.h"
 #include "kernel/operators.h"
 #include "ext/spl/spl_exceptions.h"
@@ -22,23 +22,6 @@
 #include "kernel/hash.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Flash\Session
  *
@@ -58,8 +41,6 @@ ZEPHIR_INIT_CLASS(Phalcon_Flash_Session) {
 
 /**
  * Sets the dependency injector
- *
- * @param Phalcon\DiInterface dependencyInjector
  */
 PHP_METHOD(Phalcon_Flash_Session, setDI) {
 
@@ -69,18 +50,12 @@ PHP_METHOD(Phalcon_Flash_Session, setDI) {
 
 
 
-	if (!(zephir_instance_of_ev(dependencyInjector, phalcon_diinterface_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STRW(spl_ce_InvalidArgumentException, "Parameter 'dependencyInjector' must be an instance of 'Phalcon\\DiInterface'", "", 0);
-		return;
-	}
 	zephir_update_property_this(this_ptr, SL("_dependencyInjector"), dependencyInjector TSRMLS_CC);
 
 }
 
 /**
  * Returns the internal dependency injector
- *
- * @return Phalcon\DiInterface
  */
 PHP_METHOD(Phalcon_Flash_Session, getDI) {
 
@@ -91,9 +66,6 @@ PHP_METHOD(Phalcon_Flash_Session, getDI) {
 
 /**
  * Returns the messages stored in session
- *
- * @param boolean remove
- * @return array
  */
 PHP_METHOD(Phalcon_Flash_Session, _getSessionMessages) {
 
@@ -110,7 +82,7 @@ PHP_METHOD(Phalcon_Flash_Session, _getSessionMessages) {
 	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_dependencyInjector"), PH_NOISY_CC);
 	ZEPHIR_CPY_WRT(dependencyInjector, _0);
 	if (Z_TYPE_P(dependencyInjector) != IS_OBJECT) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_flash_exception_ce, "A dependency injection container is required to access the 'session' service", "phalcon/flash/session.zep", 70);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_flash_exception_ce, "A dependency injection container is required to access the 'session' service", "phalcon/flash/session.zep", 63);
 		return;
 	}
 	ZEPHIR_INIT_VAR(_2);
@@ -137,8 +109,6 @@ PHP_METHOD(Phalcon_Flash_Session, _getSessionMessages) {
 
 /**
  * Stores the messages in session
- *
- * @param array messages
  */
 PHP_METHOD(Phalcon_Flash_Session, _setSessionMessages) {
 
@@ -156,7 +126,7 @@ PHP_METHOD(Phalcon_Flash_Session, _setSessionMessages) {
 	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_dependencyInjector"), PH_NOISY_CC);
 	ZEPHIR_CPY_WRT(dependencyInjector, _0);
 	if (Z_TYPE_P(dependencyInjector) != IS_OBJECT) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_flash_exception_ce, "A dependency injection container is required to access the 'session' service", "phalcon/flash/session.zep", 94);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_flash_exception_ce, "A dependency injection container is required to access the 'session' service", "phalcon/flash/session.zep", 85);
 		return;
 	}
 	ZEPHIR_INIT_VAR(_2);
@@ -176,9 +146,6 @@ PHP_METHOD(Phalcon_Flash_Session, _setSessionMessages) {
 
 /**
  * Adds a message to the session flasher
- *
- * @param string type
- * @param string message
  */
 PHP_METHOD(Phalcon_Flash_Session, message) {
 
@@ -215,9 +182,6 @@ PHP_METHOD(Phalcon_Flash_Session, message) {
 
 /**
  * Checks whether there are messages
- *
- * @param string type
- * @return boolean
  */
 PHP_METHOD(Phalcon_Flash_Session, has) {
 
@@ -248,28 +212,27 @@ PHP_METHOD(Phalcon_Flash_Session, has) {
 
 /**
  * Returns the messages in the session flasher
- *
- * @param string type
- * @param boolean remove
- * @return array
  */
 PHP_METHOD(Phalcon_Flash_Session, getMessages) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zval *type = NULL, *remove = NULL, *messages = NULL, *returnMessages;
+	zend_bool remove;
+	zval *type = NULL, *remove_param = NULL, *messages = NULL, *returnMessages;
 
 	ZEPHIR_MM_GROW();
-	zephir_fetch_params(1, 0, 2, &type, &remove);
+	zephir_fetch_params(1, 0, 2, &type, &remove_param);
 
 	if (!type) {
 		type = ZEPHIR_GLOBAL(global_null);
 	}
-	if (!remove) {
-		remove = ZEPHIR_GLOBAL(global_true);
+	if (!remove_param) {
+		remove = 1;
+	} else {
+		remove = zephir_get_boolval(remove_param);
 	}
 
 
-	ZEPHIR_CALL_METHOD(&messages, this_ptr, "_getsessionmessages", NULL, remove);
+	ZEPHIR_CALL_METHOD(&messages, this_ptr, "_getsessionmessages", NULL, (remove ? ZEPHIR_GLOBAL(global_true) : ZEPHIR_GLOBAL(global_false)));
 	zephir_check_call_status();
 	if (Z_TYPE_P(messages) == IS_ARRAY) {
 		if (Z_TYPE_P(type) == IS_STRING) {
@@ -286,8 +249,6 @@ PHP_METHOD(Phalcon_Flash_Session, getMessages) {
 
 /**
  * Prints the messages in the session flasher
- *
- * @param boolean remove
  */
 PHP_METHOD(Phalcon_Flash_Session, output) {
 
@@ -311,7 +272,7 @@ PHP_METHOD(Phalcon_Flash_Session, output) {
 	ZEPHIR_CALL_METHOD(&messages, this_ptr, "_getsessionmessages", NULL, (remove ? ZEPHIR_GLOBAL(global_true) : ZEPHIR_GLOBAL(global_false)));
 	zephir_check_call_status();
 	if (Z_TYPE_P(messages) == IS_ARRAY) {
-		zephir_is_iterable(messages, &_1, &_0, 0, 0, "phalcon/flash/session.zep", 182);
+		zephir_is_iterable(messages, &_1, &_0, 0, 0, "phalcon/flash/session.zep", 161);
 		for (
 		  ; zephir_hash_get_current_data_ex(_1, (void**) &_2, &_0) == SUCCESS
 		  ; zephir_hash_move_forward_ex(_1, &_0)
@@ -326,6 +287,9 @@ PHP_METHOD(Phalcon_Flash_Session, output) {
 
 }
 
+/**
+ * Clear messages in the session messenger
+ */
 PHP_METHOD(Phalcon_Flash_Session, clear) {
 
 	int ZEPHIR_LAST_CALL_STATUS;

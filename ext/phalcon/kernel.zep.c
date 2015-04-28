@@ -18,23 +18,6 @@
 #include "kernel/memory.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Kernel
  *
@@ -49,7 +32,7 @@ ZEPHIR_INIT_CLASS(Phalcon_Kernel) {
 }
 
 /**
- * Produces a pre-computed hash key based on a string. This function produce different numbers in 32bit/64bit processors
+ * Produces a pre-computed hash key based on a string. This function produces different numbers in 32bit/64bit processors
  *
  * @param string key
  * @return string
@@ -77,8 +60,10 @@ PHP_METHOD(Phalcon_Kernel, preComputeHashKey) {
 
 	
 
+		{
+
 		char *arKey = Z_STRVAL_P(key), *strKey;
-		unsigned int nKeyLength = strlen(key);
+		int nKeyLength = strlen(arKey);
 		register ulong hash = 5381;
 
 		nKeyLength++;
@@ -115,6 +100,8 @@ PHP_METHOD(Phalcon_Kernel, preComputeHashKey) {
 		snprintf(strKey, 24, "%lu", hash);
 
 		RETURN_MM_STRING(strKey, 0);
+
+		}
 
 		
 	ZEPHIR_MM_RESTORE();

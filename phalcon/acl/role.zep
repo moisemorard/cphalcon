@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -26,7 +26,7 @@ use Phalcon\Acl\Exception;
  *
  * This class defines role entity and its description
  */
-class Role
+class Role implements RoleInterface
 {
 	/**
 	 * Role name
@@ -42,9 +42,6 @@ class Role
 
 	/**
 	 * Phalcon\Acl\Role constructor
-	 *
-	 * @param string name
-	 * @param string description
 	 */
 	public function __construct(string! name, string description = null)
 	{
@@ -57,5 +54,4 @@ class Role
 			let this->_description = description;
 		}
 	}
-
 }

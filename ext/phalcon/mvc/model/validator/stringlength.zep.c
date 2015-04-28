@@ -12,33 +12,15 @@
 #include <Zend/zend_interfaces.h>
 
 #include "kernel/main.h"
-#include "kernel/object.h"
-#include "kernel/exception.h"
 #include "kernel/fcall.h"
 #include "kernel/memory.h"
+#include "kernel/exception.h"
 #include "kernel/operators.h"
+#include "kernel/object.h"
 #include "kernel/string.h"
 #include "kernel/array.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- |          Jason Rice                                                    |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Mvc\Model\Validator\StringLength
  *
@@ -79,9 +61,6 @@ ZEPHIR_INIT_CLASS(Phalcon_Mvc_Model_Validator_StringLength) {
 
 /**
  * Executes the validator
- *
- * @param Phalcon\Mvc\ModelInterface record
- * @return boolean
  */
 PHP_METHOD(Phalcon_Mvc_Model_Validator_StringLength, validate) {
 
@@ -96,17 +75,13 @@ PHP_METHOD(Phalcon_Mvc_Model_Validator_StringLength, validate) {
 
 
 
-	if (!(zephir_instance_of_ev(record, phalcon_mvc_modelinterface_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Parameter 'record' must be an instance of 'Phalcon\\Mvc\\ModelInterface'", "", 0);
-		return;
-	}
 	ZEPHIR_INIT_VAR(_0);
 	ZVAL_STRING(_0, "field", ZEPHIR_TEMP_PARAM_COPY);
 	ZEPHIR_CALL_METHOD(&field, this_ptr, "getoption", NULL, _0);
 	zephir_check_temp_parameter(_0);
 	zephir_check_call_status();
 	if (Z_TYPE_P(field) != IS_STRING) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_mvc_model_exception_ce, "Field name must be a string", "phalcon/mvc/model/validator/stringlength.zep", 71);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_mvc_model_exception_ce, "Field name must be a string", "phalcon/mvc/model/validator/stringlength.zep", 68);
 		return;
 	}
 	ZEPHIR_INIT_NVAR(_0);
@@ -124,7 +99,7 @@ PHP_METHOD(Phalcon_Mvc_Model_Validator_StringLength, validate) {
 		_1 = !zephir_is_true(isSetMax);
 	}
 	if (_1) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_mvc_model_exception_ce, "A minimum or maximum must be set", "phalcon/mvc/model/validator/stringlength.zep", 81);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_mvc_model_exception_ce, "A minimum or maximum must be set", "phalcon/mvc/model/validator/stringlength.zep", 78);
 		return;
 	}
 	ZEPHIR_CALL_METHOD(&value, record, "readattribute", NULL, field);
@@ -165,7 +140,7 @@ PHP_METHOD(Phalcon_Mvc_Model_Validator_StringLength, validate) {
 				ZVAL_STRING(message, "Value of field ':field' exceeds the maximum :max characters", 1);
 			}
 			ZEPHIR_INIT_VAR(_4);
-			array_init_size(_4, 3);
+			zephir_create_array(_4, 2, 0 TSRMLS_CC);
 			zephir_array_update_string(&_4, SL(":field"), &field, PH_COPY | PH_SEPARATE);
 			zephir_array_update_string(&_4, SL(":max"), &maximum, PH_COPY | PH_SEPARATE);
 			ZEPHIR_CALL_FUNCTION(&_5, "strtr", &_6, message, _4);
@@ -195,7 +170,7 @@ PHP_METHOD(Phalcon_Mvc_Model_Validator_StringLength, validate) {
 				ZVAL_STRING(message, "Value of field ':field' is less than the minimum :min characters", 1);
 			}
 			ZEPHIR_INIT_NVAR(_4);
-			array_init_size(_4, 3);
+			zephir_create_array(_4, 2, 0 TSRMLS_CC);
 			zephir_array_update_string(&_4, SL(":field"), &field, PH_COPY | PH_SEPARATE);
 			zephir_array_update_string(&_4, SL(":min"), &minimum, PH_COPY | PH_SEPARATE);
 			ZEPHIR_CALL_FUNCTION(&_5, "strtr", &_6, message, _4);

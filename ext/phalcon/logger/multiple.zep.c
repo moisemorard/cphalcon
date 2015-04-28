@@ -13,30 +13,12 @@
 
 #include "kernel/main.h"
 #include "kernel/object.h"
-#include "kernel/exception.h"
 #include "kernel/memory.h"
 #include "kernel/hash.h"
 #include "kernel/fcall.h"
 #include "kernel/operators.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Logger\Multiple
  *
@@ -81,10 +63,6 @@ PHP_METHOD(Phalcon_Logger_Multiple, push) {
 
 
 
-	if (!(zephir_instance_of_ev(logger, phalcon_logger_adapterinterface_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STRW(spl_ce_InvalidArgumentException, "Parameter 'logger' must be an instance of 'Phalcon\\Logger\\AdapterInterface'", "", 0);
-		return;
-	}
 	zephir_update_property_array_append(this_ptr, SL("_loggers"), logger TSRMLS_CC);
 
 }
@@ -106,10 +84,6 @@ PHP_METHOD(Phalcon_Logger_Multiple, setFormatter) {
 
 
 
-	if (!(zephir_instance_of_ev(formatter, phalcon_logger_formatterinterface_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Parameter 'formatter' must be an instance of 'Phalcon\\Logger\\FormatterInterface'", "", 0);
-		return;
-	}
 	ZEPHIR_OBS_VAR(loggers);
 	zephir_read_property_this(&loggers, this_ptr, SL("_loggers"), PH_NOISY_CC);
 	if (Z_TYPE_P(loggers) == IS_ARRAY) {

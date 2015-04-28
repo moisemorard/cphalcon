@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -38,21 +38,19 @@ class Cli extends FactoryDefault
 	 */
 	public function __construct()
 	{
-
 		parent::__construct();
 
 		let this->_services = [
-			"router":             new Service("router", "Phalcon\\CLI\\Router"),
-			"dispatcher":         new Service("dispatcher", "Phalcon\\CLI\\Dispatcher"),
-			"modelsManager":      new Service("modelsManager", "Phalcon\\Mvc\\Model\\Manager"),
-			"modelsMetadata":     new Service("modelsMetadata", "Phalcon\\Mvc\\Model\\Metadata\\Memory"),
+			"router":             new Service("router", "Phalcon\\CLI\\Router", true),
+			"dispatcher":         new Service("dispatcher", "Phalcon\\CLI\\Dispatcher", true),
+			"modelsManager":      new Service("modelsManager", "Phalcon\\Mvc\\Model\\Manager", true),
+			"modelsMetadata":     new Service("modelsMetadata", "Phalcon\\Mvc\\Model\\MetaData\\Memory", true),
 			"filter":             new Service("filter", "Phalcon\\Filter", true),
 			"escaper":            new Service("escaper", "Phalcon\\Escaper", true),
 			"annotations":        new Service("annotations", "Phalcon\\Annotations\\Adapter\\Memory", true),
 			"security":           new Service("security", "Phalcon\\Security", true),
-			"eventsManager":      new Service("eventsManager", "Phalcon\\Events\\Manage", true),
+			"eventsManager":      new Service("eventsManager", "Phalcon\\Events\\Manager", true),
 			"transactionManager": new Service("transactionManager", "Phalcon\\Mvc\\Model\\Transaction\\Manager", true)
 		];
 	}
-
 }

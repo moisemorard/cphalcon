@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -19,6 +19,7 @@
 
 namespace Phalcon\Mvc\Collection;
 
+use Phalcon\DiInterface;
 use Phalcon\Di\InjectionAwareInterface;
 use Phalcon\Events\EventsAwareInterface;
 use Phalcon\Events\ManagerInterface;
@@ -61,28 +62,22 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 
 	/**
 	* Sets the DependencyInjector container
-	*
-	* @param Phalcon\DiInterface $dependencyInjector
 	*/
-	public function setDI(<\Phalcon\DiInterface> dependencyInjector) -> void
+	public function setDI(<DiInterface> dependencyInjector) -> void
 	{
 		let this->_dependencyInjector = dependencyInjector;
 	}
 
 	/**
 	* Returns the DependencyInjector container
-	*
-	* @return Phalcon\DiInterface
 	*/
-	public function getDI() -> <\Phalcon\DiInterface>
+	public function getDI() -> <DiInterface>
 	{
 		return this->_dependencyInjector;
 	}
 
 	/**
 	 * Sets the event manager
-	 *
-	 * @param Phalcon\Events\ManagerInterface $eventsManager
 	 */
 	public function setEventsManager(<ManagerInterface> eventsManager) -> void
 	{
@@ -91,8 +86,6 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 
 	/**
 	 * Returns the internal event manager
-	 *
-	 * @return Phalcon\Events\ManagerInterface
 	 */
 	public function getEventsManager() -> <ManagerInterface>
 	{
@@ -101,9 +94,6 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 
 	/**
 	 * Sets a custom events manager for a specific model
-	 *
-	 * @param Phalcon\Mvc\CollectionInterface $model
-	 * @param Phalcon\Events\ManagerInterface $eventsManager
 	 */
 	public function setCustomEventsManager(<CollectionInterface> model, <ManagerInterface> eventsManager) -> void
 	{
@@ -131,8 +121,6 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 
 	/**
 	 * Initializes a model in the models manager
-	 *
-	 * @param Phalcon\Mvc\CollectionInterface model
 	 */
 	public function initialize(<CollectionInterface> model) -> void
 	{
@@ -182,8 +170,6 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 
 	/**
 	 * Get the latest initialized model
-	 *
-	 * @return Phalcon\Mvc\CollectionInterface
 	 */
 	public function getLastInitialized() -> <CollectionInterface>
 	{
@@ -192,9 +178,6 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 
 	/**
 	 * Sets a connection service for a specific model
-	 *
-	 * @param Phalcon\Mvc\CollectionInterface model
-	 * @param string connectionService
 	 */
 	public function setConnectionService(<CollectionInterface> model, string! connectionService) -> void
 	{
@@ -203,9 +186,6 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 
 	/**
 	 * Sets whether a model must use implicit objects ids
-	 *
-	 * @param Phalcon\Mvc\CollectionInterface model
-	 * @param boolean useImplicitObjectIds
 	 */
 	public function useImplicitObjectIds(<CollectionInterface> model, boolean useImplicitObjectIds) -> void
 	{
@@ -214,9 +194,6 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 
 	/**
 	 * Checks if a model is using implicit object ids
-	 *
-	 * @param Phalcon\Mvc\CollectionInterface model
-	 * @return boolean
 	 */
 	public function isUsingImplicitObjectIds(<CollectionInterface> model) -> boolean
 	{
@@ -278,9 +255,6 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 	/**
 	 * Receives events generated in the models and dispatches them to a events-manager if available
 	 * Notify the behaviors that are listening in the model
-	 *
-	 * @param string eventName
-	 * @param Phalcon\Mvc\CollectionInterface model
 	 */
 	public function notifyEvent(string! eventName, <CollectionInterface> model)
 	{
@@ -312,5 +286,4 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 
 		return status;
 	}
-
 }

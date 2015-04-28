@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -32,8 +32,6 @@ class LazyLoader
 
 	/**
 	 * Phalcon\Mvc\Micro\LazyLoader constructor
-	 *
-	 * @param string definition
 	 */
 	public function __construct(string! definition)
 	{
@@ -64,5 +62,4 @@ class LazyLoader
 		 */
 		return call_user_func_array([handler, method], arguments);
 	}
-
 }

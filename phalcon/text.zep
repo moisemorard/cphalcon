@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -43,9 +43,6 @@ abstract class Text
 	 *<code>
 	 *      echo Phalcon\Text::camelize('coco_bongo'); //CocoBongo
 	 *</code>
-	 *
-	 * @param string str
-	 * @return string
 	 */
 	public static function camelize(string str) -> string
 	{
@@ -58,9 +55,6 @@ abstract class Text
 	 *<code>
 	 *      echo Phalcon\Text::camelize('CocoBongo'); //coco_bongo
 	 *</code>
-	 *
-	 * @param string str
-	 * @return string
 	 */
 	public static function uncamelize(string str) -> string
 	{
@@ -155,13 +149,8 @@ abstract class Text
 	 *	echo Phalcon\Text::startsWith("Hello", "he"); // false
 	 *	echo Phalcon\Text::startsWith("Hello", "he", false); // true
 	 *</code>
-	 *
-	 * @param string str
-	 * @param string start
-	 * @param boolean ignoreCase
-	 * @return boolean
 	 */
-	public static function startsWith(str, start, ignoreCase = true) -> boolean
+	public static function startsWith(string str, string start, boolean ignoreCase = true) -> boolean
 	{
 		return starts_with(str, start, ignoreCase);
 	}
@@ -174,22 +163,14 @@ abstract class Text
 	 *	echo Phalcon\Text::endsWith("Hello", "LLO"); // false
 	 *	echo Phalcon\Text::endsWith("Hello", "LLO", false); // true
 	 *</code>
-	 *
-	 * @param string str
-	 * @param string end
-	 * @param boolean ignoreCase
-	 * @return boolean
 	 */
-	public static function endsWith(string str, string end, boolean ignoreCase=true) -> boolean
+	public static function endsWith(string str, string end, boolean ignoreCase = true) -> boolean
 	{
 		return ends_with(str, end, ignoreCase);
 	}
 
 	/**
 	 * Lowercases a string, this function makes use of the mbstring extension if available
-	 *
-	 * @param string $str
-	 * @return string
 	 */
 	public static function lower(string str) -> string
 	{
@@ -197,16 +178,13 @@ abstract class Text
 		 * 'lower' checks for the mbstring extension to make a correct lowercase transformation
 		 */
 		if function_exists("mb_strtolower") {
-			return mb_strtolower($str);
+			return mb_strtolower(str);
 		}
-		return strtolower($str);
+		return strtolower(str);
 	}
 
 	/**
 	 * Uppercases a string, this function makes use of the mbstring extension if available
-	 *
-	 * @param string str
-	 * @return string
 	 */
 	public static function upper(string str) -> string
 	{
@@ -218,5 +196,4 @@ abstract class Text
 		}
 		return strtoupper(str);
 	}
-
 }

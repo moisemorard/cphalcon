@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -19,7 +19,10 @@
 
 namespace Phalcon\Cache\Backend;
 
+use Phalcon\Cache\Backend;
 use Phalcon\Cache\Exception;
+use Phalcon\Cache\BackendInterface;
+use Phalcon\Cache\FrontendInterface;
 
 /**
  * Phalcon\Cache\Backend\Redis
@@ -51,7 +54,7 @@ use Phalcon\Cache\Exception;
  *
  *</code>
  */
-class Redis extends \Phalcon\Cache\Backend implements \Phalcon\Cache\BackendInterface
+class Redis extends Backend implements BackendInterface
 {
 
 	protected _redis = null;
@@ -62,7 +65,7 @@ class Redis extends \Phalcon\Cache\Backend implements \Phalcon\Cache\BackendInte
 	 * @param	Phalcon\Cache\FrontendInterface frontend
 	 * @param	array options
 	 */
-	public function __construct(<\Phalcon\Cache\FrontendInterface> frontend, options=null)
+	public function __construct(<FrontendInterface> frontend, options = null)
 	{
 		if typeof options != "array" {
 			let options = [];
@@ -259,11 +262,11 @@ class Redis extends \Phalcon\Cache\Backend implements \Phalcon\Cache\BackendInte
 
 		let isBuffering = frontend->isBuffering();
 
-		if !stopBuffer {
+		if stopBuffer === true {
 			frontend->stop();
 		}
 
-		if isBuffering == true {
+		if isBuffering === true {
 			echo cachedContent;
 		}
 
@@ -272,6 +275,7 @@ class Redis extends \Phalcon\Cache\Backend implements \Phalcon\Cache\BackendInte
 
 	/**
 	 * Deletes a value from the cache by its key
+	 * Return the number of deleted keysgit
 	 *
 	 * @param int|string|array keyName
 	 * @return long
@@ -375,7 +379,7 @@ class Redis extends \Phalcon\Cache\Backend implements \Phalcon\Cache\BackendInte
 	 * @param string prefix
 	 * @return array
 	 */
-	public function queryKeys(prefix=null)
+	public function queryKeys(prefix = null)
 	{
 		var redis, options, keys, specialKey, key;
 
@@ -416,7 +420,7 @@ class Redis extends \Phalcon\Cache\Backend implements \Phalcon\Cache\BackendInte
 	 * @param   long lifetime
 	 * @return boolean
 	 */
-	public function exists(keyName=null, lifetime=null) -> boolean
+	public function exists(keyName = null, lifetime = null) -> boolean
 	{
 		var lastKey, redis, prefix;
 
@@ -450,7 +454,7 @@ class Redis extends \Phalcon\Cache\Backend implements \Phalcon\Cache\BackendInte
 	 * @param  long lifetime
 	 * @return long
 	 */
-	public function increment(keyName=null, value=null)
+	public function increment(keyName = null, value = null)
 	{
 		var redis, prefix, lastKey;
 
@@ -483,7 +487,7 @@ class Redis extends \Phalcon\Cache\Backend implements \Phalcon\Cache\BackendInte
 	 * @param  long value
 	 * @return long
 	 */
-	public function decrement(keyName=null, value=null)
+	public function decrement(keyName = null, value = null)
 	{
 		var redis, prefix, lastKey;
 

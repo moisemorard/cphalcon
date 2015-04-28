@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -40,7 +40,6 @@ class Builder
 	 */
 	private function _buildParameter(<DiInterface> dependencyInjector, int position, argument)
 	{
-
 		var type, name, value, instanceArguments;
 
 		/**
@@ -98,12 +97,13 @@ class Builder
 					 * Build the instance with arguments
 					 */
 					return dependencyInjector->get(name, instanceArguments);
-				} else {
-					/**
-					 * The instance parameter does not have arguments for its constructor
-					 */
-					return dependencyInjector->get(name);
 				}
+
+				/**
+				 * The instance parameter does not have arguments for its constructor
+				 */
+				return dependencyInjector->get(name);				
+
 			default:
 				/**
 				 * Unknown parameter type
@@ -119,7 +119,7 @@ class Builder
 	 * @param array arguments
 	 * @return array
 	 */
-	private function _buildParameters(<DiInterface> dependencyInjector, arguments)
+	private function _buildParameters(<DiInterface> dependencyInjector, arguments) -> array
 	{
 		var position, argument, buildArguments;
 

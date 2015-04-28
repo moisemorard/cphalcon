@@ -19,23 +19,6 @@
 #include "kernel/array.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Logger\Formatter\Json
  *
@@ -83,7 +66,7 @@ PHP_METHOD(Phalcon_Logger_Formatter_Json, format) {
 		zephir_get_strval(message, _0);
 	}
 	ZEPHIR_INIT_VAR(_1);
-	array_init_size(_1, 5);
+	zephir_create_array(_1, 3, 0 TSRMLS_CC);
 	ZEPHIR_INIT_VAR(_2);
 	ZVAL_LONG(_2, type);
 	ZEPHIR_CALL_METHOD(&_0, this_ptr, "gettypestring", NULL, _2);

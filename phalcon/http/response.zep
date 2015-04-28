@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -80,8 +80,6 @@ class Response implements ResponseInterface, InjectionAwareInterface
 
 	/**
 	 * Sets the dependency injector
-	 *
-	 * @param Phalcon\DiInterface dependencyInjector
 	 */
 	public function setDI(<DiInterface> dependencyInjector)
 	{
@@ -90,8 +88,6 @@ class Response implements ResponseInterface, InjectionAwareInterface
 
 	/**
 	 * Returns the internal dependency injector
-	 *
-	 * @return Phalcon\DiInterface
 	 */
 	public function getDI() -> <DiInterface>
 	{
@@ -113,12 +109,8 @@ class Response implements ResponseInterface, InjectionAwareInterface
 	 *<code>
 	 *	$response->setStatusCode(404, "Not Found");
 	 *</code>
-	 *
-	 * @param int code
-	 * @param string message
-	 * @return Phalcon\Http\ResponseInterface
 	 */
-	public function setStatusCode(int code, string message = null) -> <ResponseInterface>
+	public function setStatusCode(int code, string message = null) -> <Response>
 	{
 		var headers, currentHeadersRaw, key, defaultMessage;
 
@@ -210,7 +202,7 @@ class Response implements ResponseInterface, InjectionAwareInterface
 			}
 
 			if !isset this->_statusCodes[code] {
-				throw new Exception("Non-standard statuscode given withou a message.");
+				throw new Exception("Non-standard statuscode given without a message");
 			}
 
 			let defaultMessage = this->_statusCodes[code],
@@ -224,17 +216,25 @@ class Response implements ResponseInterface, InjectionAwareInterface
 		 */
 		headers->set("Status", code . " " . message);
 
-		let this->_headers = headers;
 		return this;
 	}
 
 	/**
-	 * Sets a headers bag for the response externally
+	 * Returns the status code
 	 *
-	 * @param Phalcon\Http\Response\HeadersInterface headers
-	 * @return Phalcon\Http\ResponseInterface
+	 *<code>
+	 *	print_r($response->getStatusCode());
+	 *</code>
 	 */
-	public function setHeaders(<HeadersInterface> headers) -> <ResponseInterface>
+	public function getStatusCode() -> array
+	{
+		return this->getHeaders()->get("Status");
+	}
+
+	/**
+	 * Sets a headers bag for the response externally
+	 */
+	public function setHeaders(<HeadersInterface> headers) -> <Response>
 	{
 		let this->_headers = headers;
 		return this;
@@ -242,8 +242,6 @@ class Response implements ResponseInterface, InjectionAwareInterface
 
 	/**
 	 * Returns headers set by the user
-	 *
-	 * @return Phalcon\Http\Response\HeadersInterface
 	 */
 	public function getHeaders() -> <HeadersInterface>
 	{
@@ -261,11 +259,8 @@ class Response implements ResponseInterface, InjectionAwareInterface
 
 	/**
 	 * Sets a cookies bag for the response externally
-	 *
-	 * @param Phalcon\Http\Response\CookiesInterface cookies
-	 * @return Phalcon\Http\ResponseInterface
 	 */
-	public function setCookies(<CookiesInterface> cookies) -> <ResponseInterface>
+	public function setCookies(<CookiesInterface> cookies) -> <Response>
 	{
 		let this->_cookies = cookies;
 		return this;
@@ -290,9 +285,9 @@ class Response implements ResponseInterface, InjectionAwareInterface
 	 *
 	 * @param string name
 	 * @param string value
-	 * @return Phalcon\Http\ResponseInterface
+	 * @return Phalcon\Http\Response
 	 */
-	public function setHeader(string name, value) -> <ResponseInterface>
+	public function setHeader(string name, value) -> <Response>
 	{
 		var headers;
 		let headers = this->getHeaders();
@@ -306,11 +301,8 @@ class Response implements ResponseInterface, InjectionAwareInterface
 	 *<code>
 	 *	$response->setRawHeader("HTTP/1.1 404 Not Found");
 	 *</code>
-	 *
-	 * @param string header
-	 * @return Phalcon\Http\ResponseInterface
 	 */
-	public function setRawHeader(string header) -> <ResponseInterface>
+	public function setRawHeader(string header) -> <Response>
 	{
 		var headers;
 		let headers = this->getHeaders();
@@ -320,10 +312,8 @@ class Response implements ResponseInterface, InjectionAwareInterface
 
 	/**
 	 * Resets all the stablished headers
-	 *
-	 * @return Phalcon\Http\ResponseInterface
 	 */
-	public function resetHeaders() -> <ResponseInterface>
+	public function resetHeaders() -> <Response>
 	{
 		var headers;
 		let headers = this->getHeaders();
@@ -337,11 +327,8 @@ class Response implements ResponseInterface, InjectionAwareInterface
 	 *<code>
 	 *	$this->response->setExpires(new DateTime());
 	 *</code>
-	 *
-	 * @param DateTime datetime
-	 * @return Phalcon\Http\ResponseInterface
 	 */
-	public function setExpires(<\DateTime> datetime) -> <ResponseInterface>
+	public function setExpires(<\DateTime> datetime) -> <Response>
 	{
 		var headers, date;
 
@@ -363,10 +350,8 @@ class Response implements ResponseInterface, InjectionAwareInterface
 
 	/**
 	 * Sends a Not-Modified response
-	 *
-	 * @return Phalcon\Http\ResponseInterface
 	 */
-	public function setNotModified() -> <ResponseInterface>
+	public function setNotModified() -> <Response>
 	{
 		this->setStatusCode(304, "Not modified");
 		return this;
@@ -382,9 +367,9 @@ class Response implements ResponseInterface, InjectionAwareInterface
 	 *
 	 * @param string contentType
 	 * @param string charset
-	 * @return Phalcon\Http\ResponseInterface
+	 * @return Phalcon\Http\Response
 	 */
-	public function setContentType(string contentType, charset = null) -> <ResponseInterface>
+	public function setContentType(string contentType, charset = null) -> <Response>
 	{
 		var headers;
 		let headers = this->getHeaders();
@@ -402,11 +387,8 @@ class Response implements ResponseInterface, InjectionAwareInterface
 	 *<code>
 	 *	$response->setEtag(md5(time()));
 	 *</code>
-	 *
-	 * @param string etag
-	 * @return Phalcon\Http\ResponseInterface
 	 */
-	public function setEtag(string etag) -> <ResponseInterface>
+	public function setEtag(string etag) -> <Response>
 	{
 		var headers;
 		let headers = this->getHeaders();
@@ -434,9 +416,9 @@ class Response implements ResponseInterface, InjectionAwareInterface
 	 * @param string|array location
 	 * @param boolean externalRedirect
 	 * @param int statusCode
-	 * @return Phalcon\Http\ResponseInterface
+	 * @return Phalcon\Http\Response
 	 */
-	public function redirect(location = null, externalRedirect = false, int statusCode = 302) -> <ResponseInterface>
+	public function redirect(location = null, externalRedirect = false, int statusCode = 302) -> <Response>
 	{
 		var header, url, dependencyInjector, matched, message, view;
 
@@ -497,11 +479,8 @@ class Response implements ResponseInterface, InjectionAwareInterface
 	 *<code>
 	 *	response->setContent("<h1>Hello!</h1>");
 	 *</code>
-	 *
-	 * @param string content
-	 * @return Phalcon\Http\ResponseInterface
 	 */
-	public function setContent(string content) -> <ResponseInterface>
+	public function setContent(string content) -> <Response>
 	{
 		let this->_content = content;
 		return this;
@@ -516,9 +495,9 @@ class Response implements ResponseInterface, InjectionAwareInterface
 	 *
 	 * @param mixed content
 	 * @param int jsonOptions
-	 * @return Phalcon\Http\ResponseInterface
+	 * @return Phalcon\Http\Response
 	 */
-	public function setJsonContent(var content, jsonOptions = 0) -> <ResponseInterface>
+	public function setJsonContent(var content, jsonOptions = 0) -> <Response>
 	{
 		let this->_content = json_encode(content, jsonOptions);
 		return this;
@@ -528,9 +507,9 @@ class Response implements ResponseInterface, InjectionAwareInterface
 	 * Appends a string to the HTTP response body
 	 *
 	 * @param string content
-	 * @return Phalcon\Http\ResponseInterface
+	 * @return Phalcon\Http\Response
 	 */
-	public function appendContent(content) -> <ResponseInterface>
+	public function appendContent(content) -> <Response>
 	{
 		let this->_content = this->getContent() . content;
 		return this;
@@ -538,8 +517,6 @@ class Response implements ResponseInterface, InjectionAwareInterface
 
 	/**
 	 * Gets the HTTP response body
-	 *
-	 * @return string
 	 */
 	public function getContent() -> string
 	{
@@ -548,8 +525,6 @@ class Response implements ResponseInterface, InjectionAwareInterface
 
 	/**
 	 * Check if the response is already sent
-	 *
-	 * @return boolean
 	 */
 	public function isSent() -> boolean
 	{
@@ -558,10 +533,8 @@ class Response implements ResponseInterface, InjectionAwareInterface
 
 	/**
 	 * Sends headers to the client
-	 *
-	 * @return Phalcon\Http\ResponseInterface
 	 */
-	public function sendHeaders() -> <ResponseInterface>
+	public function sendHeaders() -> <Response>
 	{
 		var headers;
 		let headers = this->_headers;
@@ -573,10 +546,8 @@ class Response implements ResponseInterface, InjectionAwareInterface
 
 	/**
 	 * Sends cookies to the client
-	 *
-	 * @return Phalcon\Http\ResponseInterface
 	 */
-	public function sendCookies() -> <ResponseInterface>
+	public function sendCookies() -> <Response>
 	{
 		var cookies;
 		let cookies = this->_cookies;
@@ -588,10 +559,8 @@ class Response implements ResponseInterface, InjectionAwareInterface
 
 	/**
 	 * Prints out HTTP response to the client
-	 *
-	 * @return Phalcon\Http\ResponseInterface
 	 */
-	public function send() -> <ResponseInterface>
+	public function send() -> <Response>
 	{
 		var headers, cookies, content, file;
 
@@ -638,9 +607,9 @@ class Response implements ResponseInterface, InjectionAwareInterface
 	 *
 	 * @param string filePath
 	 * @param string attachmentName
-	 * @return Phalcon\Http\ResponseInterface
+	 * @return Phalcon\Http\Response
 	 */
-	public function setFileToSend(string filePath, attachmentName = null, attachment = true) -> <ResponseInterface>
+	public function setFileToSend(string filePath, attachmentName = null, attachment = true) -> <Response>
 	{
 		var basePath, headers;
 

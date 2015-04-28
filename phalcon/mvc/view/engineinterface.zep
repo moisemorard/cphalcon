@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -33,7 +33,7 @@ interface EngineInterface
 	 * @param Phalcon\Mvc\ViewInterface view
 	 * @param Phalcon\DiInterface dependencyInjector
 	 */
-	public function __construct(view, <\Phalcon\DiInterface> dependencyInjector=null);
+	public function __construct(view, <\Phalcon\DiInterface> dependencyInjector = null);
 
 	/**
 	 * Returns cached ouput on another view stage
@@ -57,6 +57,6 @@ interface EngineInterface
 	 * @param array params
 	 * @param boolean mustClean
 	 */
-	public function render(string path, params, mustClean=false);
+	public function render(string path, params, mustClean = false);
 
 }

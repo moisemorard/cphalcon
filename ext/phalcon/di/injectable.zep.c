@@ -12,8 +12,8 @@
 #include <Zend/zend_interfaces.h>
 
 #include "kernel/main.h"
-#include "kernel/object.h"
 #include "kernel/exception.h"
+#include "kernel/object.h"
 #include "kernel/memory.h"
 #include "kernel/fcall.h"
 #include "kernel/operators.h"
@@ -22,28 +22,36 @@
 #include "ext/spl/spl_exceptions.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Di\Injectable
  *
  * This class allows to access services in the services container by just only accessing a public property
  * with the same name of a registered service
+ * 
+ * @property \Phalcon\Mvc\Dispatcher|\Phalcon\Mvc\DispatcherInterface $dispatcher;
+ * @property \Phalcon\Mvc\Router|\Phalcon\Mvc\RouterInterface $router
+ * @property \Phalcon\Mvc\Url|\Phalcon\Mvc\UrlInterface $url
+ * @property \Phalcon\Http\Request|\Phalcon\HTTP\RequestInterface $request
+ * @property \Phalcon\Http\Response|\Phalcon\HTTP\ResponseInterface $response
+ * @property \Phalcon\Http\Response\Cookies|\Phalcon\Http\Response\CookiesInterface $cookies
+ * @property \Phalcon\Filter|\Phalcon\FilterInterface $filter
+ * @property \Phalcon\Flash\Direct $flash
+ * @property \Phalcon\Flash\Session $flashSession
+ * @property \Phalcon\Session\Adapter\Files|\Phalcon\Session\Adapter|\Phalcon\Session\AdapterInterface $session
+ * @property \Phalcon\Events\Manager $eventsManager
+ * @property \Phalcon\Db\AdapterInterface $db
+ * @property \Phalcon\Security $security
+ * @property \Phalcon\Crypt $crypt
+ * @property \Phalcon\Tag $tag
+ * @property \Phalcon\Escaper|\Phalcon\EscaperInterface $escaper
+ * @property \Phalcon\Annotations\Adapter\Memory|\Phalcon\Annotations\Adapter $annotations
+ * @property \Phalcon\Mvc\Model\Manager|\Phalcon\Mvc\Model\ManagerInterface $modelsManager
+ * @property \Phalcon\Mvc\Model\MetaData\Memory|\Phalcon\Mvc\Model\MetadataInterface $modelsMetadata
+ * @property \Phalcon\Mvc\Model\Transaction\Manager $transactionManager
+ * @property \Phalcon\Assets\Manager $assets
+ * @property \Phalcon\DI|\Phalcon\DiInterface $di
+ * @property \Phalcon\Session\Bag $persistent
+ * @property \Phalcon\Mvc\View|\Phalcon\Mvc\ViewInterface $view
  */
 ZEPHIR_INIT_CLASS(Phalcon_Di_Injectable) {
 
@@ -52,14 +60,14 @@ ZEPHIR_INIT_CLASS(Phalcon_Di_Injectable) {
 	/**
 	 * Dependency Injector
 	 *
-	 * @var Phalcon\DiInteface
+	 * @var \Phalcon\DiInterface
 	 */
 	zend_declare_property_null(phalcon_di_injectable_ce, SL("_dependencyInjector"), ZEND_ACC_PROTECTED TSRMLS_CC);
 
 	/**
 	 * Events Manager
 	 *
-	 * @var Phalcon\Events\ManagerInterface
+	 * @var \Phalcon\Events\ManagerInterface
 	 */
 	zend_declare_property_null(phalcon_di_injectable_ce, SL("_eventsManager"), ZEND_ACC_PROTECTED TSRMLS_CC);
 
@@ -71,8 +79,6 @@ ZEPHIR_INIT_CLASS(Phalcon_Di_Injectable) {
 
 /**
  * Sets the dependency injector
- *
- * @param Phalcon\DiInterface dependencyInjector
  */
 PHP_METHOD(Phalcon_Di_Injectable, setDI) {
 
@@ -82,12 +88,8 @@ PHP_METHOD(Phalcon_Di_Injectable, setDI) {
 
 
 
-	if (!(zephir_instance_of_ev(dependencyInjector, phalcon_diinterface_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STRW(spl_ce_InvalidArgumentException, "Parameter 'dependencyInjector' must be an instance of 'Phalcon\\DiInterface'", "", 0);
-		return;
-	}
 	if (Z_TYPE_P(dependencyInjector) != IS_OBJECT) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STRW(phalcon_di_exception_ce, "Dependency Injector is invalid", "phalcon/di/injectable.zep", 60);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STRW(phalcon_di_exception_ce, "Dependency Injector is invalid", "phalcon/di/injectable.zep", 83);
 		return;
 	}
 	zephir_update_property_this(this_ptr, SL("_dependencyInjector"), dependencyInjector TSRMLS_CC);
@@ -96,8 +98,6 @@ PHP_METHOD(Phalcon_Di_Injectable, setDI) {
 
 /**
  * Returns the internal dependency injector
- *
- * @return Phalcon\DiInterface
  */
 PHP_METHOD(Phalcon_Di_Injectable, getDI) {
 
@@ -119,8 +119,6 @@ PHP_METHOD(Phalcon_Di_Injectable, getDI) {
 
 /**
  * Sets the event manager
- *
- * @param Phalcon\Events\ManagerInterface eventsManager
  */
 PHP_METHOD(Phalcon_Di_Injectable, setEventsManager) {
 
@@ -130,18 +128,12 @@ PHP_METHOD(Phalcon_Di_Injectable, setEventsManager) {
 
 
 
-	if (!(zephir_instance_of_ev(eventsManager, phalcon_events_managerinterface_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STRW(spl_ce_InvalidArgumentException, "Parameter 'eventsManager' must be an instance of 'Phalcon\\Events\\ManagerInterface'", "", 0);
-		return;
-	}
 	zephir_update_property_this(this_ptr, SL("_eventsManager"), eventsManager TSRMLS_CC);
 
 }
 
 /**
  * Returns the internal event manager
- *
- * @return Phalcon\Events\ManagerInterface
  */
 PHP_METHOD(Phalcon_Di_Injectable, getEventsManager) {
 
@@ -152,8 +144,6 @@ PHP_METHOD(Phalcon_Di_Injectable, getEventsManager) {
 
 /**
  * Magic method __get
- *
- * @param string propertyName
  */
 PHP_METHOD(Phalcon_Di_Injectable, __get) {
 
@@ -185,7 +175,7 @@ PHP_METHOD(Phalcon_Di_Injectable, __get) {
 		ZEPHIR_CALL_CE_STATIC(&dependencyInjector, phalcon_di_ce, "getdefault", &_1);
 		zephir_check_call_status();
 		if (Z_TYPE_P(dependencyInjector) != IS_OBJECT) {
-			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_di_exception_ce, "A dependency injection object is required to access the application services", "phalcon/di/injectable.zep", 114);
+			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_di_exception_ce, "A dependency injection object is required to access the application services", "phalcon/di/injectable.zep", 129);
 			return;
 		}
 	}
@@ -203,7 +193,7 @@ PHP_METHOD(Phalcon_Di_Injectable, __get) {
 	}
 	if (ZEPHIR_IS_STRING(propertyName, "persistent")) {
 		ZEPHIR_INIT_VAR(_4);
-		array_init_size(_4, 2);
+		zephir_create_array(_4, 1, 0 TSRMLS_CC);
 		ZEPHIR_INIT_VAR(_5);
 		zephir_get_class(_5, this_ptr, 0 TSRMLS_CC);
 		zephir_array_fast_append(_4, _5);

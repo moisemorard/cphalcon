@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -49,7 +49,7 @@ class Simple extends Resultset
 	 * @param Phalcon\Cache\BackendInterface cache
 	 * @param boolean keepSnapshots
 	 */
-	public function __construct(var columnMap, var model, result, <BackendInterface> cache=null, keepSnapshots = null)
+	public function __construct(var columnMap, var model, result, <BackendInterface> cache = null, keepSnapshots = null)
 	{
 		var rowCount;
 
@@ -91,8 +91,6 @@ class Simple extends Resultset
 
 	/**
 	 * Check whether internal resource has rows to fetch
-	 *
-	 * @return boolean
 	 */
 	public function valid() -> boolean
 	{
@@ -139,28 +137,33 @@ class Simple extends Resultset
 		/**
 		 * Get the resultset column map
 		 */
-		let columnMap = this->_columnMap;
+		let columnMap = this->_columnMap;		
 
 		/**
 		 * Hydrate based on the current hydration
 		 */
-		if hydrateMode == Resultset::HYDRATE_RECORDS {
-			/**
-			 * Set records as dirty state PERSISTENT by default
-			 * Performs the standard hydration based on objects
-			 */
-			let activeRow = Model::cloneResultMap(
-				this->_model,
-				row,
-				columnMap,
-				Model::DIRTY_STATE_PERSISTENT,
-				this->_keepSnapshots
-			);
-		} else {
-			/**
-			 * Other kinds of hydrations
-			 */
-			let activeRow = Model::cloneResultMapHydrate(row, columnMap, hydrateMode);
+		switch hydrateMode {
+
+			case Resultset::HYDRATE_RECORDS:
+				/**
+				 * Set records as dirty state PERSISTENT by default
+				 * Performs the standard hydration based on objects
+				 */
+				let activeRow = Model::cloneResultMap(
+					this->_model,
+					row,
+					columnMap,
+					Model::DIRTY_STATE_PERSISTENT,
+					this->_keepSnapshots
+				);
+				break;
+
+			default:
+				/**
+				 * Other kinds of hydrations
+				 */
+				let activeRow = Model::cloneResultMapHydrate(row, columnMap, hydrateMode);
+				break;
 		}
 
 		let this->_activeRow = activeRow;
@@ -171,9 +174,6 @@ class Simple extends Resultset
 	 * Returns a complete resultset as an array, if the resultset has a big number of rows
 	 * it could consume more memory than currently it does. Export the resultset to an array
 	 * couldn't be faster with a large number of records
-	 *
-	 * @param boolean renameColumns
-	 * @return array
 	 */
 	public function toArray(boolean renameColumns = true) -> array
 	{
@@ -228,6 +228,8 @@ class Simple extends Resultset
 					 * Update the row count
 					 */
 					let this->_count = count(records);
+				} else {
+					let records = [];
 				}
 			}
 		}
@@ -281,12 +283,9 @@ class Simple extends Resultset
 
 	/**
 	 * Serializing a resultset will dump all related rows into a big array
-	 *
-	 * @return string
 	 */
 	public function serialize() -> string
 	{
-
 		/**
 		 * Force to re-execute the query
 		 */
@@ -306,8 +305,6 @@ class Simple extends Resultset
 
 	/**
 	 * Unserializing a resultset will allow to only works on the rows present in the saved state
-	 *
-	 * @param string data
 	 */
 	public function unserialize(string! data)
 	{
@@ -326,5 +323,4 @@ class Simple extends Resultset
 			this->_columnMap = resultset["columnMap"],
 			this->_hydrateMode = resultset["hydrateMode"];
 	}
-
 }

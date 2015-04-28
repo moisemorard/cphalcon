@@ -12,23 +12,6 @@
 #include "kernel/main.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Paginator\AdapterInterface
  *
@@ -44,22 +27,26 @@ ZEPHIR_INIT_CLASS(Phalcon_Paginator_AdapterInterface) {
 
 /**
  * Phalcon\Paginator\AdapterInterface constructor
- *
- * @param array config
  */
 ZEPHIR_DOC_METHOD(Phalcon_Paginator_AdapterInterface, __construct);
 
 /**
  * Set the current page number
- *
- * @param int page
  */
 ZEPHIR_DOC_METHOD(Phalcon_Paginator_AdapterInterface, setCurrentPage);
 
 /**
  * Returns a slice of the resultset to show in the pagination
- *
- * @return stdClass
  */
 ZEPHIR_DOC_METHOD(Phalcon_Paginator_AdapterInterface, getPaginate);
+
+/**
+ * Set current rows limit
+ */
+ZEPHIR_DOC_METHOD(Phalcon_Paginator_AdapterInterface, setLimit);
+
+/**
+ * Get current rows limit
+ */
+ZEPHIR_DOC_METHOD(Phalcon_Paginator_AdapterInterface, getLimit);
 

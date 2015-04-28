@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -21,6 +21,8 @@
 namespace Phalcon\Mvc\Model;
 
 use Phalcon\DiInterface;
+use Phalcon\Db\RawValue;
+use Phalcon\Mvc\Model\Row;
 use Phalcon\Mvc\Model\Exception;
 use Phalcon\Mvc\Model\ManagerInterface;
 use Phalcon\Mvc\Model\QueryInterface;
@@ -31,6 +33,7 @@ use Phalcon\Mvc\Model\ResultsetInterface;
 use Phalcon\Mvc\ModelInterface;
 use Phalcon\Mvc\Model\Resultset\Simple;
 use Phalcon\Di\InjectionAwareInterface;
+use Phalcon\Mvc\Model\RelationInterface;
 
 /**
  * Phalcon\Mvc\Model\Query
@@ -124,8 +127,6 @@ class Query implements QueryInterface, InjectionAwareInterface
 
 	/**
 	 * Sets the dependency injection container
-	 *
-	 * @param Phalcon\DiInterface dependencyInjector
 	 */
 	public function setDI(<DiInterface> dependencyInjector)
 	{
@@ -149,8 +150,6 @@ class Query implements QueryInterface, InjectionAwareInterface
 
 	/**
 	 * Returns the dependency injection container
-	 *
-	 * @return Phalcon\DiInterface
 	 */
 	public function getDI() -> <DiInterface>
 	{
@@ -159,9 +158,6 @@ class Query implements QueryInterface, InjectionAwareInterface
 
 	/**
 	 * Tells to the query if only the first row in the resultset must be returned
-	 *
-	 * @param boolean uniqueRow
-	 * @return Phalcon\Mvc\Model\Query
 	 */
 	public function setUniqueRow(boolean uniqueRow) -> <Query>
 	{
@@ -171,8 +167,6 @@ class Query implements QueryInterface, InjectionAwareInterface
 
 	/**
 	 * Check if the query is programmed to get only the first row in the resultset
-	 *
-	 * @return boolean
 	 */
 	public function getUniqueRow() -> boolean
 	{
@@ -181,15 +175,12 @@ class Query implements QueryInterface, InjectionAwareInterface
 
 	/**
 	 * Replaces the model's name to its source name in a qualifed-name expression
-	 *
-	 * @param array expr
-	 * @return string
 	 */
-	protected final function _getQualified(array! expr)
+	protected final function _getQualified(array! expr) -> array
 	{
 		var columnName, sqlColumnAliases, metaData, sqlAliases,
 			source, sqlAliasesModelsInstances, realColumnName, columnDomain,
-			model, models, columnMap, hasModel;
+			model, models, columnMap, hasModel, className;
 		int number;
 
 		let columnName = expr["name"];
@@ -210,14 +201,13 @@ class Query implements QueryInterface, InjectionAwareInterface
 		/**
 		 * Check if the qualified name has a domain
 		 */
-		if isset expr["domain"] {
+		if fetch columnDomain, expr["domain"] {
 
 			let sqlAliases = this->_sqlAliases;
 
 			/**
 			 * The column has a domain, we need to check if it"s an alias
 			 */
-			let columnDomain = expr["domain"];
 			if !fetch source, sqlAliases[columnDomain] {
 				throw new Exception("Unknown model or alias '" . columnDomain . "' (1), when preparing: " . this->_phql);
 			}
@@ -290,8 +280,9 @@ class Query implements QueryInterface, InjectionAwareInterface
 			/**
 			 * Obtain the model's source from the _models list
 			 */
-			if !fetch source, models[get_class(hasModel)] {
-				throw new Exception("Column '" . columnName . "' doesn't belong to any of the selected models (2), when preparing: " . this->_phql);
+			let className = get_class(hasModel);
+			if !fetch source, models[className] {
+				throw new Exception("Can't obtain model's source from models list: '" . className . "', when preparing: " . this->_phql);
 			}
 
 			/**
@@ -329,9 +320,6 @@ class Query implements QueryInterface, InjectionAwareInterface
 
 	/**
 	 * Resolves a expression in a single call argument
-	 *
-	 * @param array argument
-	 * @return array
 	 */
 	protected final function _getCallArgument(array! argument) -> array
 	{
@@ -343,9 +331,6 @@ class Query implements QueryInterface, InjectionAwareInterface
 
 	/**
 	 * Resolves a expression in a single call argument
-	 *
-	 * @param array expr
-	 * @return array
 	 */
 	protected final function _getFunctionCall(array! expr) -> array
 	{
@@ -663,7 +648,7 @@ class Query implements QueryInterface, InjectionAwareInterface
 		}
 
 		/**
-		 * Check if selected column is qualified.*
+		 * Check if selected column is qualified.*, ex: robots.*
 		 */
 		if columnType == PHQL_T_DOMAINALL {
 
@@ -780,9 +765,8 @@ class Query implements QueryInterface, InjectionAwareInterface
 	 * @param array join
 	 * @return array
 	 */
-	protected final function _getJoin(<ManagerInterface> manager, join)
+	protected final function _getJoin(<ManagerInterface> manager, join) -> array
 	{
-
 		var qualified, modelName, source, model, schema;
 
 		if fetch qualified, join["qualified"] {
@@ -851,8 +835,7 @@ class Query implements QueryInterface, InjectionAwareInterface
 	 * @param Phalcon\Mvc\Model\RelationInterface relation
 	 * @return array
 	 */
-	protected final function _getSingleJoin(string! joinType, joinSource, modelAlias, joinAlias,
-		<\Phalcon\Mvc\Model\RelationInterface> relation)
+	protected final function _getSingleJoin(string! joinType, joinSource, modelAlias, joinAlias, <RelationInterface> relation) -> array
 	{
 		var fields, referencedFields, sqlJoinConditions = null,
 			sqlJoinPartialConditions, position, field, referencedField;
@@ -947,8 +930,7 @@ class Query implements QueryInterface, InjectionAwareInterface
 	 * @param Phalcon\Mvc\Model\RelationInterface relation
 	 * @return array
 	 */
-	protected final function _getMultiJoin(joinType, joinSource, modelAlias, joinAlias,
-		<\Phalcon\Mvc\Model\RelationInterface> relation)
+	protected final function _getMultiJoin(joinType, joinSource, modelAlias, joinAlias, <RelationInterface> relation) -> array
 	{
 		var sqlJoins, fields, referencedFields,
 			intermediateModelName, intermediateModel, intermediateSource,
@@ -1485,9 +1467,29 @@ class Query implements QueryInterface, InjectionAwareInterface
 	}
 
 	/**
-	 * Analyzes a SELECT intermediate code and produces an array to be executed later
+	 * Returns a processed limit clause for a SELECT statement
 	 *
+	 * @param array $limit
 	 * @return array
+	 */
+	protected final function _getLimitClause(limitClause) -> array
+	{
+		var number, offset;
+		array limit = [];
+
+		if fetch number, limitClause["number"] {
+			let limit["number"] = this->_getExpression(number);
+		}
+
+		if fetch offset, limitClause["offset"] {
+			let limit["offset"] = this->_getExpression(offset);
+		}
+
+		return limit;
+	}
+
+	/**
+	 * Analyzes a SELECT intermediate code and produces an array to be executed later
 	 */
 	protected final function _prepareSelect() -> array
 	{
@@ -1734,47 +1736,45 @@ class Query implements QueryInterface, InjectionAwareInterface
 		}
 
 		/**
-		 * Process WHERE clause if any
+		 * Process "WHERE" clause if any
 		 */
 		if fetch where, ast["where"] {
 			let sqlSelect["where"] = this->_getExpression(where);
 		}
 
 		/**
-		 * Process GROUP BY clause if any
+		 * Process "GROUP BY" clause if any
 		 */
 		if fetch groupBy, ast["groupBy"] {
 			let sqlSelect["group"] = this->_getGroupClause(groupBy);
 		}
 
 		/**
-		 * Process HAVING clause if any
+		 * Process "HAVING" clause if any
 		 */
 		if fetch having , ast["having"] {
 			let sqlSelect["having"] = this->_getExpression(having);
 		}
 
 		/**
-		 * Process ORDER BY clause if any
+		 * Process "ORDER BY" clause if any
 		 */
 		if fetch order, ast["orderBy"] {
 			let sqlSelect["order"] = this->_getOrderClause(order);
 		}
 
 		/**
-		 * Process LIMIT clause if any
+		 * Process "LIMIT" clause if any
 		 */
 		if fetch limit, ast["limit"] {
-			let sqlSelect["limit"] = limit;
-		}
+			let sqlSelect["limit"] = this->_getLimitClause(limit);
+		}		
 
 		return sqlSelect;
 	}
 
 	/**
 	 * Analyzes an INSERT intermediate code and produces an array to be executed later
-	 *
-	 * @return array
 	 */
 	protected final function _prepareInsert() -> array
 	{
@@ -1861,8 +1861,6 @@ class Query implements QueryInterface, InjectionAwareInterface
 
 	/**
 	 * Analyzes an UPDATE intermediate code and produces an array to be executed later
-	 *
-	 * @return array
 	 */
 	protected final function _prepareUpdate() -> array
 	{
@@ -2002,7 +2000,7 @@ class Query implements QueryInterface, InjectionAwareInterface
 		}
 
 		if fetch limit, ast["limit"] {
-			let sqlUpdate["limit"] = limit;
+			let sqlUpdate["limit"] = this->_getLimitClause(limit);
 		}
 
 		return sqlUpdate;
@@ -2010,8 +2008,6 @@ class Query implements QueryInterface, InjectionAwareInterface
 
 	/**
 	 * Analyzes a DELETE intermediate code and produces an array to be executed later
-	 *
-	 * @return array
 	 */
 	protected final function _prepareDelete() -> array
 	{
@@ -2115,7 +2111,7 @@ class Query implements QueryInterface, InjectionAwareInterface
 		}
 
 		if fetch limit, ast["limit"] {
-			let sqlDelete["limit"] = limit;
+			let sqlDelete["limit"] = this->_getLimitClause(limit);
 		}
 
 		return sqlDelete;
@@ -2124,8 +2120,6 @@ class Query implements QueryInterface, InjectionAwareInterface
 	/**
 	 * Parses the intermediate code produced by Phalcon\Mvc\Model\Query\Lang generating another
 	 * intermediate representation that could be executed by Phalcon\Mvc\Model\Query
-	 *
-	 * @return array
 	 */
 	public function parse() -> array
 	{
@@ -2288,6 +2282,7 @@ class Query implements QueryInterface, InjectionAwareInterface
 		 */
 		let numberObjects = 0;
 		let columns1 = columns;
+
 		for column in columns {
 
 			if typeof column != "array" {
@@ -2326,7 +2321,8 @@ class Query implements QueryInterface, InjectionAwareInterface
 		/**
 		 * Processing selected columns
 		 */
-		let selectColumns = [],
+		let instance = null,
+			selectColumns = [],
 			simpleColumnMap = [],
 			metaData = this->_metaData;
 
@@ -2335,7 +2331,7 @@ class Query implements QueryInterface, InjectionAwareInterface
 			let sqlColumn = column["column"];
 
 			/**
-			 * Complete objects are treaded in a different way
+			 * Complete objects are treated in a different way
 			 */
 			if column["type"] == "object" {
 
@@ -2408,13 +2404,11 @@ class Query implements QueryInterface, InjectionAwareInterface
 			/**
 			 * Simulate a column map
 			 */
-			if isComplex === false {
-				if isSimpleStd === true {
-					if fetch sqlAlias, column["sqlAlias"] {
-						let simpleColumnMap[sqlAlias] = aliasCopy;
-					} else {
-						let simpleColumnMap[aliasCopy] = aliasCopy;
-					}
+			if isComplex === false && isSimpleStd === true {
+				if fetch sqlAlias, column["sqlAlias"] {
+					let simpleColumnMap[sqlAlias] = aliasCopy;
+				} else {
+					let simpleColumnMap[aliasCopy] = aliasCopy;
 				}
 			}
 		}
@@ -2487,7 +2481,7 @@ class Query implements QueryInterface, InjectionAwareInterface
 				/**
 				 * If the result is a simple standard object use an Phalcon\Mvc\Model\Row as base
 				 */
-				let resultObject = new \Phalcon\Mvc\Model\Row();
+				let resultObject = new Row();
 
 				/**
 				 * Standard objects can"t keep snapshots
@@ -2496,7 +2490,11 @@ class Query implements QueryInterface, InjectionAwareInterface
 
 			} else {
 
-				let resultObject = model;
+				if typeof instance == "object" {
+					let resultObject = instance;
+				} else {
+					let resultObject = model;
+				}
 
 				/**
 				 * Get the column map
@@ -2618,14 +2616,14 @@ class Query implements QueryInterface, InjectionAwareInterface
 					break;
 
 				default:
-					let insertValue = new \Phalcon\Db\RawValue(dialect->getSqlExpression(exprValue));
+					let insertValue = new RawValue(dialect->getSqlExpression(exprValue));
 					break;
 			}
 
 			let fieldName = fields[number];
 
 			/**
-			 * If the user didn't defined a column list we assume all the model's attributes as columns
+			 * If the user didn't define a column list we assume all the model's attributes as columns
 			 */
 			if automaticFields === true {
 				if typeof columnMap == "array" {
@@ -2745,7 +2743,7 @@ class Query implements QueryInterface, InjectionAwareInterface
 					break;
 
 				default:
-					let updateValue = new \Phalcon\Db\RawValue(dialect->getSqlExpression(exprValue));
+					let updateValue = new RawValue(dialect->getSqlExpression(exprValue));
 					break;
 			}
 
@@ -2869,7 +2867,6 @@ class Query implements QueryInterface, InjectionAwareInterface
 
 				return new Status(false, record);
 			}
-
 		}
 
 		/**
@@ -2918,7 +2915,7 @@ class Query implements QueryInterface, InjectionAwareInterface
 		}
 
 		/**
-		 * Check if a WHERE clause was especified
+		 * Check if a LIMIT clause was especified
 		 */
 		if fetch limitConditions, intermediate["limit"] {
 			let selectIr["limit"] = limitConditions;
@@ -3040,6 +3037,14 @@ class Query implements QueryInterface, InjectionAwareInterface
 			let mergedTypes = bindTypes;
 		}
 
+		if typeof mergedParams != "null" && typeof mergedParams != "array" {
+			throw new Exception("Bound parameters must be an array");
+		}
+
+		if typeof mergedTypes != "null" && typeof mergedTypes != "array" {
+			throw new Exception("Bound parameter types must be an array");
+		}
+
 		let type = this->_type;
 		switch type {
 
@@ -3099,7 +3104,6 @@ class Query implements QueryInterface, InjectionAwareInterface
 	 */
 	public function getSingleResult(var bindParams = null, var bindTypes = null)
 	{
-
 		/**
 		 * The query is already programmed to return just one row
 		 */
@@ -3112,9 +3116,6 @@ class Query implements QueryInterface, InjectionAwareInterface
 
 	/**
 	 * Sets the type of PHQL statement to be executed
-	 *
-	 * @param int type
-	 * @return Phalcon\Mvc\Model\Query
 	 */
 	public function setType(int type) -> <Query>
 	{
@@ -3124,8 +3125,6 @@ class Query implements QueryInterface, InjectionAwareInterface
 
 	/**
 	 * Gets the type of PHQL statement executed
-	 *
-	 * @return int
 	 */
 	public function getType() -> int
 	{
@@ -3134,9 +3133,6 @@ class Query implements QueryInterface, InjectionAwareInterface
 
 	/**
 	 * Set default bind parameters
-	 *
-	 * @param array bindParams
-	 * @return Phalcon\Mvc\Model\Query
 	 */
 	public function setBindParams(array! bindParams) -> <Query>
 	{
@@ -3156,11 +3152,8 @@ class Query implements QueryInterface, InjectionAwareInterface
 
 	/**
 	 * Set default bind parameters
-	 *
-	 * @param array bindTypes
-	 * @return Phalcon\Mvc\Model\Query
 	 */
-	public function setBindTypes(array! bindTypes)
+	public function setBindTypes(array! bindTypes) -> <Query>
 	{
 		let this->_bindTypes = bindTypes;
 		return this;
@@ -3178,9 +3171,6 @@ class Query implements QueryInterface, InjectionAwareInterface
 
 	/**
 	 * Allows to set the IR to be executed
-	 *
-	 * @param array intermediate
-	 * @return Phalcon\Mvc\Model\Query
 	 */
 	public function setIntermediate(array! intermediate) -> <Query>
 	{
@@ -3219,5 +3209,4 @@ class Query implements QueryInterface, InjectionAwareInterface
 	{
 		return this->_cacheOptions;
 	}
-
 }

@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -19,12 +19,14 @@
 
 namespace Phalcon\Http\Response;
 
+use Phalcon\Http\Response\HeadersInterface;
+
 /**
  * Phalcon\Http\Response\Headers
  *
  * This class is a bag to manage the response headers
  */
-class Headers implements \Phalcon\Http\Response\HeadersInterface
+class Headers implements HeadersInterface
 {
 	protected _headers;
 
@@ -81,10 +83,8 @@ class Headers implements \Phalcon\Http\Response\HeadersInterface
 
 	/**
 	 * Sends the headers to the client
-	 *
-	 * @return boolean
 	 */
-	public function send()
+	public function send() -> boolean
 	{
 		var header, value;
 		if !headers_sent() {
@@ -102,7 +102,6 @@ class Headers implements \Phalcon\Http\Response\HeadersInterface
 
 	/**
 	 * Reset set headers
-	 *
 	 */
 	public function reset()
 	{
@@ -125,7 +124,7 @@ class Headers implements \Phalcon\Http\Response\HeadersInterface
 	 * @param array data
 	 * @return Phalcon\Http\Response\Headers
 	 */
-	public static function __set_state(data)
+	public static function __set_state(data) -> <Headers>
 	{
 		var headers, key, value, dataHeaders;
 		let headers = new self();
@@ -136,5 +135,4 @@ class Headers implements \Phalcon\Http\Response\HeadersInterface
 		}
 		return headers;
 	}
-
 }

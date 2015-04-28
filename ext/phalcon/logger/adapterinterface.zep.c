@@ -12,23 +12,6 @@
 #include "kernel/main.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Logger\AdapterInterface
  *
@@ -45,7 +28,6 @@ ZEPHIR_INIT_CLASS(Phalcon_Logger_AdapterInterface) {
 /**
  * Sets the message formatter
  *
- * @param Phalcon\Logger\FormatterInterface formatter
  * @return Phalcon\Logger\Adapter
  */
 ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, setFormatter);
@@ -75,10 +57,7 @@ ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, getLogLevel);
 /**
  * Sends/Writes messages to the file log
  *
- * @param int|string $type
- * @param string $message
- * @param array $context
- * @return Phalcon\Logger\Adapter
+ * @return Phalcon\Logger\Adapter1
  */
 ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, log);
 
@@ -113,8 +92,6 @@ ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, close);
 /**
  * Sends/Writes a debug message to the log
  *
- * @param string message
- * @param array $context
  * @return Phalcon\Logger\Adapter
  */
 ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, debug);
@@ -122,8 +99,6 @@ ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, debug);
 /**
  * Sends/Writes an error message to the log
  *
- * @param string message
- * @param array $context
  * @return Phalcon\Logger\Adapter
  */
 ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, error);
@@ -131,8 +106,6 @@ ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, error);
 /**
  * Sends/Writes an info message to the log
  *
- * @param string message
- * @param array $context
  * @return Phalcon\Logger\Adapter
  */
 ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, info);
@@ -140,8 +113,6 @@ ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, info);
 /**
  * Sends/Writes a notice message to the log
  *
- * @param string message
- * @param array $context
  * @return Phalcon\Logger\Adapter
  */
 ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, notice);
@@ -149,8 +120,6 @@ ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, notice);
 /**
  * Sends/Writes a warning message to the log
  *
- * @param string message
- * @param array $context
  * @return Phalcon\Logger\Adapter
  */
 ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, warning);
@@ -158,8 +127,6 @@ ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, warning);
 /**
  * Sends/Writes an alert message to the log
  *
- * @param string message
- * @param array $context
  * @return Phalcon\Logger\Adapter
  */
 ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, alert);
@@ -167,8 +134,6 @@ ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, alert);
 /**
  * Sends/Writes an emergency message to the log
  *
- * @param string message
- * @param array $context
  * @return Phalcon\Logger\Adapter
  */
 ZEPHIR_DOC_METHOD(Phalcon_Logger_AdapterInterface, emergency);

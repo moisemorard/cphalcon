@@ -14,26 +14,10 @@
 #include "kernel/main.h"
 #include "kernel/operators.h"
 #include "kernel/memory.h"
+#include "kernel/array.h"
 #include "kernel/fcall.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Assets\Inline\Js
  *
@@ -80,7 +64,7 @@ PHP_METHOD(Phalcon_Assets_Inline_Js, __construct) {
 
 	if (Z_TYPE_P(attributes) == IS_NULL) {
 		ZEPHIR_INIT_NVAR(attributes);
-		array_init_size(attributes, 2);
+		zephir_create_array(attributes, 1, 0 TSRMLS_CC);
 		add_assoc_stringl_ex(attributes, SS("type"), SL("text/javascript"), 1);
 	}
 	ZEPHIR_INIT_VAR(_1);

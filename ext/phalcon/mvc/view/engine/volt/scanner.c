@@ -179,7 +179,7 @@ int phvolt_get_token(phvolt_scanner_state *s, phvolt_scanner_token *token) {
 
 		} else {
 
-		
+
 // 184 "scanner.c"
 		{
 			KKCTYPE kkch;

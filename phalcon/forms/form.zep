@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -95,8 +95,6 @@ class Form extends Injectable implements \Countable, \Iterator
 
 	/**
 	 * Returns the form's action
-	 *
-	 * @return string
 	 */
 	public function getAction() -> string
 	{
@@ -134,9 +132,6 @@ class Form extends Injectable implements \Countable, \Iterator
 
 	/**
 	 * Sets options for the element
-	 *
-	 * @param array options
-	 * @return Phalcon\Forms\Form
 	 */
 	public function setUserOptions(array! options) -> <Form>
 	{
@@ -178,8 +173,6 @@ class Form extends Injectable implements \Countable, \Iterator
 
 	/**
 	 * Returns the form elements added to the form
-	 *
-	 * @return Phalcon\Forms\ElementInterface[]
 	 */
 	public function getElements() -> <ElementInterface[]>
 	{
@@ -293,6 +286,8 @@ class Form extends Injectable implements \Countable, \Iterator
 		 */
 		if typeof entity == "object" {
 			this->bind(data, entity);
+		} elseif typeof this->_entity == "object" {
+			this->bind(data, this->_entity);
 		}
 
 		/**
@@ -390,9 +385,6 @@ class Form extends Injectable implements \Countable, \Iterator
 
 	/**
 	 * Returns the messages generated in the validation
-	 *
-	 * @param boolean byItemName
-	 * @return array
 	 */
 	public function getMessages(boolean byItemName = false) -> <Group>
 	{
@@ -525,9 +517,6 @@ class Form extends Injectable implements \Countable, \Iterator
 
 	/**
 	 * Returns an element added to the form by its name
-	 *
-	 * @param string name
-	 * @return Phalcon\Forms\ElementInterface
 	 */
 	public function get(string! name) -> <ElementInterface>
 	{
@@ -542,10 +531,6 @@ class Form extends Injectable implements \Countable, \Iterator
 
 	/**
 	 * Generate the label of a element added to the form including HTML
-	 *
-	 * @param string name
-	 * @param array attributes
-	 * @return string
 	 */
 	public function label(string! name, array attributes = null) -> string
 	{
@@ -560,9 +545,6 @@ class Form extends Injectable implements \Countable, \Iterator
 
 	/**
 	 * Returns a label for an element
-	 *
-	 * @param string name
-	 * @return string
 	 */
 	public function getLabel(string! name) -> string
 	{
@@ -624,18 +606,22 @@ class Form extends Injectable implements \Countable, \Iterator
 			}
 		}
 
+		/**
+		 * Check if form has a getter
+		 */
+		let method = "get" . name;
+		if method_exists(this, method) {
+			return this->{method}();
+		}
+
 		return null;
 	}
 
 	/**
 	 * Check if the form contains an element
-	 *
-	 * @param string name
-	 * @return boolean
 	 */
 	public function has(string! name) -> boolean
 	{
-
 		/**
 		 * Checks if the element is in the form
 		 */
@@ -644,9 +630,6 @@ class Form extends Injectable implements \Countable, \Iterator
 
 	/**
 	 * Removes an element from the form
-	 *
-	 * @param string name
-	 * @return boolean
 	 */
 	public function remove(string! name) -> boolean
 	{
@@ -697,8 +680,6 @@ class Form extends Injectable implements \Countable, \Iterator
 
 	/**
 	 * Returns the number of elements in the form
-	 *
-	 * @return int
 	 */
 	public function count() -> int
 	{
@@ -716,8 +697,6 @@ class Form extends Injectable implements \Countable, \Iterator
 
 	/**
 	 * Returns the current element in the iterator
-	 *
-	 * @return Phalcon\Forms\ElementInterface
 	 */
 	public function current() -> <ElementInterface> | boolean
 	{
@@ -732,8 +711,6 @@ class Form extends Injectable implements \Countable, \Iterator
 
 	/**
 	 * Returns the current position/key in the iterator
-	 *
-	 * @return int
 	 */
 	public function key() -> int
 	{
@@ -742,7 +719,6 @@ class Form extends Injectable implements \Countable, \Iterator
 
 	/**
 	 * Moves the internal iteration pointer to the next position
-	 *
 	 */
 	public function next() -> void
 	{
@@ -751,8 +727,6 @@ class Form extends Injectable implements \Countable, \Iterator
 
 	/**
 	 * Check if the current element in the iterator is valid
-	 *
-	 * @return boolean
 	 */
 	public function valid() -> boolean
 	{

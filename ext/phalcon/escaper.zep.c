@@ -22,23 +22,6 @@
 #include "kernel/exception.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Escaper
  *
@@ -74,8 +57,6 @@ ZEPHIR_INIT_CLASS(Phalcon_Escaper) {
  *<code>
  * $escaper->setEncoding('utf-8');
  *</code>
- *
- * @param string encoding
  */
 PHP_METHOD(Phalcon_Escaper, setEncoding) {
 
@@ -95,8 +76,6 @@ PHP_METHOD(Phalcon_Escaper, setEncoding) {
 
 /**
  * Returns the internal encoding used by the escaper
- *
- * @return string
  */
 PHP_METHOD(Phalcon_Escaper, getEncoding) {
 
@@ -111,8 +90,6 @@ PHP_METHOD(Phalcon_Escaper, getEncoding) {
  *<code>
  * $escaper->setHtmlQuoteType(ENT_XHTML);
  *</code>
- *
- * @param int quoteType
  */
 PHP_METHOD(Phalcon_Escaper, setHtmlQuoteType) {
 
@@ -133,9 +110,6 @@ PHP_METHOD(Phalcon_Escaper, setHtmlQuoteType) {
 /**
  * Detect the character encoding of a string to be handled by an encoder
  * Special-handling for chr(172) and chr(128) to chr(159) which fail to be detected by mb_detect_encoding()
- *
- * @param string str
- * @return string/null
  */
 PHP_METHOD(Phalcon_Escaper, detectEncoding) {
 
@@ -144,11 +118,13 @@ PHP_METHOD(Phalcon_Escaper, detectEncoding) {
 	HashTable *_3;
 	HashPosition _2;
 	zval *_0;
-	zval *str, *charset = NULL, *_1 = NULL, **_4, *_5 = NULL;
+	zval *str_param = NULL, *charset = NULL, *_1 = NULL, **_4, *_5 = NULL;
+	zval *str = NULL;
 
 	ZEPHIR_MM_GROW();
-	zephir_fetch_params(1, 1, 0, &str);
+	zephir_fetch_params(1, 1, 0, &str_param);
 
+	zephir_get_strval(str, str_param);
 
 
 	ZEPHIR_INIT_VAR(charset);
@@ -160,7 +136,7 @@ PHP_METHOD(Phalcon_Escaper, detectEncoding) {
 		RETURN_MM_NULL();
 	}
 	ZEPHIR_INIT_VAR(_0);
-	array_init_size(_0, 7);
+	zephir_create_array(_0, 4, 0 TSRMLS_CC);
 	ZEPHIR_INIT_VAR(_1);
 	ZVAL_STRING(_1, "UTF-32", 1);
 	zephir_array_fast_append(_0, _1);
@@ -173,7 +149,7 @@ PHP_METHOD(Phalcon_Escaper, detectEncoding) {
 	ZEPHIR_INIT_NVAR(_1);
 	ZVAL_STRING(_1, "ASCII", 1);
 	zephir_array_fast_append(_0, _1);
-	zephir_is_iterable(_0, &_3, &_2, 0, 0, "phalcon/escaper.zep", 125);
+	zephir_is_iterable(_0, &_3, &_2, 0, 0, "phalcon/escaper.zep", 116);
 	for (
 	  ; zephir_hash_get_current_data_ex(_3, (void**) &_4, &_2) == SUCCESS
 	  ; zephir_hash_move_forward_ex(_3, &_2)
@@ -193,22 +169,21 @@ PHP_METHOD(Phalcon_Escaper, detectEncoding) {
 
 /**
  * Utility to normalize a string's encoding to UTF-32.
- *
- * @param string str
- * @return string
  */
 PHP_METHOD(Phalcon_Escaper, normalizeEncoding) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zval *str, *_0 = NULL, _1;
+	zval *str_param = NULL, *_0 = NULL, _1;
+	zval *str = NULL;
 
 	ZEPHIR_MM_GROW();
-	zephir_fetch_params(1, 1, 0, &str);
+	zephir_fetch_params(1, 1, 0, &str_param);
 
+	zephir_get_strval(str, str_param);
 
 
 	if (!((zephir_function_exists_ex(SS("mb_convert_encoding") TSRMLS_CC) == SUCCESS))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_escaper_exception_ce, "Extension 'mbstring' is required", "phalcon/escaper.zep", 140);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_escaper_exception_ce, "Extension 'mbstring' is required", "phalcon/escaper.zep", 128);
 		return;
 	}
 	ZEPHIR_CALL_METHOD(&_0, this_ptr, "detectencoding", NULL, str);
@@ -223,9 +198,6 @@ PHP_METHOD(Phalcon_Escaper, normalizeEncoding) {
 
 /**
  * Escapes a HTML string. Internally uses htmlspecialchars
- *
- * @param string text
- * @return string
  */
 PHP_METHOD(Phalcon_Escaper, escapeHtml) {
 
@@ -250,9 +222,6 @@ PHP_METHOD(Phalcon_Escaper, escapeHtml) {
 
 /**
  * Escapes a HTML attribute string
- *
- * @param string attribute
- * @return string
  */
 PHP_METHOD(Phalcon_Escaper, escapeHtmlAttr) {
 
@@ -278,9 +247,6 @@ PHP_METHOD(Phalcon_Escaper, escapeHtmlAttr) {
 
 /**
  * Escape CSS strings by replacing non-alphanumeric chars by their hexadecimal escaped representation
- *
- * @param string css
- * @return string
  */
 PHP_METHOD(Phalcon_Escaper, escapeCss) {
 
@@ -303,9 +269,6 @@ PHP_METHOD(Phalcon_Escaper, escapeCss) {
 
 /**
  * Escape javascript strings by replacing non-alphanumeric chars by their hexadecimal escaped representation
- *
- * @param string js
- * @return string
  */
 PHP_METHOD(Phalcon_Escaper, escapeJs) {
 
@@ -328,9 +291,6 @@ PHP_METHOD(Phalcon_Escaper, escapeJs) {
 
 /**
  * Escapes a URL. Internally uses rawurlencode
- *
- * @param string url
- * @return string
  */
 PHP_METHOD(Phalcon_Escaper, escapeUrl) {
 

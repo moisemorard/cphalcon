@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -59,7 +59,7 @@ use Phalcon\Events\EventsAwareInterface;
  *
  *</code>
  */
-class Di implements DiInterface, \Phalcon\Events\EventsAwareInterface
+class Di implements DiInterface, EventsAwareInterface
 {
 
 	protected _services;
@@ -79,14 +79,12 @@ class Di implements DiInterface, \Phalcon\Events\EventsAwareInterface
 
 	/**
 	 * Phalcon\Di constructor
-	 *
 	 */
 	public function __construct()
 	{
-		var defaultDi;
-
-		let defaultDi = self::_default;
-		if !defaultDi {
+		var di;
+		let di = self::_default;
+		if !di {
 			let self::_default = this;
 		}
 	}
@@ -124,8 +122,6 @@ class Di implements DiInterface, \Phalcon\Events\EventsAwareInterface
 
 	/**
 	 * Removes a service in the services container
-	 *
-	 * @param string name
 	 */
 	public function remove(string! name)
 	{
@@ -157,10 +153,6 @@ class Di implements DiInterface, \Phalcon\Events\EventsAwareInterface
 
 	/**
 	 * Sets a service using a raw Phalcon\Di\Service definition
-	 *
-	 * @param string name
-	 * @param Phalcon\Di\ServiceInterface rawDefinition
-	 * @return Phalcon\Di\ServiceInterface
 	 */
 	public function setRaw(string! name, <ServiceInterface> rawDefinition) -> <ServiceInterface>
 	{
@@ -187,9 +179,6 @@ class Di implements DiInterface, \Phalcon\Events\EventsAwareInterface
 
 	/**
 	 * Returns a Phalcon\Di\Service instance
-	 *
-	 * @param string name
-	 * @return Phalcon\Di\ServiceInterface
 	 */
 	public function getService(string! name) -> <ServiceInterface>
 	{
@@ -318,9 +307,6 @@ class Di implements DiInterface, \Phalcon\Events\EventsAwareInterface
 
 	/**
 	 * Check whether the DI contains a service by a name
-	 *
-	 * @param string name
-	 * @return boolean
 	 */
 	public function has(string! name) -> boolean
 	{
@@ -329,8 +315,6 @@ class Di implements DiInterface, \Phalcon\Events\EventsAwareInterface
 
 	/**
 	 * Check whether the last service obtained via getShared produced a fresh instance or an existing one
-	 *
-	 * @return boolean
 	 */
 	public function wasFreshInstance() -> boolean
 	{
@@ -339,8 +323,6 @@ class Di implements DiInterface, \Phalcon\Events\EventsAwareInterface
 
 	/**
 	 * Return the services registered in the DI
-	 *
-	 * @return Phalcon\Di\Service[]
 	 */
 	public function getServices() -> <Service[]>
 	{
@@ -349,9 +331,6 @@ class Di implements DiInterface, \Phalcon\Events\EventsAwareInterface
 
 	/**
 	 * Check if a service is registered using the array syntax
-	 *
-	 * @param string name
-	 * @return boolean
 	 */
 	public function offsetExists(string! name) -> boolean
 	{
@@ -392,8 +371,6 @@ class Di implements DiInterface, \Phalcon\Events\EventsAwareInterface
 
 	/**
 	 * Removes a service from the services container using the array syntax
-	 *
-	 * @param string name
 	 */
 	public function offsetUnset(string! name) -> boolean
 	{
@@ -402,8 +379,6 @@ class Di implements DiInterface, \Phalcon\Events\EventsAwareInterface
 
 	/**
 	 * Sets the event manager
-	 *
-	 * @param Phalcon\Events\ManagerInterface eventsManager
 	 */
 	public function setEventsManager(<\Phalcon\Events\ManagerInterface> eventsManager)
 	{
@@ -412,8 +387,6 @@ class Di implements DiInterface, \Phalcon\Events\EventsAwareInterface
 
 	/**
 	 * Returns the internal event manager
-	 *
-	 * @return Phalcon\Events\ManagerInterface
 	 */
 	public function getEventsManager() -> <\Phalcon\Events\ManagerInterface>
 	{
@@ -465,8 +438,6 @@ class Di implements DiInterface, \Phalcon\Events\EventsAwareInterface
 
 	/**
 	 * Set a default dependency injection container to be obtained into static methods
-	 *
-	 * @param Phalcon\DiInterface dependencyInjector
 	 */
 	public static function setDefault(<DiInterface> dependencyInjector)
 	{
@@ -475,8 +446,6 @@ class Di implements DiInterface, \Phalcon\Events\EventsAwareInterface
 
 	/**
 	 * Return the lastest DI created
-	 *
-	 * @return Phalcon\DiInterface
 	 */
 	public static function getDefault() -> <DiInterface>
 	{

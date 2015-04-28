@@ -12,23 +12,6 @@
 #include "kernel/main.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Mvc\ModelInterface
  *
@@ -44,9 +27,6 @@ ZEPHIR_INIT_CLASS(Phalcon_Mvc_ModelInterface) {
 
 /**
  * Sets a transaction related to the Model instance
- *
- * @param Phalcon\Mvc\Model\TransactionInterface transaction
- * @return Phalcon\Mvc\ModelInterface
  */
 ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, setTransaction);
 
@@ -66,58 +46,41 @@ ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, getSchema);
 
 /**
  * Sets both read/write connection services
- *
- * @param string connectionService
  */
 ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, setConnectionService);
 
 /**
  * Sets the DependencyInjection connection service used to write data
- *
- * @param string connectionService
  */
 ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, setWriteConnectionService);
 
 /**
  * Sets the DependencyInjection connection service used to read data
- *
- * @param string connectionService
  */
 ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, setReadConnectionService);
 
 /**
  * Returns DependencyInjection connection service used to read data
- *
- * @return string
  */
 ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, getReadConnectionService);
 
 /**
  * Returns DependencyInjection connection service used to write data
- *
- * @return string
  */
 ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, getWriteConnectionService);
 
 /**
  * Gets internal database connection
- *
- * @return Phalcon\Db\AdapterInterface
  */
 ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, getReadConnection);
 
 /**
  * Gets internal database connection
- *
- * @return Phalcon\Db\AdapterInterface
  */
 ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, getWriteConnection);
 
 /**
  * Sets the dirty state of the object using one of the DIRTY_STATE_* constants
- *
- * @param int dirtyState
- * @return Phalcon\Mvc\ModelInterface
  */
 ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, setDirtyState);
 
@@ -252,8 +215,6 @@ ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, fireEventCancel);
 
 /**
  * Appends a customized message on the validation process
- *
- * @param Phalcon\Mvc\Model\MessageInterface message
  */
 ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, appendMessage);
 
@@ -322,8 +283,6 @@ ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, refresh);
 
 /**
  * Skips the current operation forcing a success state
- *
- * @param boolean skip
  */
 ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, skipOperation);
 
@@ -360,4 +319,9 @@ ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, getRelated);
  * @param array columnMap
  */
 ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, setSnapshotData);
+
+/**
+ * Reset a model instance data
+ */
+ZEPHIR_DOC_METHOD(Phalcon_Mvc_ModelInterface, reset);
 

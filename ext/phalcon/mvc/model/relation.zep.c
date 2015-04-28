@@ -20,23 +20,6 @@
 #include "kernel/array.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Mvc\Model\Relation
  *
@@ -162,8 +145,6 @@ PHP_METHOD(Phalcon_Mvc_Model_Relation, setIntermediateRelation) {
 
 /**
  * Returns the relation type
- *
- * @return int
  */
 PHP_METHOD(Phalcon_Mvc_Model_Relation, getType) {
 
@@ -174,8 +155,6 @@ PHP_METHOD(Phalcon_Mvc_Model_Relation, getType) {
 
 /**
  * Returns the referenced model
- *
- * @return string
  */
 PHP_METHOD(Phalcon_Mvc_Model_Relation, getReferencedModel) {
 
@@ -222,8 +201,6 @@ PHP_METHOD(Phalcon_Mvc_Model_Relation, getOptions) {
 
 /**
  * Check whether the relation act as a foreign key
- *
- * @return boolean
  */
 PHP_METHOD(Phalcon_Mvc_Model_Relation, isForeignKey) {
 
@@ -286,8 +263,6 @@ PHP_METHOD(Phalcon_Mvc_Model_Relation, getParams) {
 
 /**
  * Check whether the relation is a 'many-to-many' relation or not
- *
- * @return boolean
  */
 PHP_METHOD(Phalcon_Mvc_Model_Relation, isThrough) {
 
@@ -306,8 +281,6 @@ PHP_METHOD(Phalcon_Mvc_Model_Relation, isThrough) {
 
 /**
  * Check if records returned by getting belongs-to/has-many are implicitly cached during the current request
- *
- * @return boolean
  */
 PHP_METHOD(Phalcon_Mvc_Model_Relation, isReusable) {
 
@@ -338,8 +311,6 @@ PHP_METHOD(Phalcon_Mvc_Model_Relation, getIntermediateFields) {
 
 /**
  * Gets the intermediate model for has-*-through relations
- *
- * @return string
  */
 PHP_METHOD(Phalcon_Mvc_Model_Relation, getIntermediateModel) {
 

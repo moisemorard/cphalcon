@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -76,8 +76,6 @@ class Loader implements EventsAwareInterface
 
 	/**
 	 * Sets the events manager
-	 *
-	 * @param Phalcon\Events\ManagerInterface eventsManager
 	 */
 	public function setEventsManager(<ManagerInterface> eventsManager)
 	{
@@ -86,8 +84,6 @@ class Loader implements EventsAwareInterface
 
 	/**
 	 * Returns the internal event manager
-	 *
-	 * @return Phalcon\Events\ManagerInterface
 	 */
 	public function getEventsManager() -> <ManagerInterface>
 	{
@@ -95,10 +91,7 @@ class Loader implements EventsAwareInterface
 	}
 
 	/**
-	 * Sets an array of extensions that the loader must try in each attempt to locate the file
-	 *
-	 * @param array extensions
-	 * @return Phalcon\Loader
+	 * Sets an array of file extensions that the loader must try in each attempt to locate the file
 	 */
 	public function setExtensions(array! extensions) -> <Loader>
 	{
@@ -107,23 +100,17 @@ class Loader implements EventsAwareInterface
 	}
 
 	/**
-	 * Return file extensions registered in the loader
-	 *
-	 * @return boolean
+	 * Returns the file extensions registered in the loader
 	 */
-	public function getExtensions()
+	public function getExtensions() -> array
 	{
 		return this->_extensions;
 	}
 
 	/**
 	 * Register namespaces and their related directories
-	 *
-	 * @param array namespaces
-	 * @param boolean merge
-	 * @return Phalcon\Loader
 	 */
-	public function registerNamespaces(array! namespaces, boolean merge=false) -> <Loader>
+	public function registerNamespaces(array! namespaces, boolean merge = false) -> <Loader>
 	{
 		var currentNamespaces, mergedNamespaces;
 
@@ -143,21 +130,15 @@ class Loader implements EventsAwareInterface
 	}
 
 	/**
-	 * Return current namespaces registered in the autoloader
-	 *
-	 * @param array
+	 * Returns the namespaces currently registered in the autoloader
 	 */
-	public function getNamespaces()
+	public function getNamespaces() -> array
 	{
 		return this->_namespaces;
 	}
 
 	/**
-	 * Register directories on which "not found" classes could be found
-	 *
-	 * @param array prefixes
-	 * @param boolean merge
-	 * @return Phalcon\Loader
+	 * Register directories in which "not found" classes could be found
 	 */
 	public function registerPrefixes(array! prefixes, boolean merge = false) -> <Loader>
 	{
@@ -178,21 +159,15 @@ class Loader implements EventsAwareInterface
 	}
 
 	/**
-	 * Return current prefixes registered in the autoloader
-	 *
-	 * @param array
+	 * Returns the prefixes currently registered in the autoloader
 	 */
-	public function getPrefixes()
+	public function getPrefixes() -> array
 	{
 		return this->_prefixes;
 	}
 
 	/**
-	 * Register directories on which "not found" classes could be found
-	 *
-	 * @param array directories
-	 * @param boolean merge
-	 * @return Phalcon\Loader
+	 * Register directories in which "not found" classes could be found
 	 */
 	public function registerDirs(array! directories, boolean merge = false) -> <Loader>
 	{
@@ -213,21 +188,15 @@ class Loader implements EventsAwareInterface
 	}
 
 	/**
-	 * Return current directories registered in the autoloader
-	 *
-	 * @param array
+	 * Returns the directories currently registered in the autoloader
 	 */
-	public function getDirs()
+	public function getDirs() -> array
 	{
 		return this->_directories;
 	}
 
 	/**
 	 * Register classes and their locations
-	 *
-	 * @param array classes
-	 * @param boolean merge
-	 * @return Phalcon\Loader
 	 */
 	public function registerClasses(array! classes, boolean merge = false) -> <Loader>
 	{
@@ -248,19 +217,15 @@ class Loader implements EventsAwareInterface
 	}
 
 	/**
-	 * Return the current class-map registered in the autoloader
-	 *
-	 * @param array
+	 * Returns the class-map currently registered in the autoloader
 	 */
-	public function getClasses()
+	public function getClasses() -> array
 	{
 		return this->_classes;
 	}
 
 	/**
 	 * Register the autoload method
-	 *
-	 * @return Phalcon\Loader
 	 */
 	public function register() -> <Loader>
 	{
@@ -273,8 +238,6 @@ class Loader implements EventsAwareInterface
 
 	/**
 	 * Unregister the autoload method
-	 *
-	 * @return Phalcon\Loader
 	 */
 	public function unregister() -> <Loader>
 	{
@@ -286,14 +249,10 @@ class Loader implements EventsAwareInterface
 	}
 
 	/**
-	 * Makes the work of autoload registered classes
-	 *
-	 * @param string className
-	 * @return boolean
+	 * Autoloades the registered classes
 	 */
 	public function autoLoad(string! className) -> boolean
 	{
-
 		var eventsManager, classes, extensions, filePath, ds, fixedDirectory,
 			prefixes, directories, namespaceSeparator, namespaces, nsPrefix,
 			directory, fileName, extension, prefix, dsClassName, nsClassName;
@@ -362,7 +321,7 @@ class Loader implements EventsAwareInterface
 							}
 
 							/**
-							 * This is probably a good path, let's check if the file does exist
+							 * This is probably a good path, let's check if the file exists
 							 */
 							if is_file(filePath) {
 
@@ -512,27 +471,23 @@ class Loader implements EventsAwareInterface
 		}
 
 		/**
-		 * Cannot find the class return false
+		 * Cannot find the class, return false
 		 */
 		return false;
 	}
 
 	/**
-	 * Get the path when a class was found
-	 *
-	 * @return string
+	 * Get the path when a class was found	 
 	 */
-	public function getFoundPath()
+	public function getFoundPath() -> string
 	{
 		return this->_foundPath;
 	}
 
 	/**
 	 * Get the path the loader is checking for a path
-	 *
-	 * @return string
 	 */
-	public function getCheckedPath()
+	public function getCheckedPath() -> string
 	{
 		return this->_checkedPath;
 	}

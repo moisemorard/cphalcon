@@ -13,34 +13,17 @@
 
 #include "kernel/main.h"
 #include "kernel/memory.h"
+#include "kernel/array.h"
 #include "kernel/object.h"
 #include "kernel/operators.h"
 #include "ext/spl/spl_exceptions.h"
 #include "kernel/exception.h"
 #include "kernel/fcall.h"
-#include "kernel/array.h"
 #include "kernel/concat.h"
 #include "kernel/string.h"
 #include "kernel/hash.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Flash
  *
@@ -67,8 +50,6 @@ ZEPHIR_INIT_CLASS(Phalcon_Flash) {
 
 /**
  * Phalcon\Flash constructor
- *
- * @param array cssClasses
  */
 PHP_METHOD(Phalcon_Flash, __construct) {
 
@@ -86,7 +67,7 @@ PHP_METHOD(Phalcon_Flash, __construct) {
 
 	if (Z_TYPE_P(cssClasses) != IS_ARRAY) {
 		ZEPHIR_INIT_NVAR(cssClasses);
-		array_init_size(cssClasses, 7);
+		zephir_create_array(cssClasses, 4, 0 TSRMLS_CC);
 		add_assoc_stringl_ex(cssClasses, SS("error"), SL("errorMessage"), 1);
 		add_assoc_stringl_ex(cssClasses, SS("notice"), SL("noticeMessage"), 1);
 		add_assoc_stringl_ex(cssClasses, SS("success"), SL("successMessage"), 1);
@@ -99,9 +80,6 @@ PHP_METHOD(Phalcon_Flash, __construct) {
 
 /**
  * Set whether the output must be implictly flushed to the output or returned as string
- *
- * @param boolean implicitFlush
- * @return Phalcon\FlashInterface
  */
 PHP_METHOD(Phalcon_Flash, setImplicitFlush) {
 
@@ -120,9 +98,6 @@ PHP_METHOD(Phalcon_Flash, setImplicitFlush) {
 
 /**
  * Set if the output must be implictily formatted with HTML
- *
- * @param boolean automaticHtml
- * @return Phalcon\FlashInterface
  */
 PHP_METHOD(Phalcon_Flash, setAutomaticHtml) {
 
@@ -141,9 +116,6 @@ PHP_METHOD(Phalcon_Flash, setAutomaticHtml) {
 
 /**
  * Set an array with CSS classes to format the messages
- *
- * @param array cssClasses
- * @return Phalcon\FlashInterface
  */
 PHP_METHOD(Phalcon_Flash, setCssClasses) {
 
@@ -167,9 +139,6 @@ PHP_METHOD(Phalcon_Flash, setCssClasses) {
  *<code>
  * $flash->error('This is an error');
  *</code>
- *
- * @param string message
- * @return string
  */
 PHP_METHOD(Phalcon_Flash, error) {
 
@@ -196,9 +165,6 @@ PHP_METHOD(Phalcon_Flash, error) {
  *<code>
  * $flash->notice('This is an information');
  *</code>
- *
- * @param string message
- * @return string
  */
 PHP_METHOD(Phalcon_Flash, notice) {
 
@@ -225,9 +191,6 @@ PHP_METHOD(Phalcon_Flash, notice) {
  *<code>
  * $flash->success('The process was finished successfully');
  *</code>
- *
- * @param string message
- * @return string
  */
 PHP_METHOD(Phalcon_Flash, success) {
 
@@ -256,9 +219,6 @@ PHP_METHOD(Phalcon_Flash, success) {
  *<code>
  * $flash->warning('Hey, this is important');
  *</code>
- *
- * @param string message
- * @return string
  */
 PHP_METHOD(Phalcon_Flash, warning) {
 
@@ -286,7 +246,6 @@ PHP_METHOD(Phalcon_Flash, warning) {
  * $flash->outputMessage('error', message);
  *</code>
  *
- * @param string type
  * @param string|array message
  */
 PHP_METHOD(Phalcon_Flash, outputMessage) {
@@ -334,7 +293,7 @@ PHP_METHOD(Phalcon_Flash, outputMessage) {
 			ZEPHIR_INIT_VAR(content);
 			ZVAL_STRING(content, "", 1);
 		}
-		zephir_is_iterable(message, &_3, &_2, 0, 0, "phalcon/flash.zep", 224);
+		zephir_is_iterable(message, &_3, &_2, 0, 0, "phalcon/flash.zep", 200);
 		for (
 		  ; zephir_hash_get_current_data_ex(_3, (void**) &_4, &_2) == SUCCESS
 		  ; zephir_hash_move_forward_ex(_3, &_2)

@@ -12,31 +12,13 @@
 #include <Zend/zend_interfaces.h>
 
 #include "kernel/main.h"
-#include "kernel/object.h"
-#include "kernel/exception.h"
 #include "kernel/fcall.h"
 #include "kernel/memory.h"
+#include "kernel/exception.h"
 #include "kernel/operators.h"
 #include "kernel/array.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Mvc\Model\Validator\Regex
  *
@@ -74,9 +56,6 @@ ZEPHIR_INIT_CLASS(Phalcon_Mvc_Model_Validator_Regex) {
 
 /**
  * Executes the validator
- *
- * @param Phalcon\Mvc\ModelInterface record
- * @return boolean
  */
 PHP_METHOD(Phalcon_Mvc_Model_Validator_Regex, validate) {
 
@@ -91,17 +70,13 @@ PHP_METHOD(Phalcon_Mvc_Model_Validator_Regex, validate) {
 
 
 
-	if (!(zephir_instance_of_ev(record, phalcon_mvc_modelinterface_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Parameter 'record' must be an instance of 'Phalcon\\Mvc\\ModelInterface'", "", 0);
-		return;
-	}
 	ZEPHIR_INIT_VAR(_0);
 	ZVAL_STRING(_0, "field", ZEPHIR_TEMP_PARAM_COPY);
 	ZEPHIR_CALL_METHOD(&field, this_ptr, "getoption", NULL, _0);
 	zephir_check_temp_parameter(_0);
 	zephir_check_call_status();
 	if (Z_TYPE_P(field) != IS_STRING) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_mvc_model_exception_ce, "Field name must be a string", "phalcon/mvc/model/validator/regex.zep", 67);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_mvc_model_exception_ce, "Field name must be a string", "phalcon/mvc/model/validator/regex.zep", 64);
 		return;
 	}
 	ZEPHIR_INIT_NVAR(_0);
@@ -110,7 +85,7 @@ PHP_METHOD(Phalcon_Mvc_Model_Validator_Regex, validate) {
 	zephir_check_temp_parameter(_0);
 	zephir_check_call_status();
 	if (!(zephir_is_true(_1))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_mvc_model_exception_ce, "Validator requires a perl-compatible regex pattern", "phalcon/mvc/model/validator/regex.zep", 74);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_mvc_model_exception_ce, "Validator requires a perl-compatible regex pattern", "phalcon/mvc/model/validator/regex.zep", 71);
 		return;
 	}
 	ZEPHIR_CALL_METHOD(&value, record, "readattribute", NULL, field);
@@ -140,7 +115,7 @@ PHP_METHOD(Phalcon_Mvc_Model_Validator_Regex, validate) {
 	Z_UNSET_ISREF_P(matches);
 	zephir_check_call_status();
 	if (zephir_is_true(_4)) {
-		zephir_array_fetch_long(&_6, matches, 0, PH_NOISY | PH_READONLY, "phalcon/mvc/model/validator/regex.zep", 93 TSRMLS_CC);
+		zephir_array_fetch_long(&_6, matches, 0, PH_NOISY | PH_READONLY, "phalcon/mvc/model/validator/regex.zep", 90 TSRMLS_CC);
 		failed = !ZEPHIR_IS_EQUAL(_6, value);
 	} else {
 		failed = 1;
@@ -156,7 +131,7 @@ PHP_METHOD(Phalcon_Mvc_Model_Validator_Regex, validate) {
 			ZVAL_STRING(message, "Value of field ':field' doesn't match regular expression", 1);
 		}
 		ZEPHIR_INIT_VAR(_7);
-		array_init_size(_7, 2);
+		zephir_create_array(_7, 1, 0 TSRMLS_CC);
 		zephir_array_update_string(&_7, SL(":field"), &field, PH_COPY | PH_SEPARATE);
 		ZEPHIR_CALL_FUNCTION(&_8, "strtr", &_9, message, _7);
 		zephir_check_call_status();

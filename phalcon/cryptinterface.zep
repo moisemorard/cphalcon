@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -29,97 +29,61 @@ interface CryptInterface
 
 	/**
 	 * Sets the cipher algorithm
-	 *
-	 * @param string cipher
-	 * @return Phalcon\EncryptInterface
 	 */
-	public function setCipher(cipher);
+	public function setCipher(string! cipher) -> <CryptInterface>;
 
 	/**
 	 * Returns the current cipher
-	 *
-	 * @return string
 	 */
-	public function getCipher();
+	public function getCipher() -> string;
 
 	/**
 	 * Sets the encrypt/decrypt mode
-	 *
-	 * @param string cipher
-	 * @return Phalcon\EncryptInterface
 	 */
-	public function setMode(mode);
+	public function setMode(string! mode) -> <CryptInterface>;
 
 	/**
 	 * Returns the current encryption mode
-	 *
-	 * @return string
 	 */
-	public function getMode();
+	public function getMode() -> string;
 
 	/**
 	 * Sets the encryption key
-	 *
-	 * @param string key
-	 * @return Phalcon\EncryptInterface
 	 */
-	public function setKey(key);
+	public function setKey(string! key) -> <CryptInterface>;
 
 	/**
 	 * Returns the encryption key
-	 *
-	 * @return string
 	 */
-	public function getKey();
+	public function getKey() -> string;
 
 	/**
 	 * Encrypts a text
-	 *
-	 * @param string text
-	 * @param string key
-	 * @return string
 	 */
-	public function encrypt(text, key=null);
+	public function encrypt(string! text, key = null) -> string;
 
 	/**
 	 * Decrypts a text
-	 *
-	 * @param string text
-	 * @param string key
-	 * @return string
 	 */
-	public function decrypt(text, key=null);
+	public function decrypt(string! text, string! key = null) -> string;
 
 	/**
 	 * Encrypts a text returning the result as a base64 string
-	 *
-	 * @param string text
-	 * @param string key
-	 * @return string
 	 */
-	public function encryptBase64(text, key=null);
+	public function encryptBase64(string! text, key = null) -> string;
 
 	/**
 	 * Decrypt a text that is coded as a base64 string
-	 *
-	 * @param string text
-	 * @param string key
-	 * @return string
 	 */
-	public function decryptBase64(text, key=null);
+	public function decryptBase64(string! text, key = null) -> string;
 
 	/**
 	 * Returns a list of available cyphers
-	 *
-	 * @return array
 	 */
-	public function getAvailableCiphers();
+	public function getAvailableCiphers() -> array;
 
 	/**
 	 * Returns a list of available modes
-	 *
-	 * @return array
 	 */
-	public function getAvailableModes();
-
+	public function getAvailableModes() -> array;
 }

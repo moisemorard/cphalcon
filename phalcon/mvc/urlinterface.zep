@@ -3,7 +3,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -63,7 +63,7 @@ interface UrlInterface
 	 * @param bool $local
 	 * @return string
 	 */
-	public function get(uri=null, args=null, boolean local=null);
+	public function get(uri = null, args = null, boolean local = null);
 
 	/**
 	 * Generates a local path
@@ -71,6 +71,6 @@ interface UrlInterface
 	 * @param string path
 	 * @return string
 	 */
-	public function path(path=null);
+	public function path(path = null);
 
 }

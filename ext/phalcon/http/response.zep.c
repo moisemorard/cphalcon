@@ -20,27 +20,11 @@
 #include "kernel/hash.h"
 #include "kernel/array.h"
 #include "kernel/concat.h"
+#include "ext/date/php_date.h"
 #include "kernel/string.h"
 #include "kernel/file.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Http\Response
  *
@@ -118,8 +102,6 @@ PHP_METHOD(Phalcon_Http_Response, __construct) {
 
 /**
  * Sets the dependency injector
- *
- * @param Phalcon\DiInterface dependencyInjector
  */
 PHP_METHOD(Phalcon_Http_Response, setDI) {
 
@@ -129,18 +111,12 @@ PHP_METHOD(Phalcon_Http_Response, setDI) {
 
 
 
-	if (!(zephir_instance_of_ev(dependencyInjector, phalcon_diinterface_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STRW(spl_ce_InvalidArgumentException, "Parameter 'dependencyInjector' must be an instance of 'Phalcon\\DiInterface'", "", 0);
-		return;
-	}
 	zephir_update_property_this(this_ptr, SL("_dependencyInjector"), dependencyInjector TSRMLS_CC);
 
 }
 
 /**
  * Returns the internal dependency injector
- *
- * @return Phalcon\DiInterface
  */
 PHP_METHOD(Phalcon_Http_Response, getDI) {
 
@@ -156,7 +132,7 @@ PHP_METHOD(Phalcon_Http_Response, getDI) {
 		ZEPHIR_CALL_CE_STATIC(&dependencyInjector, phalcon_di_ce, "getdefault", &_1);
 		zephir_check_call_status();
 		if (Z_TYPE_P(dependencyInjector) != IS_OBJECT) {
-			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_http_response_exception_ce, "A dependency injection object is required to access the 'url' service", "phalcon/http/response.zep", 102);
+			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_http_response_exception_ce, "A dependency injection object is required to access the 'url' service", "phalcon/http/response.zep", 99);
 			return;
 		}
 		zephir_update_property_this(this_ptr, SL("_dependencyInjector"), dependencyInjector TSRMLS_CC);
@@ -171,10 +147,6 @@ PHP_METHOD(Phalcon_Http_Response, getDI) {
  *<code>
  *	$response->setStatusCode(404, "Not Found");
  *</code>
- *
- * @param int code
- * @param string message
- * @return Phalcon\Http\ResponseInterface
  */
 PHP_METHOD(Phalcon_Http_Response, setStatusCode) {
 
@@ -206,7 +178,7 @@ PHP_METHOD(Phalcon_Http_Response, setStatusCode) {
 	zephir_check_call_status();
 	if (Z_TYPE_P(currentHeadersRaw) == IS_ARRAY) {
 		ZEPHIR_INIT_VAR(_0);
-		zephir_is_iterable(currentHeadersRaw, &_2, &_1, 0, 0, "phalcon/http/response.zep", 138);
+		zephir_is_iterable(currentHeadersRaw, &_2, &_1, 0, 0, "phalcon/http/response.zep", 131);
 		for (
 		  ; zephir_hash_get_current_data_ex(_2, (void**) &_3, &_1) == SUCCESS
 		  ; zephir_hash_move_forward_ex(_2, &_1)
@@ -232,7 +204,7 @@ PHP_METHOD(Phalcon_Http_Response, setStatusCode) {
 		zephir_read_property_this(&_9, this_ptr, SL("_statusCodes"), PH_NOISY_CC);
 		if (Z_TYPE_P(_9) != IS_ARRAY) {
 			ZEPHIR_INIT_VAR(_10);
-			array_init_size(_10, 73);
+			zephir_create_array(_10, 59, 0 TSRMLS_CC);
 			add_index_stringl(_10, 100, SL("Continue"), 1);
 			add_index_stringl(_10, 101, SL("Switching Protocols"), 1);
 			add_index_stringl(_10, 102, SL("Processing"), 1);
@@ -294,12 +266,12 @@ PHP_METHOD(Phalcon_Http_Response, setStatusCode) {
 		}
 		_11 = zephir_fetch_nproperty_this(this_ptr, SL("_statusCodes"), PH_NOISY_CC);
 		if (!(zephir_array_isset_long(_11, code))) {
-			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_http_response_exception_ce, "Non-standard statuscode given withou a message.", "phalcon/http/response.zep", 212);
+			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_http_response_exception_ce, "Non-standard statuscode given without a message", "phalcon/http/response.zep", 205);
 			return;
 		}
 		_12 = zephir_fetch_nproperty_this(this_ptr, SL("_statusCodes"), PH_NOISY_CC);
 		ZEPHIR_OBS_VAR(defaultMessage);
-		zephir_array_fetch_long(&defaultMessage, _12, code, PH_NOISY, "phalcon/http/response.zep", 215 TSRMLS_CC);
+		zephir_array_fetch_long(&defaultMessage, _12, code, PH_NOISY, "phalcon/http/response.zep", 208 TSRMLS_CC);
 		zephir_get_strval(message, defaultMessage);
 	}
 	ZEPHIR_SINIT_NVAR(_5);
@@ -317,16 +289,37 @@ PHP_METHOD(Phalcon_Http_Response, setStatusCode) {
 	ZEPHIR_CALL_METHOD(NULL, headers, "set", NULL, _0, _15);
 	zephir_check_temp_parameter(_0);
 	zephir_check_call_status();
-	zephir_update_property_this(this_ptr, SL("_headers"), headers TSRMLS_CC);
 	RETURN_THIS();
 
 }
 
 /**
- * Sets a headers bag for the response externally
+ * Returns the status code
  *
- * @param Phalcon\Http\Response\HeadersInterface headers
- * @return Phalcon\Http\ResponseInterface
+ *<code>
+ *	print_r($response->getStatusCode());
+ *</code>
+ */
+PHP_METHOD(Phalcon_Http_Response, getStatusCode) {
+
+	int ZEPHIR_LAST_CALL_STATUS;
+	zval *_0 = NULL, *_1;
+
+	ZEPHIR_MM_GROW();
+
+	ZEPHIR_CALL_METHOD(&_0, this_ptr, "getheaders", NULL);
+	zephir_check_call_status();
+	ZEPHIR_INIT_VAR(_1);
+	ZVAL_STRING(_1, "Status", ZEPHIR_TEMP_PARAM_COPY);
+	ZEPHIR_RETURN_CALL_METHOD(_0, "get", NULL, _1);
+	zephir_check_temp_parameter(_1);
+	zephir_check_call_status();
+	RETURN_MM();
+
+}
+
+/**
+ * Sets a headers bag for the response externally
  */
 PHP_METHOD(Phalcon_Http_Response, setHeaders) {
 
@@ -336,10 +329,6 @@ PHP_METHOD(Phalcon_Http_Response, setHeaders) {
 
 
 
-	if (!(zephir_instance_of_ev(headers, phalcon_http_response_headersinterface_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STRW(spl_ce_InvalidArgumentException, "Parameter 'headers' must be an instance of 'Phalcon\\Http\\Response\\HeadersInterface'", "", 0);
-		return;
-	}
 	zephir_update_property_this(this_ptr, SL("_headers"), headers TSRMLS_CC);
 	RETURN_THISW();
 
@@ -347,8 +336,6 @@ PHP_METHOD(Phalcon_Http_Response, setHeaders) {
 
 /**
  * Returns headers set by the user
- *
- * @return Phalcon\Http\Response\HeadersInterface
  */
 PHP_METHOD(Phalcon_Http_Response, getHeaders) {
 
@@ -374,9 +361,6 @@ PHP_METHOD(Phalcon_Http_Response, getHeaders) {
 
 /**
  * Sets a cookies bag for the response externally
- *
- * @param Phalcon\Http\Response\CookiesInterface cookies
- * @return Phalcon\Http\ResponseInterface
  */
 PHP_METHOD(Phalcon_Http_Response, setCookies) {
 
@@ -386,10 +370,6 @@ PHP_METHOD(Phalcon_Http_Response, setCookies) {
 
 
 
-	if (!(zephir_instance_of_ev(cookies, phalcon_http_response_cookiesinterface_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STRW(spl_ce_InvalidArgumentException, "Parameter 'cookies' must be an instance of 'Phalcon\\Http\\Response\\CookiesInterface'", "", 0);
-		return;
-	}
 	zephir_update_property_this(this_ptr, SL("_cookies"), cookies TSRMLS_CC);
 	RETURN_THISW();
 
@@ -416,7 +396,7 @@ PHP_METHOD(Phalcon_Http_Response, getCookies) {
  *
  * @param string name
  * @param string value
- * @return Phalcon\Http\ResponseInterface
+ * @return Phalcon\Http\Response
  */
 PHP_METHOD(Phalcon_Http_Response, setHeader) {
 
@@ -444,9 +424,6 @@ PHP_METHOD(Phalcon_Http_Response, setHeader) {
  *<code>
  *	$response->setRawHeader("HTTP/1.1 404 Not Found");
  *</code>
- *
- * @param string header
- * @return Phalcon\Http\ResponseInterface
  */
 PHP_METHOD(Phalcon_Http_Response, setRawHeader) {
 
@@ -470,8 +447,6 @@ PHP_METHOD(Phalcon_Http_Response, setRawHeader) {
 
 /**
  * Resets all the stablished headers
- *
- * @return Phalcon\Http\ResponseInterface
  */
 PHP_METHOD(Phalcon_Http_Response, resetHeaders) {
 
@@ -494,9 +469,6 @@ PHP_METHOD(Phalcon_Http_Response, resetHeaders) {
  *<code>
  *	$this->response->setExpires(new DateTime());
  *</code>
- *
- * @param DateTime datetime
- * @return Phalcon\Http\ResponseInterface
  */
 PHP_METHOD(Phalcon_Http_Response, setExpires) {
 
@@ -508,10 +480,6 @@ PHP_METHOD(Phalcon_Http_Response, setExpires) {
 
 
 
-	if (!(zephir_instance_of_ev(datetime, zephir_get_internal_ce(SS("datetime") TSRMLS_CC) TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Parameter 'datetime' must be an instance of 'DateTime'", "", 0);
-		return;
-	}
 	ZEPHIR_CALL_METHOD(&headers, this_ptr, "getheaders", NULL);
 	zephir_check_call_status();
 	ZEPHIR_INIT_VAR(date);
@@ -519,7 +487,7 @@ PHP_METHOD(Phalcon_Http_Response, setExpires) {
 		RETURN_MM();
 	}
 	ZEPHIR_INIT_VAR(_0);
-	object_init_ex(_0, zephir_get_internal_ce(SS("datetimezone") TSRMLS_CC));
+	object_init_ex(_0, php_date_get_timezone_ce());
 	ZEPHIR_INIT_VAR(_1);
 	ZVAL_STRING(_1, "UTC", ZEPHIR_TEMP_PARAM_COPY);
 	ZEPHIR_CALL_METHOD(NULL, _0, "__construct", NULL, _1);
@@ -545,8 +513,6 @@ PHP_METHOD(Phalcon_Http_Response, setExpires) {
 
 /**
  * Sends a Not-Modified response
- *
- * @return Phalcon\Http\ResponseInterface
  */
 PHP_METHOD(Phalcon_Http_Response, setNotModified) {
 
@@ -576,7 +542,7 @@ PHP_METHOD(Phalcon_Http_Response, setNotModified) {
  *
  * @param string contentType
  * @param string charset
- * @return Phalcon\Http\ResponseInterface
+ * @return Phalcon\Http\Response
  */
 PHP_METHOD(Phalcon_Http_Response, setContentType) {
 
@@ -620,9 +586,6 @@ PHP_METHOD(Phalcon_Http_Response, setContentType) {
  *<code>
  *	$response->setEtag(md5(time()));
  *</code>
- *
- * @param string etag
- * @return Phalcon\Http\ResponseInterface
  */
 PHP_METHOD(Phalcon_Http_Response, setEtag) {
 
@@ -667,7 +630,7 @@ PHP_METHOD(Phalcon_Http_Response, setEtag) {
  * @param string|array location
  * @param boolean externalRedirect
  * @param int statusCode
- * @return Phalcon\Http\ResponseInterface
+ * @return Phalcon\Http\Response
  */
 PHP_METHOD(Phalcon_Http_Response, redirect) {
 
@@ -761,7 +724,7 @@ PHP_METHOD(Phalcon_Http_Response, redirect) {
 		statusCode = 302;
 		_7 = zephir_fetch_nproperty_this(this_ptr, SL("_statusCodes"), PH_NOISY_CC);
 		ZEPHIR_OBS_VAR(message);
-		zephir_array_fetch_long(&message, _7, 302, PH_NOISY, "phalcon/http/response.zep", 478 TSRMLS_CC);
+		zephir_array_fetch_long(&message, _7, 302, PH_NOISY, "phalcon/http/response.zep", 461 TSRMLS_CC);
 	} else {
 		ZEPHIR_OBS_NVAR(message);
 		_7 = zephir_fetch_nproperty_this(this_ptr, SL("_statusCodes"), PH_NOISY_CC);
@@ -786,9 +749,6 @@ PHP_METHOD(Phalcon_Http_Response, redirect) {
  *<code>
  *	response->setContent("<h1>Hello!</h1>");
  *</code>
- *
- * @param string content
- * @return Phalcon\Http\ResponseInterface
  */
 PHP_METHOD(Phalcon_Http_Response, setContent) {
 
@@ -815,7 +775,7 @@ PHP_METHOD(Phalcon_Http_Response, setContent) {
  *
  * @param mixed content
  * @param int jsonOptions
- * @return Phalcon\Http\ResponseInterface
+ * @return Phalcon\Http\Response
  */
 PHP_METHOD(Phalcon_Http_Response, setJsonContent) {
 
@@ -841,7 +801,7 @@ PHP_METHOD(Phalcon_Http_Response, setJsonContent) {
  * Appends a string to the HTTP response body
  *
  * @param string content
- * @return Phalcon\Http\ResponseInterface
+ * @return Phalcon\Http\Response
  */
 PHP_METHOD(Phalcon_Http_Response, appendContent) {
 
@@ -864,8 +824,6 @@ PHP_METHOD(Phalcon_Http_Response, appendContent) {
 
 /**
  * Gets the HTTP response body
- *
- * @return string
  */
 PHP_METHOD(Phalcon_Http_Response, getContent) {
 
@@ -876,8 +834,6 @@ PHP_METHOD(Phalcon_Http_Response, getContent) {
 
 /**
  * Check if the response is already sent
- *
- * @return boolean
  */
 PHP_METHOD(Phalcon_Http_Response, isSent) {
 
@@ -888,8 +844,6 @@ PHP_METHOD(Phalcon_Http_Response, isSent) {
 
 /**
  * Sends headers to the client
- *
- * @return Phalcon\Http\ResponseInterface
  */
 PHP_METHOD(Phalcon_Http_Response, sendHeaders) {
 
@@ -910,8 +864,6 @@ PHP_METHOD(Phalcon_Http_Response, sendHeaders) {
 
 /**
  * Sends cookies to the client
- *
- * @return Phalcon\Http\ResponseInterface
  */
 PHP_METHOD(Phalcon_Http_Response, sendCookies) {
 
@@ -932,8 +884,6 @@ PHP_METHOD(Phalcon_Http_Response, sendCookies) {
 
 /**
  * Prints out HTTP response to the client
- *
- * @return Phalcon\Http\ResponseInterface
  */
 PHP_METHOD(Phalcon_Http_Response, send) {
 
@@ -946,7 +896,7 @@ PHP_METHOD(Phalcon_Http_Response, send) {
 
 	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_sent"), PH_NOISY_CC);
 	if (zephir_is_true(_0)) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_http_response_exception_ce, "Response was already sent", "phalcon/http/response.zep", 598);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_http_response_exception_ce, "Response was already sent", "phalcon/http/response.zep", 568);
 		return;
 	}
 	ZEPHIR_OBS_VAR(headers);
@@ -987,7 +937,7 @@ PHP_METHOD(Phalcon_Http_Response, send) {
  *
  * @param string filePath
  * @param string attachmentName
- * @return Phalcon\Http\ResponseInterface
+ * @return Phalcon\Http\Response
  */
 PHP_METHOD(Phalcon_Http_Response, setFileToSend) {
 

@@ -24,23 +24,6 @@
 #include "kernel/concat.h"
 
 
-/*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
- */
 /**
  * Phalcon\Mvc\Router\Annotations
  *
@@ -80,10 +63,6 @@ ZEPHIR_INIT_CLASS(Phalcon_Mvc_Router_Annotations) {
 /**
  * Adds a resource to the annotations handler
  * A resource is a class that contains routing annotations
- *
- * @param string handler
- * @param string prefix
- * @return Phalcon\Mvc\Router\Annotations
  */
 PHP_METHOD(Phalcon_Mvc_Router_Annotations, addResource) {
 
@@ -124,7 +103,7 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, addResource) {
 
 
 	ZEPHIR_INIT_VAR(_0);
-	array_init_size(_0, 3);
+	zephir_create_array(_0, 2, 0 TSRMLS_CC);
 	zephir_array_fast_append(_0, prefix);
 	zephir_array_fast_append(_0, handler);
 	zephir_update_property_array_append(this_ptr, SL("_handlers"), _0 TSRMLS_CC);
@@ -137,11 +116,6 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, addResource) {
  * Adds a resource to the annotations handler
  * A resource is a class that contains routing annotations
  * The class is located in a module
- *
- * @param string module
- * @param string handler
- * @param string prefix
- * @return Phalcon\Mvc\Router\Annotations
  */
 PHP_METHOD(Phalcon_Mvc_Router_Annotations, addModuleResource) {
 
@@ -193,7 +167,7 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, addModuleResource) {
 
 
 	ZEPHIR_INIT_VAR(_0);
-	array_init_size(_0, 5);
+	zephir_create_array(_0, 3, 0 TSRMLS_CC);
 	zephir_array_fast_append(_0, prefix);
 	zephir_array_fast_append(_0, handler);
 	zephir_array_fast_append(_0, module);
@@ -205,17 +179,15 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, addModuleResource) {
 
 /**
  * Produce the routing parameters from the rewrite information
- *
- * @param string uri
  */
 PHP_METHOD(Phalcon_Mvc_Router_Annotations, handle) {
 
-	zephir_nts_static zephir_fcall_cache_entry *_18 = NULL;
-	zephir_fcall_cache_entry *_9 = NULL, *_17 = NULL;
-	HashTable *_2, *_7, *_11, *_15;
-	HashPosition _1, _6, _10, _14;
+	zephir_nts_static zephir_fcall_cache_entry *_19 = NULL;
+	zephir_fcall_cache_entry *_6 = NULL, *_10 = NULL, *_18 = NULL;
+	HashTable *_2, *_8, *_12, *_16;
+	HashPosition _1, _7, _11, _15;
 	int ZEPHIR_LAST_CALL_STATUS;
-	zval *uri_param = NULL, *realUri = NULL, *annotationsService = NULL, *handlers, *controllerSuffix, *scope = NULL, *prefix = NULL, *dependencyInjector = NULL, *handler = NULL, *controllerName = NULL, *lowerControllerName = NULL, *namespaceName = NULL, *moduleName = NULL, *sufixed = NULL, *handlerAnnotations = NULL, *classAnnotations = NULL, *annotations = NULL, *annotation = NULL, *methodAnnotations = NULL, *lowercased = NULL, *method = NULL, *collection = NULL, *_0, **_3, *_4, *_5 = NULL, **_8, **_12, *_13 = NULL, **_16;
+	zval *uri_param = NULL, *realUri = NULL, *annotationsService = NULL, *handlers, *controllerSuffix, *scope = NULL, *prefix = NULL, *dependencyInjector = NULL, *handler = NULL, *controllerName = NULL, *lowerControllerName = NULL, *namespaceName = NULL, *moduleName = NULL, *sufixed = NULL, *handlerAnnotations = NULL, *classAnnotations = NULL, *annotations = NULL, *annotation = NULL, *methodAnnotations = NULL, *lowercased = NULL, *method = NULL, *collection = NULL, *_0, **_3, *_4, *_5 = NULL, **_9, **_13, *_14 = NULL, **_17;
 	zval *uri = NULL;
 
 	ZEPHIR_MM_GROW();
@@ -254,7 +226,7 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, handle) {
 		if (Z_TYPE_P(handlers) == IS_ARRAY) {
 			ZEPHIR_OBS_VAR(controllerSuffix);
 			zephir_read_property_this(&controllerSuffix, this_ptr, SL("_controllerSuffix"), PH_NOISY_CC);
-			zephir_is_iterable(handlers, &_2, &_1, 0, 0, "phalcon/mvc/router/annotations.zep", 221);
+			zephir_is_iterable(handlers, &_2, &_1, 0, 0, "phalcon/mvc/router/annotations.zep", 208);
 			for (
 			  ; zephir_hash_get_current_data_ex(_2, (void**) &_3, &_1) == SUCCESS
 			  ; zephir_hash_move_forward_ex(_2, &_1)
@@ -262,7 +234,7 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, handle) {
 				ZEPHIR_GET_HVALUE(scope, _3);
 				if (Z_TYPE_P(scope) == IS_ARRAY) {
 					ZEPHIR_OBS_NVAR(prefix);
-					zephir_array_fetch_long(&prefix, scope, 0, PH_NOISY, "phalcon/mvc/router/annotations.zep", 130 TSRMLS_CC);
+					zephir_array_fetch_long(&prefix, scope, 0, PH_NOISY, "phalcon/mvc/router/annotations.zep", 117 TSRMLS_CC);
 					if (!(ZEPHIR_IS_EMPTY(prefix))) {
 						if (!(zephir_start_with(realUri, prefix, NULL))) {
 							continue;
@@ -272,18 +244,18 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, handle) {
 						_4 = zephir_fetch_nproperty_this(this_ptr, SL("_dependencyInjector"), PH_NOISY_CC);
 						ZEPHIR_CPY_WRT(dependencyInjector, _4);
 						if (Z_TYPE_P(dependencyInjector) != IS_OBJECT) {
-							ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_mvc_router_exception_ce, "A dependency injection container is required to access the 'annotations' service", "phalcon/mvc/router/annotations.zep", 142);
+							ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_mvc_router_exception_ce, "A dependency injection container is required to access the 'annotations' service", "phalcon/mvc/router/annotations.zep", 129);
 							return;
 						}
 						ZEPHIR_INIT_NVAR(_5);
 						ZVAL_STRING(_5, "annotations", ZEPHIR_TEMP_PARAM_COPY);
-						ZEPHIR_CALL_METHOD(&annotationsService, dependencyInjector, "getshared", NULL, _5);
+						ZEPHIR_CALL_METHOD(&annotationsService, dependencyInjector, "getshared", &_6, _5);
 						zephir_check_temp_parameter(_5);
 						zephir_check_call_status();
 					}
 					ZEPHIR_OBS_NVAR(handler);
-					zephir_array_fetch_long(&handler, scope, 1, PH_NOISY, "phalcon/mvc/router/annotations.zep", 151 TSRMLS_CC);
-					if (zephir_memnstr_str(handler, SL("\\"), "phalcon/mvc/router/annotations.zep", 153)) {
+					zephir_array_fetch_long(&handler, scope, 1, PH_NOISY, "phalcon/mvc/router/annotations.zep", 138 TSRMLS_CC);
+					if (zephir_memnstr_str(handler, SL("\\"), "phalcon/mvc/router/annotations.zep", 140)) {
 						ZEPHIR_INIT_NVAR(controllerName);
 						zephir_get_class_ns(controllerName, handler, 0 TSRMLS_CC);
 						ZEPHIR_INIT_NVAR(lowerControllerName);
@@ -311,13 +283,13 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, handle) {
 							ZEPHIR_CALL_METHOD(&annotations, classAnnotations, "getannotations", NULL);
 							zephir_check_call_status();
 							if (Z_TYPE_P(annotations) == IS_ARRAY) {
-								zephir_is_iterable(annotations, &_7, &_6, 0, 0, "phalcon/mvc/router/annotations.zep", 200);
+								zephir_is_iterable(annotations, &_8, &_7, 0, 0, "phalcon/mvc/router/annotations.zep", 187);
 								for (
-								  ; zephir_hash_get_current_data_ex(_7, (void**) &_8, &_6) == SUCCESS
-								  ; zephir_hash_move_forward_ex(_7, &_6)
+								  ; zephir_hash_get_current_data_ex(_8, (void**) &_9, &_7) == SUCCESS
+								  ; zephir_hash_move_forward_ex(_8, &_7)
 								) {
-									ZEPHIR_GET_HVALUE(annotation, _8);
-									ZEPHIR_CALL_METHOD(NULL, this_ptr, "processcontrollerannotation", &_9, controllerName, annotation);
+									ZEPHIR_GET_HVALUE(annotation, _9);
+									ZEPHIR_CALL_METHOD(NULL, this_ptr, "processcontrollerannotation", &_10, controllerName, annotation);
 									zephir_check_call_status();
 								}
 							}
@@ -327,23 +299,23 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, handle) {
 						if (Z_TYPE_P(methodAnnotations) == IS_ARRAY) {
 							ZEPHIR_INIT_NVAR(lowercased);
 							zephir_uncamelize(lowercased, handler);
-							zephir_is_iterable(methodAnnotations, &_11, &_10, 0, 0, "phalcon/mvc/router/annotations.zep", 216);
+							zephir_is_iterable(methodAnnotations, &_12, &_11, 0, 0, "phalcon/mvc/router/annotations.zep", 203);
 							for (
-							  ; zephir_hash_get_current_data_ex(_11, (void**) &_12, &_10) == SUCCESS
-							  ; zephir_hash_move_forward_ex(_11, &_10)
+							  ; zephir_hash_get_current_data_ex(_12, (void**) &_13, &_11) == SUCCESS
+							  ; zephir_hash_move_forward_ex(_12, &_11)
 							) {
-								ZEPHIR_GET_HMKEY(method, _11, _10);
-								ZEPHIR_GET_HVALUE(collection, _12);
+								ZEPHIR_GET_HMKEY(method, _12, _11);
+								ZEPHIR_GET_HVALUE(collection, _13);
 								if (Z_TYPE_P(collection) == IS_OBJECT) {
-									ZEPHIR_CALL_METHOD(&_13, collection, "getannotations", NULL);
+									ZEPHIR_CALL_METHOD(&_14, collection, "getannotations", NULL);
 									zephir_check_call_status();
-									zephir_is_iterable(_13, &_15, &_14, 0, 0, "phalcon/mvc/router/annotations.zep", 214);
+									zephir_is_iterable(_14, &_16, &_15, 0, 0, "phalcon/mvc/router/annotations.zep", 201);
 									for (
-									  ; zephir_hash_get_current_data_ex(_15, (void**) &_16, &_14) == SUCCESS
-									  ; zephir_hash_move_forward_ex(_15, &_14)
+									  ; zephir_hash_get_current_data_ex(_16, (void**) &_17, &_15) == SUCCESS
+									  ; zephir_hash_move_forward_ex(_16, &_15)
 									) {
-										ZEPHIR_GET_HVALUE(annotation, _16);
-										ZEPHIR_CALL_METHOD(NULL, this_ptr, "processactionannotation", &_17, moduleName, namespaceName, lowerControllerName, method, annotation);
+										ZEPHIR_GET_HVALUE(annotation, _17);
+										ZEPHIR_CALL_METHOD(NULL, this_ptr, "processactionannotation", &_18, moduleName, namespaceName, lowerControllerName, method, annotation);
 										zephir_check_call_status();
 									}
 								}
@@ -355,7 +327,7 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, handle) {
 		}
 		zephir_update_property_this(this_ptr, SL("_processed"), (1) ? ZEPHIR_GLOBAL(global_true) : ZEPHIR_GLOBAL(global_false) TSRMLS_CC);
 	}
-	ZEPHIR_CALL_PARENT(NULL, phalcon_mvc_router_annotations_ce, this_ptr, "handle", &_18, realUri);
+	ZEPHIR_CALL_PARENT(NULL, phalcon_mvc_router_annotations_ce, this_ptr, "handle", &_19, realUri);
 	zephir_check_call_status();
 	ZEPHIR_MM_RESTORE();
 
@@ -363,9 +335,6 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, handle) {
 
 /**
  * Checks for annotations in the controller docblock
- *
- * @param string handler
- * @param Phalcon\Annotations\Annotation
  */
 PHP_METHOD(Phalcon_Mvc_Router_Annotations, processControllerAnnotation) {
 
@@ -389,10 +358,6 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, processControllerAnnotation) {
 	}
 
 
-	if (!(zephir_instance_of_ev(annotation, phalcon_annotations_annotation_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Parameter 'annotation' must be an instance of 'Phalcon\\Annotations\\Annotation'", "", 0);
-		return;
-	}
 	ZEPHIR_CALL_METHOD(&_0, annotation, "getname", NULL);
 	zephir_check_call_status();
 	if (ZEPHIR_IS_STRING(_0, "RoutePrefix")) {
@@ -474,10 +439,6 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, processActionAnnotation) {
 	}
 
 
-	if (!(zephir_instance_of_ev(annotation, phalcon_annotations_annotation_ce TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Parameter 'annotation' must be an instance of 'Phalcon\\Annotations\\Annotation'", "", 0);
-		return;
-	}
 	isRoute = 0;
 	ZEPHIR_INIT_VAR(methods);
 	ZVAL_NULL(methods);
@@ -516,7 +477,7 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, processActionAnnotation) {
 		_1 = zephir_fetch_nproperty_this(this_ptr, SL("_actionSuffix"), PH_NOISY_CC);
 		ZEPHIR_SINIT_VAR(_2);
 		ZVAL_STRING(&_2, "", 0);
-		zephir_fast_str_replace(_0, _1, &_2, action TSRMLS_CC);
+		zephir_fast_str_replace(&_0, _1, &_2, action TSRMLS_CC);
 		zephir_fast_strtolower(actionName, _0);
 		ZEPHIR_OBS_VAR(routePrefix);
 		zephir_read_property_this(&routePrefix, this_ptr, SL("_routePrefix"), PH_NOISY_CC);
@@ -579,7 +540,7 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, processActionAnnotation) {
 		zephir_check_temp_parameter(_3);
 		zephir_check_call_status();
 		if (Z_TYPE_P(converts) == IS_ARRAY) {
-			zephir_is_iterable(converts, &_5, &_4, 0, 0, "phalcon/mvc/router/annotations.zep", 364);
+			zephir_is_iterable(converts, &_5, &_4, 0, 0, "phalcon/mvc/router/annotations.zep", 348);
 			for (
 			  ; zephir_hash_get_current_data_ex(_5, (void**) &_6, &_4) == SUCCESS
 			  ; zephir_hash_move_forward_ex(_5, &_4)
@@ -596,7 +557,7 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, processActionAnnotation) {
 		zephir_check_temp_parameter(_3);
 		zephir_check_call_status();
 		if (Z_TYPE_P(converts) == IS_ARRAY) {
-			zephir_is_iterable(converts, &_9, &_8, 0, 0, "phalcon/mvc/router/annotations.zep", 374);
+			zephir_is_iterable(converts, &_9, &_8, 0, 0, "phalcon/mvc/router/annotations.zep", 358);
 			for (
 			  ; zephir_hash_get_current_data_ex(_9, (void**) &_10, &_8) == SUCCESS
 			  ; zephir_hash_move_forward_ex(_9, &_8)
@@ -624,8 +585,6 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, processActionAnnotation) {
 
 /**
  * Changes the controller class suffix
- *
- * @param string controllerSuffix
  */
 PHP_METHOD(Phalcon_Mvc_Router_Annotations, setControllerSuffix) {
 
@@ -655,8 +614,6 @@ PHP_METHOD(Phalcon_Mvc_Router_Annotations, setControllerSuffix) {
 
 /**
  * Changes the action method suffix
- *
- * @param string actionSuffix
  */
 PHP_METHOD(Phalcon_Mvc_Router_Annotations, setActionSuffix) {
 
