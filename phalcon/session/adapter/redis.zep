@@ -130,7 +130,9 @@ class Redis extends Adapter implements AdapterInterface
         if session_id === null {
             let session_id = this->getId();
         }
-        return this->_redis->delete(session_id);
+        this->_redis->delete(session_id);
+        let this->_started = false;
+        return true;
     }
 
     /**
