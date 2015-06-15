@@ -322,16 +322,7 @@ class Redis extends Backend implements BackendInterface
 	 */
 	public function deleteByTags(tags = null)
 	{
-		var options, specialKey, prefix, prefixedKey, lastKey, redis, keys, key, tag, i = 0, lastKeys = [], prefixedTag;
-
-		let options = this->_options;
-		let prefix = this->_prefix;
-
-		if !isset options["statsKey"] {
-			throw new Exception("Unexpected inconsistency in options");
-		}
-
-		let specialKey = options["statsKey"];
+		var options, specialKey, lastKey, redis, keys, key, tag, i = 0, lastKeys = [], prefixedTag;
 
 		let redis = this->_redis;
 
@@ -339,6 +330,12 @@ class Redis extends Backend implements BackendInterface
 			this->_connect();
 			let redis = this->_redis;
 		}
+		let options = this->_options;
+
+		if !isset options["statsKey"] {
+			throw new Exception("Unexpected inconsistency in options");
+		}
+		let specialKey = options["statsKey"];
 
 		if typeof tags == "array" && !empty tags {
 			for tag in tags{
@@ -348,8 +345,7 @@ class Redis extends Backend implements BackendInterface
 					for key in keys {
 						redis->sRem(prefixedTag, key);
 						redis->sRem(specialKey, prefixedTag);
-						let prefixedKey = prefix . key;
-						let lastKey = "_PHCR" . prefixedKey;
+						let lastKey = "_PHCR" . key;
 						let lastKeys[] = lastKey;
 					}
 					let i += redis->delete(lastKeys);
@@ -363,8 +359,7 @@ class Redis extends Backend implements BackendInterface
 			for key in keys {
 				redis->sRem(prefixedTag, key);
 				redis->sRem(specialKey, prefixedTag);
-				let prefixedKey = prefix . key;
-				let lastKey = "_PHCR" . prefixedKey;
+				let lastKey = "_PHCR" . key;
 				let lastKeys[] = lastKey;
 			}
 			let i += redis->delete(lastKeys);
