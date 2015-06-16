@@ -1633,8 +1633,6 @@ class CacheTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse($cache->exists('data'));
 		$this->assertFalse($cache->exists('data2'));
 	}
-<<<<<<< HEAD
-=======
 
 	protected function _prepareRedis()
 	{
@@ -1854,5 +1852,4 @@ class CacheTest extends PHPUnit_Framework_TestCase
 
 		$this->assertTrue($cache->delete('test-data'));
 	}
->>>>>>> a1e0752efdcb4802938028a869621a741da84019
 }
