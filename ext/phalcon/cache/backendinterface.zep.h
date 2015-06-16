@@ -26,6 +26,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_cache_backendinterface_save, 0, 0, 0)
 	ZEND_ARG_INFO(0, content)
 	ZEND_ARG_INFO(0, lifetime)
 	ZEND_ARG_INFO(0, stopBuffer)
+	ZEND_ARG_INFO(0, tags)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_cache_backendinterface_delete, 0, 0, 1)

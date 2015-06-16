@@ -742,6 +742,15 @@ PHP_METHOD(Phalcon_Assets_Collection, addFilter) {
 
 PHP_METHOD(Phalcon_Assets_Collection, __construct) {
 
+
+	if (EG(called_scope) == phalcon_assets_collection_ce) {
+		zephir_init_properties(this_ptr TSRMLS_CC);
+	}
+
+}
+
+static void zephir_init_properties(zval *this_ptr TSRMLS_DC) {
+
 	zval *_0, *_1, *_2, *_3;
 
 	ZEPHIR_MM_GROW();

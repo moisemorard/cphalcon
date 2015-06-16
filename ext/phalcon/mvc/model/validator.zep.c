@@ -12,10 +12,10 @@
 #include <Zend/zend_interfaces.h>
 
 #include "kernel/main.h"
-#include "kernel/memory.h"
 #include "kernel/object.h"
 #include "ext/spl/spl_exceptions.h"
 #include "kernel/exception.h"
+#include "kernel/memory.h"
 #include "kernel/operators.h"
 #include "kernel/string.h"
 #include "kernel/fcall.h"
@@ -38,21 +38,19 @@ ZEPHIR_INIT_CLASS(Phalcon_Mvc_Model_Validator) {
  */
 PHP_METHOD(Phalcon_Mvc_Model_Validator, __construct) {
 
-	zval *options_param = NULL, *_0;
+	zval *options_param = NULL;
 	zval *options = NULL;
 
-	ZEPHIR_MM_GROW();
-	zephir_fetch_params(1, 1, 0, &options_param);
+	zephir_fetch_params(0, 1, 0, &options_param);
 
 	options = options_param;
 
 
 
-	ZEPHIR_INIT_VAR(_0);
-	array_init(_0);
-	zephir_update_property_this(this_ptr, SL("_messages"), _0 TSRMLS_CC);
+	if (EG(called_scope) == phalcon_mvc_model_validator_ce) {
+		zephir_init_properties(this_ptr TSRMLS_CC);
+	}
 	zephir_update_property_this(this_ptr, SL("_options"), options TSRMLS_CC);
-	ZEPHIR_MM_RESTORE();
 
 }
 
@@ -195,6 +193,19 @@ PHP_METHOD(Phalcon_Mvc_Model_Validator, isSetOption) {
 
 	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_options"), PH_NOISY_CC);
 	RETURN_MM_BOOL(zephir_array_isset(_0, option));
+
+}
+
+static void zephir_init_properties(zval *this_ptr TSRMLS_DC) {
+
+	zval *_0;
+
+	ZEPHIR_MM_GROW();
+
+	ZEPHIR_INIT_VAR(_0);
+	array_init(_0);
+	zephir_update_property_this(this_ptr, SL("_messages"), _0 TSRMLS_CC);
+	ZEPHIR_MM_RESTORE();
 
 }
 

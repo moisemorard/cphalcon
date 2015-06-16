@@ -314,6 +314,7 @@ if test "$PHP_PHALCON" = "yes"; then
 	phalcon/session/adapter/files.zep.c
 	phalcon/session/adapter/libmemcached.zep.c
 	phalcon/session/adapter/memcache.zep.c
+	phalcon/session/adapter/redis.zep.c
 	phalcon/session/adapterinterface.zep.c
 	phalcon/session/bag.zep.c
 	phalcon/session/baginterface.zep.c

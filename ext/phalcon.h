@@ -309,6 +309,7 @@
 #include "phalcon/session/adapter/files.zep.h"
 #include "phalcon/session/adapter/libmemcached.zep.h"
 #include "phalcon/session/adapter/memcache.zep.h"
+#include "phalcon/session/adapter/redis.zep.h"
 #include "phalcon/session/adapterinterface.zep.h"
 #include "phalcon/session/bag.zep.h"
 #include "phalcon/session/baginterface.zep.h"

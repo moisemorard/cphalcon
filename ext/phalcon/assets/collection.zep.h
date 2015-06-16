@@ -39,6 +39,7 @@ PHP_METHOD(Phalcon_Assets_Collection, join);
 PHP_METHOD(Phalcon_Assets_Collection, getRealTargetPath);
 PHP_METHOD(Phalcon_Assets_Collection, addFilter);
 PHP_METHOD(Phalcon_Assets_Collection, __construct);
+static void zephir_init_properties(zval *this_ptr TSRMLS_DC);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_assets_collection_add, 0, 0, 1)
 	ZEND_ARG_OBJ_INFO(0, resource, Phalcon\\Assets\\Resource, 0)

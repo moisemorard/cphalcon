@@ -721,11 +721,11 @@ PHP_METHOD(Phalcon_Db_Dialect_MySQL, addForeignKey) {
 	ZEPHIR_INIT_VAR(sql);
 	if (schemaName && Z_STRLEN_P(schemaName)) {
 		ZEPHIR_INIT_VAR(_0);
-		ZEPHIR_CONCAT_SVSVS(_0, "ALTER TABLE `", schemaName, "`.`", tableName, "` ADD FOREIGN KEY ");
+		ZEPHIR_CONCAT_SVSVS(_0, "ALTER TABLE `", schemaName, "`.`", tableName, "` ADD CONSTRAINT ");
 		ZEPHIR_CPY_WRT(sql, _0);
 	} else {
 		ZEPHIR_INIT_LNVAR(_0);
-		ZEPHIR_CONCAT_SVS(_0, "ALTER TABLE `", tableName, "` ADD FOREIGN KEY ");
+		ZEPHIR_CONCAT_SVS(_0, "ALTER TABLE `", tableName, "` ADD CONSTRAINT ");
 		ZEPHIR_CPY_WRT(sql, _0);
 	}
 	ZEPHIR_CALL_METHOD(&_1, reference, "getname", NULL, 0);
@@ -735,7 +735,7 @@ PHP_METHOD(Phalcon_Db_Dialect_MySQL, addForeignKey) {
 	ZEPHIR_CALL_METHOD(&_2, this_ptr, "getcolumnlist", NULL, 100, _3);
 	zephir_check_call_status();
 	ZEPHIR_INIT_VAR(_4);
-	ZEPHIR_CONCAT_SVSVS(_4, "`", _1, "`(", _2, ") REFERENCES ");
+	ZEPHIR_CONCAT_SVSVS(_4, "`", _1, "` FOREIGN KEY (", _2, ") REFERENCES ");
 	zephir_concat_self(&sql, _4 TSRMLS_CC);
 	ZEPHIR_CALL_METHOD(&referencedSchema, reference, "getreferencedschema", NULL, 0);
 	zephir_check_call_status();

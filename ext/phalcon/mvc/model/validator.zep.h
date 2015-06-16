@@ -9,6 +9,7 @@ PHP_METHOD(Phalcon_Mvc_Model_Validator, getMessages);
 PHP_METHOD(Phalcon_Mvc_Model_Validator, getOptions);
 PHP_METHOD(Phalcon_Mvc_Model_Validator, getOption);
 PHP_METHOD(Phalcon_Mvc_Model_Validator, isSetOption);
+static void zephir_init_properties(zval *this_ptr TSRMLS_DC);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_model_validator___construct, 0, 0, 1)
 	ZEND_ARG_ARRAY_INFO(0, options, 0)

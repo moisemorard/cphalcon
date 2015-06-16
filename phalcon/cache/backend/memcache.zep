@@ -158,11 +158,7 @@ class Memcache extends Backend implements BackendInterface
 	 * @param boolean stopBuffer
 	 * @TODO implement tags completely
 	 */
-<<<<<<< HEAD
-	public function save(var keyName = null, var content = null, var lifetime = null, var stopBuffer = true, tags = null)
-=======
-	public function save(var keyName = null, var content = null, var lifetime = null, boolean stopBuffer = true)
->>>>>>> a1e0752efdcb4802938028a869621a741da84019
+	public function save(var keyName = null, var content = null, var lifetime = null, boolean stopBuffer = true, tags = null)
 	{
 		var lastKey, frontend, memcache, cachedContent, preparedContent, tmp, ttl, success, options,
 			specialKey, keys, isBuffering;

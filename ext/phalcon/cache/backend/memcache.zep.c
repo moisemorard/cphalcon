@@ -217,15 +217,16 @@ PHP_METHOD(Phalcon_Cache_Backend_Memcache, get) {
  * @param string content
  * @param long lifetime
  * @param boolean stopBuffer
+ * @TODO implement tags completely
  */
 PHP_METHOD(Phalcon_Cache_Backend_Memcache, save) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
 	zend_bool stopBuffer;
-	zval *keyName = NULL, *content = NULL, *lifetime = NULL, *stopBuffer_param = NULL, *lastKey = NULL, *frontend, *memcache = NULL, *cachedContent = NULL, *preparedContent = NULL, *tmp, *ttl = NULL, *success = NULL, *options, *specialKey, *keys = NULL, *isBuffering = NULL, *_0, *_1 = NULL;
+	zval *keyName = NULL, *content = NULL, *lifetime = NULL, *stopBuffer_param = NULL, *tags = NULL, *lastKey = NULL, *frontend, *memcache = NULL, *cachedContent = NULL, *preparedContent = NULL, *tmp, *ttl = NULL, *success = NULL, *options, *specialKey, *keys = NULL, *isBuffering = NULL, *_0, *_1 = NULL;
 
 	ZEPHIR_MM_GROW();
-	zephir_fetch_params(1, 0, 4, &keyName, &content, &lifetime, &stopBuffer_param);
+	zephir_fetch_params(1, 0, 5, &keyName, &content, &lifetime, &stopBuffer_param, &tags);
 
 	if (!keyName) {
 		keyName = ZEPHIR_GLOBAL(global_null);
@@ -241,6 +242,9 @@ PHP_METHOD(Phalcon_Cache_Backend_Memcache, save) {
 	} else {
 		stopBuffer = zephir_get_boolval(stopBuffer_param);
 	}
+	if (!tags) {
+		tags = ZEPHIR_GLOBAL(global_null);
+	}
 
 
 	if (!(zephir_is_true(keyName))) {
@@ -252,7 +256,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Memcache, save) {
 		ZEPHIR_CONCAT_VV(lastKey, _0, keyName);
 	}
 	if (!(zephir_is_true(lastKey))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Cache must be started first", "phalcon/cache/backend/memcache.zep", 172);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Cache must be started first", "phalcon/cache/backend/memcache.zep", 173);
 		return;
 	}
 	ZEPHIR_OBS_VAR(frontend);
@@ -297,14 +301,14 @@ PHP_METHOD(Phalcon_Cache_Backend_Memcache, save) {
 		zephir_check_call_status();
 	}
 	if (!(zephir_is_true(success))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Failed storing data in memcached", "phalcon/cache/backend/memcache.zep", 219);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Failed storing data in memcached", "phalcon/cache/backend/memcache.zep", 220);
 		return;
 	}
 	ZEPHIR_OBS_VAR(options);
 	zephir_read_property_this(&options, this_ptr, SL("_options"), PH_NOISY_CC);
 	ZEPHIR_OBS_VAR(specialKey);
 	if (!(zephir_array_isset_string_fetch(&specialKey, options, SS("statsKey"), 0 TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/memcache.zep", 225);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/memcache.zep", 226);
 		return;
 	}
 	if (Z_TYPE_P(specialKey) != IS_NULL) {
@@ -365,7 +369,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Memcache, delete) {
 	zephir_read_property_this(&options, this_ptr, SL("_options"), PH_NOISY_CC);
 	ZEPHIR_OBS_VAR(specialKey);
 	if (!(zephir_array_isset_string_fetch(&specialKey, options, SS("statsKey"), 0 TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/memcache.zep", 276);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/memcache.zep", 277);
 		return;
 	}
 	ZEPHIR_CALL_METHOD(&keys, memcache, "get", NULL, 0, specialKey);
@@ -415,7 +419,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Memcache, queryKeys) {
 	zephir_read_property_this(&options, this_ptr, SL("_options"), PH_NOISY_CC);
 	ZEPHIR_OBS_VAR(specialKey);
 	if (!(zephir_array_isset_string_fetch(&specialKey, options, SS("statsKey"), 0 TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/memcache.zep", 313);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/memcache.zep", 314);
 		return;
 	}
 	ZEPHIR_INIT_VAR(realKey);
@@ -424,7 +428,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Memcache, queryKeys) {
 	zephir_check_call_status();
 	if (Z_TYPE_P(keys) == IS_ARRAY) {
 		ZEPHIR_INIT_VAR(_0);
-		zephir_is_iterable(keys, &_2, &_1, 0, 0, "phalcon/cache/backend/memcache.zep", 327);
+		zephir_is_iterable(keys, &_2, &_1, 0, 0, "phalcon/cache/backend/memcache.zep", 328);
 		for (
 		  ; zephir_hash_get_current_data_ex(_2, (void**) &_3, &_1) == SUCCESS
 		  ; zephir_hash_move_forward_ex(_2, &_1)
@@ -436,7 +440,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Memcache, queryKeys) {
 				_4 = zephir_start_with(key, prefix, NULL);
 			}
 			if (_4) {
-				zephir_array_append(&realKey, key, PH_SEPARATE, "phalcon/cache/backend/memcache.zep", 324);
+				zephir_array_append(&realKey, key, PH_SEPARATE, "phalcon/cache/backend/memcache.zep", 325);
 			}
 		}
 	}
@@ -627,13 +631,13 @@ PHP_METHOD(Phalcon_Cache_Backend_Memcache, flush) {
 	zephir_read_property_this(&options, this_ptr, SL("_options"), PH_NOISY_CC);
 	ZEPHIR_OBS_VAR(specialKey);
 	if (!(zephir_array_isset_string_fetch(&specialKey, options, SS("statsKey"), 0 TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/memcache.zep", 450);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/memcache.zep", 451);
 		return;
 	}
 	ZEPHIR_CALL_METHOD(&keys, memcache, "get", NULL, 0, specialKey);
 	zephir_check_call_status();
 	if (Z_TYPE_P(keys) == IS_ARRAY) {
-		zephir_is_iterable(keys, &_1, &_0, 0, 0, "phalcon/cache/backend/memcache.zep", 461);
+		zephir_is_iterable(keys, &_1, &_0, 0, 0, "phalcon/cache/backend/memcache.zep", 462);
 		for (
 		  ; zephir_hash_get_current_data_ex(_1, (void**) &_2, &_0) == SUCCESS
 		  ; zephir_hash_move_forward_ex(_1, &_0)

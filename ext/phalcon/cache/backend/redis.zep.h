@@ -8,6 +8,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Redis, _connect);
 PHP_METHOD(Phalcon_Cache_Backend_Redis, get);
 PHP_METHOD(Phalcon_Cache_Backend_Redis, save);
 PHP_METHOD(Phalcon_Cache_Backend_Redis, delete);
+PHP_METHOD(Phalcon_Cache_Backend_Redis, deleteByTags);
 PHP_METHOD(Phalcon_Cache_Backend_Redis, queryKeys);
 PHP_METHOD(Phalcon_Cache_Backend_Redis, exists);
 PHP_METHOD(Phalcon_Cache_Backend_Redis, increment);
@@ -29,10 +30,15 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_cache_backend_redis_save, 0, 0, 0)
 	ZEND_ARG_INFO(0, content)
 	ZEND_ARG_INFO(0, lifetime)
 	ZEND_ARG_INFO(0, stopBuffer)
+	ZEND_ARG_INFO(0, tags)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_cache_backend_redis_delete, 0, 0, 1)
 	ZEND_ARG_INFO(0, keyName)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_cache_backend_redis_deletebytags, 0, 0, 0)
+	ZEND_ARG_INFO(0, tags)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_cache_backend_redis_querykeys, 0, 0, 0)
@@ -60,6 +66,7 @@ ZEPHIR_INIT_FUNCS(phalcon_cache_backend_redis_method_entry) {
 	PHP_ME(Phalcon_Cache_Backend_Redis, get, arginfo_phalcon_cache_backend_redis_get, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Cache_Backend_Redis, save, arginfo_phalcon_cache_backend_redis_save, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Cache_Backend_Redis, delete, arginfo_phalcon_cache_backend_redis_delete, ZEND_ACC_PUBLIC)
+	PHP_ME(Phalcon_Cache_Backend_Redis, deleteByTags, arginfo_phalcon_cache_backend_redis_deletebytags, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Cache_Backend_Redis, queryKeys, arginfo_phalcon_cache_backend_redis_querykeys, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Cache_Backend_Redis, exists, arginfo_phalcon_cache_backend_redis_exists, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Cache_Backend_Redis, increment, arginfo_phalcon_cache_backend_redis_increment, ZEND_ACC_PUBLIC)

@@ -203,10 +203,10 @@ PHP_METHOD(Phalcon_Cache_Multiple, save) {
 	int ZEPHIR_LAST_CALL_STATUS;
 	HashTable *_2;
 	HashPosition _1;
-	zval *keyName = NULL, *content = NULL, *lifetime = NULL, *stopBuffer = NULL, *backend = NULL, *_0, **_3;
+	zval *keyName = NULL, *content = NULL, *lifetime = NULL, *stopBuffer = NULL, *tags = NULL, *backend = NULL, *_0, **_3;
 
 	ZEPHIR_MM_GROW();
-	zephir_fetch_params(1, 0, 4, &keyName, &content, &lifetime, &stopBuffer);
+	zephir_fetch_params(1, 0, 5, &keyName, &content, &lifetime, &stopBuffer, &tags);
 
 	if (!keyName) {
 		keyName = ZEPHIR_GLOBAL(global_null);
@@ -220,6 +220,9 @@ PHP_METHOD(Phalcon_Cache_Multiple, save) {
 	if (!stopBuffer) {
 		stopBuffer = ZEPHIR_GLOBAL(global_null);
 	}
+	if (!tags) {
+		tags = ZEPHIR_GLOBAL(global_null);
+	}
 
 
 	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_backends"), PH_NOISY_CC);
@@ -229,7 +232,7 @@ PHP_METHOD(Phalcon_Cache_Multiple, save) {
 	  ; zephir_hash_move_forward_ex(_2, &_1)
 	) {
 		ZEPHIR_GET_HVALUE(backend, _3);
-		ZEPHIR_CALL_METHOD(NULL, backend, "save", NULL, 0, keyName, content, lifetime, stopBuffer);
+		ZEPHIR_CALL_METHOD(NULL, backend, "save", NULL, 0, keyName, content, lifetime, stopBuffer, tags);
 		zephir_check_call_status();
 	}
 	ZEPHIR_MM_RESTORE();

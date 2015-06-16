@@ -222,6 +222,15 @@ PHP_METHOD(Phalcon_Http_Response_Headers, __set_state) {
 
 PHP_METHOD(Phalcon_Http_Response_Headers, __construct) {
 
+
+	if (EG(called_scope) == phalcon_http_response_headers_ce) {
+		zephir_init_properties(this_ptr TSRMLS_CC);
+	}
+
+}
+
+static void zephir_init_properties(zval *this_ptr TSRMLS_DC) {
+
 	zval *_0;
 
 	ZEPHIR_MM_GROW();
