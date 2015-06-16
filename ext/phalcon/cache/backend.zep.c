@@ -149,12 +149,12 @@ PHP_METHOD(Phalcon_Cache_Backend, start) {
 	}
 
 
-	ZEPHIR_CALL_METHOD(&existingCache, this_ptr, "get", NULL, keyName, lifetime);
+	ZEPHIR_CALL_METHOD(&existingCache, this_ptr, "get", NULL, 0, keyName, lifetime);
 	zephir_check_call_status();
 	if (Z_TYPE_P(existingCache) == IS_NULL) {
 		fresh = 1;
 		_0 = zephir_fetch_nproperty_this(this_ptr, SL("_frontend"), PH_NOISY_CC);
-		ZEPHIR_CALL_METHOD(NULL, _0, "start", NULL);
+		ZEPHIR_CALL_METHOD(NULL, _0, "start", NULL, 0);
 		zephir_check_call_status();
 	} else {
 		fresh = 0;
@@ -170,8 +170,6 @@ PHP_METHOD(Phalcon_Cache_Backend, start) {
 
 /**
  * Stops the frontend without store any cached content
- *
- * @param boolean stopBuffer
  */
 PHP_METHOD(Phalcon_Cache_Backend, stop) {
 
@@ -191,7 +189,7 @@ PHP_METHOD(Phalcon_Cache_Backend, stop) {
 
 	if (stopBuffer == 1) {
 		_0 = zephir_fetch_nproperty_this(this_ptr, SL("_frontend"), PH_NOISY_CC);
-		ZEPHIR_CALL_METHOD(NULL, _0, "stop", NULL);
+		ZEPHIR_CALL_METHOD(NULL, _0, "stop", NULL, 0);
 		zephir_check_call_status();
 	}
 	zephir_update_property_this(this_ptr, SL("_started"), (0) ? ZEPHIR_GLOBAL(global_true) : ZEPHIR_GLOBAL(global_false) TSRMLS_CC);
@@ -201,8 +199,6 @@ PHP_METHOD(Phalcon_Cache_Backend, stop) {
 
 /**
  * Checks whether the last cache is fresh or cached
- *
- * @return boolean
  */
 PHP_METHOD(Phalcon_Cache_Backend, isFresh) {
 
@@ -213,8 +209,6 @@ PHP_METHOD(Phalcon_Cache_Backend, isFresh) {
 
 /**
  * Checks whether the cache has starting buffering or not
- *
- * @return boolean
  */
 PHP_METHOD(Phalcon_Cache_Backend, isStarted) {
 

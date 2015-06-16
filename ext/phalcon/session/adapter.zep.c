@@ -37,6 +37,12 @@ ZEPHIR_INIT_CLASS(Phalcon_Session_Adapter) {
 
 	zend_declare_property_null(phalcon_session_adapter_ce, SL("_options"), ZEND_ACC_PROTECTED TSRMLS_CC);
 
+	zend_declare_class_constant_long(phalcon_session_adapter_ce, SL("SESSION_ACTIVE"), 2 TSRMLS_CC);
+
+	zend_declare_class_constant_long(phalcon_session_adapter_ce, SL("SESSION_NONE"), 1 TSRMLS_CC);
+
+	zend_declare_class_constant_long(phalcon_session_adapter_ce, SL("SESSION_DISABLED"), 0 TSRMLS_CC);
+
 	return SUCCESS;
 
 }
@@ -60,7 +66,7 @@ PHP_METHOD(Phalcon_Session_Adapter, __construct) {
 
 
 	if (Z_TYPE_P(options) == IS_ARRAY) {
-		ZEPHIR_CALL_METHOD(NULL, this_ptr, "setoptions", NULL, options);
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "setoptions", NULL, 0, options);
 		zephir_check_call_status();
 	}
 	ZEPHIR_MM_RESTORE();
@@ -69,24 +75,31 @@ PHP_METHOD(Phalcon_Session_Adapter, __construct) {
 
 /**
  * Starts the session (if headers are already sent the session will not be started)
- *
- * @return boolean
  */
 PHP_METHOD(Phalcon_Session_Adapter, start) {
 
+	zend_bool _2;
 	int ZEPHIR_LAST_CALL_STATUS;
-	zephir_nts_static zephir_fcall_cache_entry *_1 = NULL;
-	zval *_0 = NULL;
+	zval *_0 = NULL, *_1, *_3 = NULL;
 
 	ZEPHIR_MM_GROW();
 
-	ZEPHIR_CALL_FUNCTION(&_0, "headers_sent", &_1);
+	ZEPHIR_CALL_FUNCTION(&_0, "headers_sent", NULL, 224);
 	zephir_check_call_status();
 	if (!(zephir_is_true(_0))) {
-		ZEPHIR_CALL_FUNCTION(NULL, "session_start", NULL);
-		zephir_check_call_status();
-		zephir_update_property_this(this_ptr, SL("_started"), (1) ? ZEPHIR_GLOBAL(global_true) : ZEPHIR_GLOBAL(global_false) TSRMLS_CC);
-		RETURN_MM_BOOL(1);
+		_1 = zephir_fetch_nproperty_this(this_ptr, SL("_started"), PH_NOISY_CC);
+		_2 = !zephir_is_true(_1);
+		if (_2) {
+			ZEPHIR_CALL_METHOD(&_3, this_ptr, "status", NULL, 0);
+			zephir_check_call_status();
+			_2 = !ZEPHIR_IS_LONG_IDENTICAL(_3, 2);
+		}
+		if (_2) {
+			ZEPHIR_CALL_FUNCTION(NULL, "session_start", NULL, 398);
+			zephir_check_call_status();
+			zephir_update_property_this(this_ptr, SL("_started"), (1) ? ZEPHIR_GLOBAL(global_true) : ZEPHIR_GLOBAL(global_false) TSRMLS_CC);
+			RETURN_MM_BOOL(1);
+		}
 	}
 	RETURN_MM_BOOL(0);
 
@@ -100,8 +113,6 @@ PHP_METHOD(Phalcon_Session_Adapter, start) {
  *		'uniqueId' => 'my-private-app'
  *	));
  *</code>
- *
- * @param array options
  */
 PHP_METHOD(Phalcon_Session_Adapter, setOptions) {
 
@@ -123,8 +134,6 @@ PHP_METHOD(Phalcon_Session_Adapter, setOptions) {
 
 /**
  * Get internal options
- *
- * @return array
  */
 PHP_METHOD(Phalcon_Session_Adapter, getOptions) {
 
@@ -148,6 +157,7 @@ PHP_METHOD(Phalcon_Session_Adapter, get) {
 	zval *index = NULL;
 
 	ZEPHIR_MM_GROW();
+	zephir_get_global(&_SESSION, SS("_SESSION") TSRMLS_CC);
 	zephir_fetch_params(1, 1, 2, &index_param, &defaultValue, &remove_param);
 
 	zephir_get_strval(index, index_param);
@@ -165,14 +175,11 @@ PHP_METHOD(Phalcon_Session_Adapter, get) {
 	ZEPHIR_INIT_VAR(key);
 	ZEPHIR_CONCAT_VV(key, _0, index);
 	ZEPHIR_OBS_VAR(value);
-	zephir_get_global(&_SESSION, SS("_SESSION") TSRMLS_CC);
 	if (zephir_array_isset_fetch(&value, _SESSION, key, 0 TSRMLS_CC)) {
-		if (!(ZEPHIR_IS_EMPTY(value))) {
-			if (remove) {
-				zephir_array_unset(&_SESSION, key, PH_SEPARATE);
-			}
-			RETURN_CCTOR(value);
+		if (remove) {
+			zephir_array_unset(&_SESSION, key, PH_SEPARATE);
 		}
+		RETURN_CCTOR(value);
 	}
 	RETVAL_ZVAL(defaultValue, 1, 0);
 	RETURN_MM();
@@ -196,12 +203,12 @@ PHP_METHOD(Phalcon_Session_Adapter, set) {
 	zval *index = NULL;
 
 	ZEPHIR_MM_GROW();
+	zephir_get_global(&_SESSION, SS("_SESSION") TSRMLS_CC);
 	zephir_fetch_params(1, 2, 0, &index_param, &value);
 
 	zephir_get_strval(index, index_param);
 
 
-	zephir_get_global(&_SESSION, SS("_SESSION") TSRMLS_CC);
 	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_uniqueId"), PH_NOISY_CC);
 	ZEPHIR_INIT_VAR(_1);
 	ZEPHIR_CONCAT_VV(_1, _0, index);
@@ -220,8 +227,6 @@ PHP_METHOD(Phalcon_Session_Adapter, set) {
  *<code>
  *	var_dump($session->has('auth'));
  *</code>
- *
- * @param string index
  */
 PHP_METHOD(Phalcon_Session_Adapter, has) {
 
@@ -229,12 +234,12 @@ PHP_METHOD(Phalcon_Session_Adapter, has) {
 	zval *index = NULL;
 
 	ZEPHIR_MM_GROW();
+	zephir_get_global(&_SESSION, SS("_SESSION") TSRMLS_CC);
 	zephir_fetch_params(1, 1, 0, &index_param);
 
 	zephir_get_strval(index, index_param);
 
 
-	zephir_get_global(&_SESSION, SS("_SESSION") TSRMLS_CC);
 	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_uniqueId"), PH_NOISY_CC);
 	ZEPHIR_INIT_VAR(_1);
 	ZEPHIR_CONCAT_VV(_1, _0, index);
@@ -255,6 +260,7 @@ PHP_METHOD(Phalcon_Session_Adapter, remove) {
 	zval *index = NULL;
 
 	ZEPHIR_MM_GROW();
+	zephir_get_global(&_SESSION, SS("_SESSION") TSRMLS_CC);
 	zephir_fetch_params(1, 1, 0, &index_param);
 
 	zephir_get_strval(index, index_param);
@@ -263,7 +269,6 @@ PHP_METHOD(Phalcon_Session_Adapter, remove) {
 	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_uniqueId"), PH_NOISY_CC);
 	ZEPHIR_INIT_VAR(_1);
 	ZEPHIR_CONCAT_VV(_1, _0, index);
-	zephir_get_global(&_SESSION, SS("_SESSION") TSRMLS_CC);
 	zephir_array_unset(&_SESSION, _1, PH_SEPARATE);
 	ZEPHIR_MM_RESTORE();
 
@@ -282,7 +287,7 @@ PHP_METHOD(Phalcon_Session_Adapter, getId) {
 
 	ZEPHIR_MM_GROW();
 
-	ZEPHIR_RETURN_CALL_FUNCTION("session_id", NULL);
+	ZEPHIR_RETURN_CALL_FUNCTION("session_id", NULL, 399);
 	zephir_check_call_status();
 	RETURN_MM();
 
@@ -294,8 +299,6 @@ PHP_METHOD(Phalcon_Session_Adapter, getId) {
  *<code>
  *	$session->setId($id);
  *</code>
- *
- * @param string id
  */
 PHP_METHOD(Phalcon_Session_Adapter, setId) {
 
@@ -309,7 +312,7 @@ PHP_METHOD(Phalcon_Session_Adapter, setId) {
 	zephir_get_strval(id, id_param);
 
 
-	ZEPHIR_CALL_FUNCTION(NULL, "session_id", NULL, id);
+	ZEPHIR_CALL_FUNCTION(NULL, "session_id", NULL, 399, id);
 	zephir_check_call_status();
 	ZEPHIR_MM_RESTORE();
 
@@ -333,7 +336,7 @@ PHP_METHOD(Phalcon_Session_Adapter, isStarted) {
  * Destroys the active session
  *
  *<code>
- *	var_dump(session->destroy());
+ *	var_dump($session->destroy());
  *</code>
  */
 PHP_METHOD(Phalcon_Session_Adapter, destroy) {
@@ -343,9 +346,45 @@ PHP_METHOD(Phalcon_Session_Adapter, destroy) {
 	ZEPHIR_MM_GROW();
 
 	zephir_update_property_this(this_ptr, SL("_started"), (0) ? ZEPHIR_GLOBAL(global_true) : ZEPHIR_GLOBAL(global_false) TSRMLS_CC);
-	ZEPHIR_RETURN_CALL_FUNCTION("session_destroy", NULL);
+	ZEPHIR_RETURN_CALL_FUNCTION("session_destroy", NULL, 400);
 	zephir_check_call_status();
 	RETURN_MM();
+
+}
+
+/**
+ * Returns the status of the current session. For PHP 5.3 this function will always return SESSION_NONE
+ *
+ *<code>
+ *	var_dump($session->status());
+ *
+ *  // PHP 5.4 and above will give meaningful messages, 5.3 gets SESSION_NONE always
+ *  if ($session->status() !== $session::SESSION_ACTIVE) {
+ *      $session->start();
+ *  }
+ *</code>
+ */
+PHP_METHOD(Phalcon_Session_Adapter, status) {
+
+	int ZEPHIR_LAST_CALL_STATUS;
+	zval *status = NULL;
+
+	ZEPHIR_MM_GROW();
+
+	if (!(zephir_is_php_version(50300))) {
+		ZEPHIR_CALL_FUNCTION(&status, "session_status", NULL, 401);
+		zephir_check_call_status();
+		do {
+			if (ZEPHIR_IS_LONG(status, 0)) {
+				RETURN_MM_LONG(0);
+			}
+			if (ZEPHIR_IS_LONG(status, 2)) {
+				RETURN_MM_LONG(2);
+			}
+		} while(0);
+
+	}
+	RETURN_MM_LONG(1);
 
 }
 
@@ -367,7 +406,7 @@ PHP_METHOD(Phalcon_Session_Adapter, __get) {
 	zephir_get_strval(index, index_param);
 
 
-	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "get", NULL, index);
+	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "get", NULL, 0, index);
 	zephir_check_call_status();
 	RETURN_MM();
 
@@ -391,7 +430,7 @@ PHP_METHOD(Phalcon_Session_Adapter, __set) {
 	zephir_get_strval(index, index_param);
 
 
-	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "set", NULL, index, value);
+	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "set", NULL, 0, index, value);
 	zephir_check_call_status();
 	RETURN_MM();
 
@@ -399,8 +438,6 @@ PHP_METHOD(Phalcon_Session_Adapter, __set) {
 
 /**
  * Alias: Check whether a session variable is set in an application context
- *
- * @param string index
  */
 PHP_METHOD(Phalcon_Session_Adapter, __isset) {
 
@@ -414,7 +451,7 @@ PHP_METHOD(Phalcon_Session_Adapter, __isset) {
 	zephir_get_strval(index, index_param);
 
 
-	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "has", NULL, index);
+	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "has", NULL, 0, index);
 	zephir_check_call_status();
 	RETURN_MM();
 
@@ -435,7 +472,7 @@ PHP_METHOD(Phalcon_Session_Adapter, __unset) {
 	zephir_get_strval(index, index_param);
 
 
-	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "remove", NULL, index);
+	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "remove", NULL, 0, index);
 	zephir_check_call_status();
 	RETURN_MM();
 

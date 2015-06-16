@@ -44,6 +44,8 @@ PHP_METHOD(Phalcon_Mvc_Collection, delete);
 PHP_METHOD(Phalcon_Mvc_Collection, toArray);
 PHP_METHOD(Phalcon_Mvc_Collection, serialize);
 PHP_METHOD(Phalcon_Mvc_Collection, unserialize);
+PHP_METHOD(Phalcon_Mvc_Collection, addBehavior);
+PHP_METHOD(Phalcon_Mvc_Collection, skipOperation);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_collection___construct, 0, 0, 0)
 	ZEND_ARG_OBJ_INFO(0, dependencyInjector, Phalcon\\DiInterface, 1)
@@ -114,7 +116,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_collection__postsave, 0, 0, 3)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_collection_validate, 0, 0, 1)
-	ZEND_ARG_INFO(0, validator)
+	ZEND_ARG_OBJ_INFO(0, validator, Phalcon\\Mvc\\Model\\ValidatorInterface, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_collection_fireevent, 0, 0, 1)
@@ -142,19 +144,19 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_collection_findbyid, 0, 0, 1)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_collection_findfirst, 0, 0, 0)
-	ZEND_ARG_INFO(0, parameters)
+	ZEND_ARG_ARRAY_INFO(0, parameters, 1)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_collection_find, 0, 0, 0)
-	ZEND_ARG_INFO(0, parameters)
+	ZEND_ARG_ARRAY_INFO(0, parameters, 1)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_collection_count, 0, 0, 0)
-	ZEND_ARG_INFO(0, parameters)
+	ZEND_ARG_ARRAY_INFO(0, parameters, 1)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_collection_aggregate, 0, 0, 1)
-	ZEND_ARG_INFO(0, parameters)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_collection_aggregate, 0, 0, 0)
+	ZEND_ARG_ARRAY_INFO(0, parameters, 1)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_collection_summatory, 0, 0, 1)
@@ -165,6 +167,14 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_collection_unserialize, 0, 0, 1)
 	ZEND_ARG_INFO(0, data)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_collection_addbehavior, 0, 0, 1)
+	ZEND_ARG_OBJ_INFO(0, behavior, Phalcon\\Mvc\\Collection\\BehaviorInterface, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_collection_skipoperation, 0, 0, 1)
+	ZEND_ARG_INFO(0, skip)
 ZEND_END_ARG_INFO()
 
 ZEPHIR_INIT_FUNCS(phalcon_mvc_collection_method_entry) {
@@ -209,5 +219,7 @@ ZEPHIR_INIT_FUNCS(phalcon_mvc_collection_method_entry) {
 	PHP_ME(Phalcon_Mvc_Collection, toArray, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Mvc_Collection, serialize, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Mvc_Collection, unserialize, arginfo_phalcon_mvc_collection_unserialize, ZEND_ACC_PUBLIC)
-  PHP_FE_END
+	PHP_ME(Phalcon_Mvc_Collection, addBehavior, arginfo_phalcon_mvc_collection_addbehavior, ZEND_ACC_PROTECTED)
+	PHP_ME(Phalcon_Mvc_Collection, skipOperation, arginfo_phalcon_mvc_collection_skipoperation, ZEND_ACC_PUBLIC)
+	PHP_FE_END
 };

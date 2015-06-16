@@ -74,6 +74,11 @@ ZEPHIR_DOC_METHOD(Phalcon_Http_RequestInterface, has);
 ZEPHIR_DOC_METHOD(Phalcon_Http_RequestInterface, hasPost);
 
 /**
+ * Checks whether the PUT data has certain index
+ */
+ZEPHIR_DOC_METHOD(Phalcon_Http_RequestInterface, hasPut);
+
+/**
  * Checks whether $_GET superglobal has certain index
  */
 ZEPHIR_DOC_METHOD(Phalcon_Http_RequestInterface, hasQuery);
@@ -184,7 +189,7 @@ ZEPHIR_DOC_METHOD(Phalcon_Http_RequestInterface, isOptions);
 /**
  * Checks whether request include attached files
  *
- * @param boolean notErrored
+ * @param boolean onlySuccessful
  * @return boolean
  */
 ZEPHIR_DOC_METHOD(Phalcon_Http_RequestInterface, hasFiles);
@@ -201,22 +206,16 @@ ZEPHIR_DOC_METHOD(Phalcon_Http_RequestInterface, getHTTPReferer);
 
 /**
  * Gets array with mime/types and their quality accepted by the browser/client from $_SERVER['HTTP_ACCEPT']
- *
- * @return array
  */
 ZEPHIR_DOC_METHOD(Phalcon_Http_RequestInterface, getAcceptableContent);
 
 /**
  * Gets best mime/type accepted by the browser/client from $_SERVER['HTTP_ACCEPT']
- *
- * @return array
  */
 ZEPHIR_DOC_METHOD(Phalcon_Http_RequestInterface, getBestAccept);
 
 /**
  * Gets charsets array and their quality accepted by the browser/client from $_SERVER['HTTP_ACCEPT_CHARSET']
- *
- * @return array
  */
 ZEPHIR_DOC_METHOD(Phalcon_Http_RequestInterface, getClientCharsets);
 

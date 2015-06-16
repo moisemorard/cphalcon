@@ -20,6 +20,7 @@
 
 namespace Phalcon\Db\Adapter\Pdo;
 
+use Phalcon\Db;
 use Phalcon\Db\Column;
 use Phalcon\Db\Exception;
 use Phalcon\Db\Reference;
@@ -65,11 +66,9 @@ class Sqlite extends PdoAdapter implements AdapterInterface
 			let descriptor = this->_descriptor;
 		}
 
-		if !isset descriptor["dbname"] {
+		if !fetch dbname, descriptor["dbname"] {
 			throw new Exception("dbname must be specified");
 		}
-
-		fetch dbname, descriptor["dbname"];
 
 		let descriptor["dsn"] = dbname;
 
@@ -82,12 +81,8 @@ class Sqlite extends PdoAdapter implements AdapterInterface
 	 * <code>
 	 * print_r($connection->describeColumns("posts"));
 	 * </code>
-	 *
-	 * @param string table
-	 * @param string schema
-	 * @return Phalcon\Db\Column[]
 	 */
-	public function describeColumns(string table, string schema = null)
+	public function describeColumns(string table, string schema = null) -> <Column[]>
 	{
 		var columns, columnType, field, definition,
 			oldColumn, sizePattern, matches, matchOne, matchTwo, columnName;
@@ -100,7 +95,7 @@ class Sqlite extends PdoAdapter implements AdapterInterface
 		/**
 		 * We're using FETCH_NUM to fetch the columns
 		 */
-		for field in this->fetchAll(this->_dialect->describeColumns(table, schema), \Phalcon\Db::FETCH_NUM) {
+		for field in this->fetchAll(this->_dialect->describeColumns(table, schema), Db::FETCH_NUM) {
 
 			/**
 			 * By default the bind types is two
@@ -293,13 +288,13 @@ class Sqlite extends PdoAdapter implements AdapterInterface
 	 * @param	string schema
 	 * @return	Phalcon\Db\IndexInterface[]
 	 */
-	public function describeIndexes(table, schema = null) -> <IndexInterface>
+	public function describeIndexes(table, schema = null) -> <IndexInterface[]>
 	{
 		var indexes, index, keyName, indexObjects, name, indexColumns, columns,
 			describe_index;
 
 		let indexes = [];
-		for index in this->fetchAll(this->_dialect->describeIndexes(table, schema), \Phalcon\Db::FETCH_NUM) {
+		for index in this->fetchAll(this->_dialect->describeIndexes(table, schema), Db::FETCH_NUM) {
 
 			let keyName = index[1];
 			if !isset indexes[keyName] {
@@ -308,7 +303,7 @@ class Sqlite extends PdoAdapter implements AdapterInterface
 				let columns = indexes[keyName];
 			}
 
-			for describe_index in this->fetchAll(this->_dialect->describeIndex(keyName), \Phalcon\Db::FETCH_NUM) {
+			for describe_index in this->fetchAll(this->_dialect->describeIndex(keyName), Db::FETCH_NUM) {
 				let columns[] = describe_index[2];
 			}
 
@@ -330,7 +325,7 @@ class Sqlite extends PdoAdapter implements AdapterInterface
 	 * @param	string schema
 	 * @return	Phalcon\Db\ReferenceInterface[]
 	 */
-	public function describeReferences(table, schema=null) -> <ReferenceInterface[]>
+	public function describeReferences(table, schema = null) -> <ReferenceInterface[]>
 	{
 		var references, reference,
 			arrayReference, constraintName, referenceObjects, name,
@@ -339,7 +334,7 @@ class Sqlite extends PdoAdapter implements AdapterInterface
 
 		let references = [];
 
-		for number, reference in this->fetchAll(this->_dialect->describeReferences(table, schema), \Phalcon\Db::FETCH_NUM) {
+		for number, reference in this->fetchAll(this->_dialect->describeReferences(table, schema), Db::FETCH_NUM) {
 
 			let constraintName = "foreign_key_" . number;
 			if !isset references[constraintName] {

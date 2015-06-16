@@ -141,7 +141,6 @@ class Mongo extends Backend implements BackendInterface
 		}
 
 		return mongoCollection;
-
 	}
 
 	/**
@@ -187,7 +186,7 @@ class Mongo extends Backend implements BackendInterface
 	 * @param boolean stopBuffer
 	 * @TODO implement tags completely
 	 */
-	public function save(keyName = null, content = null, lifetime = null, stopBuffer = true, tags = null)
+	public function save(keyName = null, content = null, lifetime = null, boolean stopBuffer = true, tags = null)
 	{
 		var lastkey, prefix, frontend, cachedContent, tmp, ttl,
 			collection, timestamp, conditions, document, preparedContent,
@@ -281,8 +280,8 @@ class Mongo extends Backend implements BackendInterface
 	 */
 	public function delete(keyName) -> boolean
 	{
-
 		this->_getCollection()->remove(["key": this->_prefix . keyName]);
+
 		if ((int) rand()) % 100 == 0 {
 			this->gc();
 		}
@@ -435,12 +434,9 @@ class Mongo extends Backend implements BackendInterface
 
 	/**
 	 * Immediately invalidates all existing items.
-	 *
-	 * @return bool
 	 */
 	public function flush() -> boolean
 	{
-
 		this->_getCollection()->remove();
 
 		if (int) rand() % 100 == 0 {

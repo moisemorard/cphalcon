@@ -60,12 +60,11 @@ ZEPHIR_INIT_CLASS(Phalcon_Cli_Dispatcher) {
 
 /**
  * Phalcon\Cli\Dispatcher constructor
- *
  */
 PHP_METHOD(Phalcon_Cli_Dispatcher, __construct) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zephir_nts_static zephir_fcall_cache_entry *_1 = NULL;
+	zephir_fcall_cache_entry *_1 = NULL;
 	zval *_0;
 
 	ZEPHIR_MM_GROW();
@@ -73,7 +72,7 @@ PHP_METHOD(Phalcon_Cli_Dispatcher, __construct) {
 	ZEPHIR_INIT_VAR(_0);
 	array_init(_0);
 	zephir_update_property_this(this_ptr, SL("_options"), _0 TSRMLS_CC);
-	ZEPHIR_CALL_PARENT(NULL, phalcon_cli_dispatcher_ce, this_ptr, "__construct", &_1);
+	ZEPHIR_CALL_PARENT(NULL, phalcon_cli_dispatcher_ce, this_ptr, "__construct", &_1, 55);
 	zephir_check_call_status();
 	ZEPHIR_MM_RESTORE();
 
@@ -81,8 +80,6 @@ PHP_METHOD(Phalcon_Cli_Dispatcher, __construct) {
 
 /**
  * Sets the default task suffix
- *
- * @param string taskSuffix
  */
 PHP_METHOD(Phalcon_Cli_Dispatcher, setTaskSuffix) {
 
@@ -102,8 +99,6 @@ PHP_METHOD(Phalcon_Cli_Dispatcher, setTaskSuffix) {
 
 /**
  * Sets the default task name
- *
- * @param string taskName
  */
 PHP_METHOD(Phalcon_Cli_Dispatcher, setDefaultTask) {
 
@@ -123,25 +118,25 @@ PHP_METHOD(Phalcon_Cli_Dispatcher, setDefaultTask) {
 
 /**
  * Sets the task name to be dispatched
- *
- * @param string taskName
  */
 PHP_METHOD(Phalcon_Cli_Dispatcher, setTaskName) {
 
-	zval *taskName;
+	zval *taskName_param = NULL;
+	zval *taskName = NULL;
 
-	zephir_fetch_params(0, 1, 0, &taskName);
+	ZEPHIR_MM_GROW();
+	zephir_fetch_params(1, 1, 0, &taskName_param);
 
+	zephir_get_strval(taskName, taskName_param);
 
 
 	zephir_update_property_this(this_ptr, SL("_handlerName"), taskName TSRMLS_CC);
+	ZEPHIR_MM_RESTORE();
 
 }
 
 /**
  * Gets last dispatched task name
- *
- * @return string
  */
 PHP_METHOD(Phalcon_Cli_Dispatcher, getTaskName) {
 
@@ -152,15 +147,11 @@ PHP_METHOD(Phalcon_Cli_Dispatcher, getTaskName) {
 
 /**
  * Throws an internal exception
- *
- * @param string message
- * @param int exceptionCode
  */
 PHP_METHOD(Phalcon_Cli_Dispatcher, _throwDispatchException) {
 
-	zephir_nts_static zephir_fcall_cache_entry *_1 = NULL;
 	int exceptionCode, ZEPHIR_LAST_CALL_STATUS;
-	zval *message_param = NULL, *exceptionCode_param = NULL, *exception, *_0, *_2 = NULL;
+	zval *message_param = NULL, *exceptionCode_param = NULL, *exception, *_0, *_1 = NULL;
 	zval *message = NULL;
 
 	ZEPHIR_MM_GROW();
@@ -178,14 +169,14 @@ PHP_METHOD(Phalcon_Cli_Dispatcher, _throwDispatchException) {
 	object_init_ex(exception, phalcon_cli_dispatcher_exception_ce);
 	ZEPHIR_INIT_VAR(_0);
 	ZVAL_LONG(_0, exceptionCode);
-	ZEPHIR_CALL_METHOD(NULL, exception, "__construct", &_1, message, _0);
+	ZEPHIR_CALL_METHOD(NULL, exception, "__construct", NULL, 2, message, _0);
 	zephir_check_call_status();
-	ZEPHIR_CALL_METHOD(&_2, this_ptr, "_handleexception", NULL, exception);
+	ZEPHIR_CALL_METHOD(&_1, this_ptr, "_handleexception", NULL, 0, exception);
 	zephir_check_call_status();
-	if (ZEPHIR_IS_FALSE_IDENTICAL(_2)) {
+	if (ZEPHIR_IS_FALSE_IDENTICAL(_1)) {
 		RETURN_MM_BOOL(0);
 	}
-	zephir_throw_exception_debug(exception, "phalcon/cli/dispatcher.zep", 128 TSRMLS_CC);
+	zephir_throw_exception_debug(exception, "phalcon/cli/dispatcher.zep", 116 TSRMLS_CC);
 	ZEPHIR_MM_RESTORE();
 	return;
 
@@ -193,8 +184,6 @@ PHP_METHOD(Phalcon_Cli_Dispatcher, _throwDispatchException) {
 
 /**
  * Handles a user exception
- *
- * @param \Exception exception
  */
 PHP_METHOD(Phalcon_Cli_Dispatcher, _handleException) {
 
@@ -211,7 +200,7 @@ PHP_METHOD(Phalcon_Cli_Dispatcher, _handleException) {
 	if (Z_TYPE_P(eventsManager) == IS_OBJECT) {
 		ZEPHIR_INIT_VAR(_2);
 		ZVAL_STRING(_2, "dispatch:beforeException", ZEPHIR_TEMP_PARAM_COPY);
-		ZEPHIR_CALL_METHOD(&_1, eventsManager, "fire", NULL, _2, this_ptr, exception);
+		ZEPHIR_CALL_METHOD(&_1, eventsManager, "fire", NULL, 0, _2, this_ptr, exception);
 		zephir_check_temp_parameter(_2);
 		zephir_check_call_status();
 		if (ZEPHIR_IS_FALSE_IDENTICAL(_1)) {
@@ -224,8 +213,6 @@ PHP_METHOD(Phalcon_Cli_Dispatcher, _handleException) {
 
 /**
  * Returns the lastest dispatched controller
- *
- * @return Phalcon\CLI\Task
  */
 PHP_METHOD(Phalcon_Cli_Dispatcher, getLastTask) {
 
@@ -236,8 +223,6 @@ PHP_METHOD(Phalcon_Cli_Dispatcher, getLastTask) {
 
 /**
  * Returns the active task in the dispatcher
- *
- * @return Phalcon\CLI\Task
  */
 PHP_METHOD(Phalcon_Cli_Dispatcher, getActiveTask) {
 
@@ -248,8 +233,6 @@ PHP_METHOD(Phalcon_Cli_Dispatcher, getActiveTask) {
 
 /**
  * Set the options to be dispatched
- *
- * @param array options
  */
 PHP_METHOD(Phalcon_Cli_Dispatcher, setOptions) {
 
@@ -269,8 +252,6 @@ PHP_METHOD(Phalcon_Cli_Dispatcher, setOptions) {
 
 /**
  * Get dispatched options
- *
- * @return array
  */
 PHP_METHOD(Phalcon_Cli_Dispatcher, getOptions) {
 

@@ -76,6 +76,11 @@ interface RequestInterface
 	public function hasPost(string! name) -> boolean;
 
 	/**
+	 * Checks whether the PUT data has certain index
+	 */
+	public function hasPut(string! name) -> boolean;
+
+	/**
 	 * Checks whether $_GET superglobal has certain index
 	 */
 	public function hasQuery(string! name) -> boolean;
@@ -186,15 +191,15 @@ interface RequestInterface
 	/**
 	 * Checks whether request include attached files
 	 *
-	 * @param boolean notErrored
+	 * @param boolean onlySuccessful
 	 * @return boolean
 	 */
-	public function hasFiles(notErrored = false);
+	public function hasFiles(onlySuccessful = false);
 
 	/**
 	 * Gets attached files as Phalcon\Http\Request\FileInterface compatible instances
 	 */
-	public function getUploadedFiles(boolean notErrored = false) -> <\Phalcon\Http\Request\FileInterface[]>;
+	public function getUploadedFiles(boolean onlySuccessful = false) -> <\Phalcon\Http\Request\FileInterface[]>;
 
 	/**
 	 * Gets web page that refers active request. ie: http://www.google.com
@@ -203,24 +208,18 @@ interface RequestInterface
 
 	/**
 	 * Gets array with mime/types and their quality accepted by the browser/client from $_SERVER['HTTP_ACCEPT']
-	 *
-	 * @return array
 	 */
-	public function getAcceptableContent();
+	public function getAcceptableContent() -> array;
 
 	/**
 	 * Gets best mime/type accepted by the browser/client from $_SERVER['HTTP_ACCEPT']
-	 *
-	 * @return array
 	 */
-	public function getBestAccept();
+	public function getBestAccept() -> string;
 
 	/**
 	 * Gets charsets array and their quality accepted by the browser/client from $_SERVER['HTTP_ACCEPT_CHARSET']
-	 *
-	 * @return array
 	 */
-	public function getClientCharsets();
+	public function getClientCharsets() -> array;
 
 	/**
 	 * Gets best charset accepted by the browser/client from $_SERVER['HTTP_ACCEPT_CHARSET']

@@ -19,6 +19,7 @@
 
 namespace Phalcon\Db\Adapter\Pdo;
 
+use Phalcon\Db;
 use Phalcon\Db\Column;
 use Phalcon\Db\AdapterInterface;
 use Phalcon\Db\Adapter\Pdo as PdoAdapter;
@@ -81,12 +82,8 @@ class Mysql extends PdoAdapter implements AdapterInterface
 	 * <code>
 	 * print_r($connection->describeColumns("posts"));
 	 * </code>
-	 *
-	 * @param string table
-	 * @param string schema
-	 * @return Phalcon\Db\Column[]
 	 */
-	public function describeColumns(string table, string schema = null)
+	public function describeColumns(string table, string schema = null) -> <Column[]>
 	{
 		var columns, columnType, field, definition,
 			oldColumn, sizePattern, matches, matchOne, matchTwo, columnName;
@@ -102,7 +99,7 @@ class Mysql extends PdoAdapter implements AdapterInterface
 		 * Get the describe
 		 * Field Indexes: 0:name, 1:type, 2:not null, 3:key, 4:default, 5:extra
 		 */
-		for field in this->fetchAll(this->_dialect->describeColumns(table, schema), \Phalcon\Db::FETCH_NUM) {
+		for field in this->fetchAll(this->_dialect->describeColumns(table, schema), Db::FETCH_NUM) {
 
 			/**
 			 * By default the bind types is two
@@ -153,7 +150,7 @@ class Mysql extends PdoAdapter implements AdapterInterface
 				/**
 				 * Decimals are floats
 				 */
-				if memstr(columnType, "decimal") {
+				if memstr(columnType, "decimal") || memstr(columnType, "double") {
 					let definition["type"] = Column::TYPE_DECIMAL,
 						definition["isNumeric"] = true,
 						definition["bindType"] = Column::BIND_PARAM_DECIMAL;
@@ -208,10 +205,10 @@ class Mysql extends PdoAdapter implements AdapterInterface
 				let matches = null;
 				if preg_match(sizePattern, columnType, matches) {
 					if fetch matchOne, matches[1] {
-						let definition["size"] = (int)matchOne;
+						let definition["size"] = (int) matchOne;
 					}
 					if fetch matchTwo, matches[2] {
-						let definition["scale"] = (int)matchTwo;
+						let definition["scale"] = (int) matchTwo;
 					}
 				}
 			}

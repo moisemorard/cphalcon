@@ -25,7 +25,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_acl_adapterinterface_isresource, 0, 0, 1)
 	ZEND_ARG_INFO(0, resourceName)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_acl_adapterinterface_addresource, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_acl_adapterinterface_addresource, 0, 0, 2)
 	ZEND_ARG_INFO(0, resourceObject)
 	ZEND_ARG_INFO(0, accessList)
 ZEND_END_ARG_INFO()
@@ -76,5 +76,5 @@ ZEPHIR_INIT_FUNCS(phalcon_acl_adapterinterface_method_entry) {
 	PHP_ABSTRACT_ME(Phalcon_Acl_AdapterInterface, getActiveAccess, NULL)
 	PHP_ABSTRACT_ME(Phalcon_Acl_AdapterInterface, getRoles, NULL)
 	PHP_ABSTRACT_ME(Phalcon_Acl_AdapterInterface, getResources, NULL)
-  PHP_FE_END
+	PHP_FE_END
 };

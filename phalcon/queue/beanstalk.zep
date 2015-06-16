@@ -127,15 +127,11 @@ class Beanstalk
 		let response = this->readStatus();
 		let status = response[0];
 
-		if status == "INSERTED" {
-			return response[1];
+		if status != "INSERTED" && status != "BURIED" {
+			return false;
 		}
 
-		if status == "BURIED" {
-			return response[1];
-		}
-
-		return false;
+		return response[1];
 	}
 
 	/**
@@ -154,18 +150,17 @@ class Beanstalk
 		this->write(command);
 
 		let response = this->readStatus();
-		if response[0] == "RESERVED" {
-
-			/**
-			 * The job is in the first position
-			 * Next is the job length
-			 * The body is serialized
-			 * Create a beanstalk job abstraction
-			 */
-			return new Job(this, response[1], unserialize(this->read(response[2])));
+		if response[0] != "RESERVED" {
+			return false;
 		}
 
-		return false;
+		/**
+		 * The job is in the first position
+		 * Next is the job length
+		 * The body is serialized
+		 * Create a beanstalk job abstraction
+		 */
+		return new Job(this, response[1], unserialize(this->read(response[2])));
 	}
 
 	/**
@@ -178,11 +173,11 @@ class Beanstalk
 		this->write("use " . tube);
 
 		let response = this->readStatus();
-		if response[0] == "USING" {
-			return response[1];
+		if response[0] != "USING" {
+			return false;
 		}
 
-		return false;
+		return response[1];
 	}
 
 	/**
@@ -195,11 +190,45 @@ class Beanstalk
 		this->write("watch " . tube);
 
 		let response = this->readStatus();
-		if response[0] == "WATCHING" {
-			return response[1];
+		if response[0] != "WATCHING" {
+			return false;
 		}
 
-		return false;
+		return response[1];
+	}
+
+	/**
+	 * Get stats of the Beanstalk server.
+	 */
+	public function stats() -> boolean|array
+	{
+		var response;
+
+		this->write("stats");
+
+		let response = this->readYaml();
+		if response[0] != "OK" {
+			return false;
+		}
+
+		return response[2];
+	}
+
+	/**
+	 * Get stats of a tube.
+	 */
+	public function statsTube(string! tube) -> boolean|array
+	{
+		var response;
+
+		this->write("stats-tube " . tube);
+
+		let response = this->readYaml();
+		if response[0] != "OK" {
+			return false;
+		}
+
+		return response[2];
 	}
 
 	/**
@@ -212,11 +241,11 @@ class Beanstalk
 		this->write("peek-ready");
 
 		let response = this->readStatus();
-		if response[0] == "FOUND" {
-			return new Job(this, response[1], unserialize(this->read(response[2])));
+		if response[0] != "FOUND" {
+			return false;
 		}
 
-		return false;
+		return new Job(this, response[1], unserialize(this->read(response[2])));
 	}
 
 	/**
@@ -229,11 +258,11 @@ class Beanstalk
 		this->write("peek-buried");
 
 		let response = this->readStatus();
-		if response[0] == "FOUND" {
-			return new Job(this, response[1], unserialize(this->read(response[2])));
+		if response[0] != "FOUND" {
+			return false;
 		}
 
-		return false;
+		return new Job(this, response[1], unserialize(this->read(response[2])));
 	}
 
 	/**
@@ -242,6 +271,36 @@ class Beanstalk
 	final public function readStatus() -> array
 	{
 		return explode(" ", this->read());
+	}
+
+	/**
+	 * Fetch a YAML payload from the Beanstalkd server
+	 */
+	final public function readYaml() -> array
+	{
+		var response, status, numberOfBytes, data;
+
+		let response = this->readStatus();
+
+		let status = response[0];
+
+		if count(response) > 1 {
+			let numberOfBytes = response[1];
+
+			let response = this->read();
+
+			let data = yaml_parse(response);
+		} else {
+			let numberOfBytes = 0;
+
+			let data = [];
+		}
+
+		return [
+			status,
+			numberOfBytes,
+			data
+		];
 	}
 
 	/**

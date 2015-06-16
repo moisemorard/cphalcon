@@ -12,6 +12,7 @@
 #include <Zend/zend_interfaces.h>
 
 #include "kernel/main.h"
+#include "ext/spl/spl_iterators.h"
 #include "kernel/object.h"
 #include "ext/spl/spl_exceptions.h"
 #include "kernel/exception.h"
@@ -43,20 +44,21 @@ ZEPHIR_INIT_CLASS(Phalcon_Session_Bag) {
 
 	zend_declare_property_null(phalcon_session_bag_ce, SL("_data"), ZEND_ACC_PROTECTED TSRMLS_CC);
 
-	zend_declare_property_bool(phalcon_session_bag_ce, SL("_initalized"), 0, ZEND_ACC_PROTECTED TSRMLS_CC);
+	zend_declare_property_bool(phalcon_session_bag_ce, SL("_initialized"), 0, ZEND_ACC_PROTECTED TSRMLS_CC);
 
 	zend_declare_property_null(phalcon_session_bag_ce, SL("_session"), ZEND_ACC_PROTECTED TSRMLS_CC);
 
 	zend_class_implements(phalcon_session_bag_ce TSRMLS_CC, 1, phalcon_di_injectionawareinterface_ce);
 	zend_class_implements(phalcon_session_bag_ce TSRMLS_CC, 1, phalcon_session_baginterface_ce);
+	zend_class_implements(phalcon_session_bag_ce TSRMLS_CC, 1, zend_ce_aggregate);
+	zend_class_implements(phalcon_session_bag_ce TSRMLS_CC, 1, zend_ce_arrayaccess);
+	zend_class_implements(phalcon_session_bag_ce TSRMLS_CC, 1, spl_ce_Countable);
 	return SUCCESS;
 
 }
 
 /**
  * Phalcon\Session\Bag constructor
- *
- * @param string name
  */
 PHP_METHOD(Phalcon_Session_Bag, __construct) {
 
@@ -86,8 +88,6 @@ PHP_METHOD(Phalcon_Session_Bag, __construct) {
 
 /**
  * Sets the DependencyInjector container
- *
- * @param Phalcon\DiInterface dependencyInjector
  */
 PHP_METHOD(Phalcon_Session_Bag, setDI) {
 
@@ -103,8 +103,6 @@ PHP_METHOD(Phalcon_Session_Bag, setDI) {
 
 /**
  * Returns the DependencyInjector container
- *
- * @return Phalcon\DiInterface
  */
 PHP_METHOD(Phalcon_Session_Bag, getDI) {
 
@@ -119,7 +117,7 @@ PHP_METHOD(Phalcon_Session_Bag, getDI) {
 PHP_METHOD(Phalcon_Session_Bag, initialize) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zephir_nts_static zephir_fcall_cache_entry *_0 = NULL;
+	zephir_fcall_cache_entry *_0 = NULL;
 	zval *session = NULL, *dependencyInjector = NULL, *data = NULL, *_1, *_2;
 
 	ZEPHIR_MM_GROW();
@@ -130,29 +128,29 @@ PHP_METHOD(Phalcon_Session_Bag, initialize) {
 		ZEPHIR_OBS_VAR(dependencyInjector);
 		zephir_read_property_this(&dependencyInjector, this_ptr, SL("_dependencyInjector"), PH_NOISY_CC);
 		if (Z_TYPE_P(dependencyInjector) != IS_OBJECT) {
-			ZEPHIR_CALL_CE_STATIC(&dependencyInjector, phalcon_di_ce, "getdefault", &_0);
+			ZEPHIR_CALL_CE_STATIC(&dependencyInjector, phalcon_di_ce, "getdefault", &_0, 147);
 			zephir_check_call_status();
 			if (Z_TYPE_P(dependencyInjector) != IS_OBJECT) {
-				ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_session_exception_ce, "A dependency injection object is required to access the 'session' service", "phalcon/session/bag.zep", 95);
+				ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_session_exception_ce, "A dependency injection object is required to access the 'session' service", "phalcon/session/bag.zep", 89);
 				return;
 			}
 		}
 		ZEPHIR_INIT_VAR(_1);
 		ZVAL_STRING(_1, "session", ZEPHIR_TEMP_PARAM_COPY);
-		ZEPHIR_CALL_METHOD(&session, dependencyInjector, "getshared", NULL, _1);
+		ZEPHIR_CALL_METHOD(&session, dependencyInjector, "getshared", NULL, 0, _1);
 		zephir_check_temp_parameter(_1);
 		zephir_check_call_status();
 		zephir_update_property_this(this_ptr, SL("_session"), session TSRMLS_CC);
 	}
 	_2 = zephir_fetch_nproperty_this(this_ptr, SL("_name"), PH_NOISY_CC);
-	ZEPHIR_CALL_METHOD(&data, session, "get", NULL, _2);
+	ZEPHIR_CALL_METHOD(&data, session, "get", NULL, 0, _2);
 	zephir_check_call_status();
 	if (Z_TYPE_P(data) != IS_ARRAY) {
 		ZEPHIR_INIT_NVAR(data);
 		array_init(data);
 	}
 	zephir_update_property_this(this_ptr, SL("_data"), data TSRMLS_CC);
-	zephir_update_property_this(this_ptr, SL("_initalized"), (1) ? ZEPHIR_GLOBAL(global_true) : ZEPHIR_GLOBAL(global_false) TSRMLS_CC);
+	zephir_update_property_this(this_ptr, SL("_initialized"), (1) ? ZEPHIR_GLOBAL(global_true) : ZEPHIR_GLOBAL(global_false) TSRMLS_CC);
 	ZEPHIR_MM_RESTORE();
 
 }
@@ -171,14 +169,14 @@ PHP_METHOD(Phalcon_Session_Bag, destroy) {
 
 	ZEPHIR_MM_GROW();
 
-	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_initalized"), PH_NOISY_CC);
+	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_initialized"), PH_NOISY_CC);
 	if (ZEPHIR_IS_FALSE_IDENTICAL(_0)) {
-		ZEPHIR_CALL_METHOD(NULL, this_ptr, "initialize", NULL);
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "initialize", NULL, 0);
 		zephir_check_call_status();
 	}
 	_1 = zephir_fetch_nproperty_this(this_ptr, SL("_session"), PH_NOISY_CC);
 	_2 = zephir_fetch_nproperty_this(this_ptr, SL("_name"), PH_NOISY_CC);
-	ZEPHIR_CALL_METHOD(NULL, _1, "remove", NULL, _2);
+	ZEPHIR_CALL_METHOD(NULL, _1, "remove", NULL, 0, _2);
 	zephir_check_call_status();
 	ZEPHIR_MM_RESTORE();
 
@@ -216,16 +214,16 @@ PHP_METHOD(Phalcon_Session_Bag, set) {
 	}
 
 
-	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_initalized"), PH_NOISY_CC);
+	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_initialized"), PH_NOISY_CC);
 	if (ZEPHIR_IS_FALSE_IDENTICAL(_0)) {
-		ZEPHIR_CALL_METHOD(NULL, this_ptr, "initialize", NULL);
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "initialize", NULL, 0);
 		zephir_check_call_status();
 	}
 	zephir_update_property_array(this_ptr, SL("_data"), property, value TSRMLS_CC);
 	_1 = zephir_fetch_nproperty_this(this_ptr, SL("_session"), PH_NOISY_CC);
 	_2 = zephir_fetch_nproperty_this(this_ptr, SL("_name"), PH_NOISY_CC);
 	_3 = zephir_fetch_nproperty_this(this_ptr, SL("_data"), PH_NOISY_CC);
-	ZEPHIR_CALL_METHOD(NULL, _1, "set", NULL, _2, _3);
+	ZEPHIR_CALL_METHOD(NULL, _1, "set", NULL, 0, _2, _3);
 	zephir_check_call_status();
 	ZEPHIR_MM_RESTORE();
 
@@ -263,7 +261,7 @@ PHP_METHOD(Phalcon_Session_Bag, __set) {
 	}
 
 
-	ZEPHIR_CALL_METHOD(NULL, this_ptr, "set", NULL, property, value);
+	ZEPHIR_CALL_METHOD(NULL, this_ptr, "set", NULL, 0, property, value);
 	zephir_check_call_status();
 	ZEPHIR_MM_RESTORE();
 
@@ -305,9 +303,9 @@ PHP_METHOD(Phalcon_Session_Bag, get) {
 	}
 
 
-	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_initalized"), PH_NOISY_CC);
+	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_initialized"), PH_NOISY_CC);
 	if (ZEPHIR_IS_FALSE_IDENTICAL(_0)) {
-		ZEPHIR_CALL_METHOD(NULL, this_ptr, "initialize", NULL);
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "initialize", NULL, 0);
 		zephir_check_call_status();
 	}
 	_1 = zephir_fetch_nproperty_this(this_ptr, SL("_data"), PH_NOISY_CC);
@@ -351,7 +349,7 @@ PHP_METHOD(Phalcon_Session_Bag, __get) {
 	}
 
 
-	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "get", NULL, property);
+	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "get", NULL, 0, property);
 	zephir_check_call_status();
 	RETURN_MM();
 
@@ -363,9 +361,6 @@ PHP_METHOD(Phalcon_Session_Bag, __get) {
  *<code>
  * var_dump($user->has('name'));
  *</code>
- *
- * @param string property
- * @return boolean
  */
 PHP_METHOD(Phalcon_Session_Bag, has) {
 
@@ -389,9 +384,9 @@ PHP_METHOD(Phalcon_Session_Bag, has) {
 	}
 
 
-	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_initalized"), PH_NOISY_CC);
+	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_initialized"), PH_NOISY_CC);
 	if (ZEPHIR_IS_FALSE_IDENTICAL(_0)) {
-		ZEPHIR_CALL_METHOD(NULL, this_ptr, "initialize", NULL);
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "initialize", NULL, 0);
 		zephir_check_call_status();
 	}
 	_1 = zephir_fetch_nproperty_this(this_ptr, SL("_data"), PH_NOISY_CC);
@@ -405,9 +400,6 @@ PHP_METHOD(Phalcon_Session_Bag, has) {
  *<code>
  * var_dump(isset($user['name']));
  *</code>
- *
- * @param string property
- * @return boolean
  */
 PHP_METHOD(Phalcon_Session_Bag, __isset) {
 
@@ -431,7 +423,7 @@ PHP_METHOD(Phalcon_Session_Bag, __isset) {
 	}
 
 
-	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "has", NULL, property);
+	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "has", NULL, 0, property);
 	zephir_check_call_status();
 	RETURN_MM();
 
@@ -443,9 +435,6 @@ PHP_METHOD(Phalcon_Session_Bag, __isset) {
  *<code>
  * $user->remove('name');
  *</code>
- *
- * @param string property
- * @return boolean
  */
 PHP_METHOD(Phalcon_Session_Bag, remove) {
 
@@ -476,7 +465,7 @@ PHP_METHOD(Phalcon_Session_Bag, remove) {
 		_2 = zephir_fetch_nproperty_this(this_ptr, SL("_session"), PH_NOISY_CC);
 		_3 = zephir_fetch_nproperty_this(this_ptr, SL("_name"), PH_NOISY_CC);
 		_4 = zephir_fetch_nproperty_this(this_ptr, SL("_data"), PH_NOISY_CC);
-		ZEPHIR_CALL_METHOD(NULL, _2, "set", NULL, _3, _4);
+		ZEPHIR_CALL_METHOD(NULL, _2, "set", NULL, 0, _3, _4);
 		zephir_check_call_status();
 		RETURN_MM_BOOL(1);
 	}
@@ -490,9 +479,6 @@ PHP_METHOD(Phalcon_Session_Bag, remove) {
  *<code>
  * unset($user['name']);
  *</code>
- *
- * @param string property
- * @return boolean
  */
 PHP_METHOD(Phalcon_Session_Bag, __unset) {
 
@@ -516,7 +502,181 @@ PHP_METHOD(Phalcon_Session_Bag, __unset) {
 	}
 
 
-	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "remove", NULL, property);
+	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "remove", NULL, 0, property);
+	zephir_check_call_status();
+	RETURN_MM();
+
+}
+
+/**
+ * Return length of bag
+ *
+ *<code>
+ * echo $user->count();
+ *</code>
+ */
+PHP_METHOD(Phalcon_Session_Bag, count) {
+
+	int ZEPHIR_LAST_CALL_STATUS;
+	zval *_0, *_1;
+
+	ZEPHIR_MM_GROW();
+
+	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_initialized"), PH_NOISY_CC);
+	if (ZEPHIR_IS_FALSE_IDENTICAL(_0)) {
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "initialize", NULL, 0);
+		zephir_check_call_status();
+	}
+	_1 = zephir_fetch_nproperty_this(this_ptr, SL("_data"), PH_NOISY_CC);
+	RETURN_MM_LONG(zephir_fast_count_int(_1 TSRMLS_CC));
+
+}
+
+/**
+ * Returns the bag iterator
+ *
+ * @return \ArrayIterator
+ */
+PHP_METHOD(Phalcon_Session_Bag, getIterator) {
+
+	int ZEPHIR_LAST_CALL_STATUS;
+	zval *_0, *_1;
+
+	ZEPHIR_MM_GROW();
+
+	_0 = zephir_fetch_nproperty_this(this_ptr, SL("_initialized"), PH_NOISY_CC);
+	if (ZEPHIR_IS_FALSE_IDENTICAL(_0)) {
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "initialize", NULL, 0);
+		zephir_check_call_status();
+	}
+	object_init_ex(return_value, zephir_get_internal_ce(SS("arrayiterator") TSRMLS_CC));
+	_1 = zephir_fetch_nproperty_this(this_ptr, SL("_data"), PH_NOISY_CC);
+	ZEPHIR_CALL_METHOD(NULL, return_value, "__construct", NULL, 407, _1);
+	zephir_check_call_status();
+	RETURN_MM();
+
+}
+
+/**
+ * @param string property
+ * @param mixed value
+ */
+PHP_METHOD(Phalcon_Session_Bag, offsetSet) {
+
+	int ZEPHIR_LAST_CALL_STATUS;
+	zval *property_param = NULL, *value;
+	zval *property = NULL;
+
+	ZEPHIR_MM_GROW();
+	zephir_fetch_params(1, 2, 0, &property_param, &value);
+
+	if (unlikely(Z_TYPE_P(property_param) != IS_STRING && Z_TYPE_P(property_param) != IS_NULL)) {
+		zephir_throw_exception_string(spl_ce_InvalidArgumentException, SL("Parameter 'property' must be a string") TSRMLS_CC);
+		RETURN_MM_NULL();
+	}
+
+	if (likely(Z_TYPE_P(property_param) == IS_STRING)) {
+		zephir_get_strval(property, property_param);
+	} else {
+		ZEPHIR_INIT_VAR(property);
+		ZVAL_EMPTY_STRING(property);
+	}
+
+
+	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "set", NULL, 0, property, value);
+	zephir_check_call_status();
+	RETURN_MM();
+
+}
+
+/**
+ * @param string property
+ */
+PHP_METHOD(Phalcon_Session_Bag, offsetExists) {
+
+	int ZEPHIR_LAST_CALL_STATUS;
+	zval *property_param = NULL;
+	zval *property = NULL;
+
+	ZEPHIR_MM_GROW();
+	zephir_fetch_params(1, 1, 0, &property_param);
+
+	if (unlikely(Z_TYPE_P(property_param) != IS_STRING && Z_TYPE_P(property_param) != IS_NULL)) {
+		zephir_throw_exception_string(spl_ce_InvalidArgumentException, SL("Parameter 'property' must be a string") TSRMLS_CC);
+		RETURN_MM_NULL();
+	}
+
+	if (likely(Z_TYPE_P(property_param) == IS_STRING)) {
+		zephir_get_strval(property, property_param);
+	} else {
+		ZEPHIR_INIT_VAR(property);
+		ZVAL_EMPTY_STRING(property);
+	}
+
+
+	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "has", NULL, 0, property);
+	zephir_check_call_status();
+	RETURN_MM();
+
+}
+
+/**
+ * @param string property
+ */
+PHP_METHOD(Phalcon_Session_Bag, offsetUnset) {
+
+	int ZEPHIR_LAST_CALL_STATUS;
+	zval *property_param = NULL;
+	zval *property = NULL;
+
+	ZEPHIR_MM_GROW();
+	zephir_fetch_params(1, 1, 0, &property_param);
+
+	if (unlikely(Z_TYPE_P(property_param) != IS_STRING && Z_TYPE_P(property_param) != IS_NULL)) {
+		zephir_throw_exception_string(spl_ce_InvalidArgumentException, SL("Parameter 'property' must be a string") TSRMLS_CC);
+		RETURN_MM_NULL();
+	}
+
+	if (likely(Z_TYPE_P(property_param) == IS_STRING)) {
+		zephir_get_strval(property, property_param);
+	} else {
+		ZEPHIR_INIT_VAR(property);
+		ZVAL_EMPTY_STRING(property);
+	}
+
+
+	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "remove", NULL, 0, property);
+	zephir_check_call_status();
+	RETURN_MM();
+
+}
+
+/**
+ * @param string property	 
+ */
+PHP_METHOD(Phalcon_Session_Bag, offsetGet) {
+
+	int ZEPHIR_LAST_CALL_STATUS;
+	zval *property_param = NULL;
+	zval *property = NULL;
+
+	ZEPHIR_MM_GROW();
+	zephir_fetch_params(1, 1, 0, &property_param);
+
+	if (unlikely(Z_TYPE_P(property_param) != IS_STRING && Z_TYPE_P(property_param) != IS_NULL)) {
+		zephir_throw_exception_string(spl_ce_InvalidArgumentException, SL("Parameter 'property' must be a string") TSRMLS_CC);
+		RETURN_MM_NULL();
+	}
+
+	if (likely(Z_TYPE_P(property_param) == IS_STRING)) {
+		zephir_get_strval(property, property_param);
+	} else {
+		ZEPHIR_INIT_VAR(property);
+		ZVAL_EMPTY_STRING(property);
+	}
+
+
+	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "get", NULL, 0, property);
 	zephir_check_call_status();
 	RETURN_MM();
 

@@ -46,7 +46,7 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_events_manager_firequeue, 0, 0, 2)
 	ZEND_ARG_INFO(0, queue)
-	ZEND_ARG_INFO(0, event)
+	ZEND_ARG_OBJ_INFO(0, event, Phalcon\\Events\\Event, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_events_manager_fire, 0, 0, 2)
@@ -78,5 +78,5 @@ ZEPHIR_INIT_FUNCS(phalcon_events_manager_method_entry) {
 	PHP_ME(Phalcon_Events_Manager, fire, arginfo_phalcon_events_manager_fire, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Events_Manager, hasListeners, arginfo_phalcon_events_manager_haslisteners, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Events_Manager, getListeners, arginfo_phalcon_events_manager_getlisteners, ZEND_ACC_PUBLIC)
-  PHP_FE_END
+	PHP_FE_END
 };

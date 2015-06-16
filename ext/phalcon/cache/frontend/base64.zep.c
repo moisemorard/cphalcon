@@ -86,8 +86,6 @@ PHP_METHOD(Phalcon_Cache_Frontend_Base64, __construct) {
 
 /**
  * Returns the cache lifetime
- *
- * @return integer
  */
 PHP_METHOD(Phalcon_Cache_Frontend_Base64, getLifetime) {
 
@@ -106,8 +104,6 @@ PHP_METHOD(Phalcon_Cache_Frontend_Base64, getLifetime) {
 
 /**
  * Check whether if frontend is buffering output
- *
- * @return boolean
  */
 PHP_METHOD(Phalcon_Cache_Frontend_Base64, isBuffering) {
 
@@ -117,7 +113,7 @@ PHP_METHOD(Phalcon_Cache_Frontend_Base64, isBuffering) {
 }
 
 /**
- * Starts output frontend. Actually, does nothing
+ * Starts output frontend. Actually, does nothing in this adapter
  */
 PHP_METHOD(Phalcon_Cache_Frontend_Base64, start) {
 
@@ -155,7 +151,6 @@ PHP_METHOD(Phalcon_Cache_Frontend_Base64, stop) {
 PHP_METHOD(Phalcon_Cache_Frontend_Base64, beforeStore) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zephir_nts_static zephir_fcall_cache_entry *_0 = NULL;
 	zval *data;
 
 	ZEPHIR_MM_GROW();
@@ -163,7 +158,7 @@ PHP_METHOD(Phalcon_Cache_Frontend_Base64, beforeStore) {
 
 
 
-	ZEPHIR_RETURN_CALL_FUNCTION("base64_encode", &_0, data);
+	ZEPHIR_RETURN_CALL_FUNCTION("base64_encode", NULL, 45, data);
 	zephir_check_call_status();
 	RETURN_MM();
 
@@ -178,7 +173,6 @@ PHP_METHOD(Phalcon_Cache_Frontend_Base64, beforeStore) {
 PHP_METHOD(Phalcon_Cache_Frontend_Base64, afterRetrieve) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zephir_nts_static zephir_fcall_cache_entry *_0 = NULL;
 	zval *data;
 
 	ZEPHIR_MM_GROW();
@@ -186,7 +180,7 @@ PHP_METHOD(Phalcon_Cache_Frontend_Base64, afterRetrieve) {
 
 
 
-	ZEPHIR_RETURN_CALL_FUNCTION("base64_decode", &_0, data);
+	ZEPHIR_RETURN_CALL_FUNCTION("base64_decode", NULL, 46, data);
 	zephir_check_call_status();
 	RETURN_MM();
 

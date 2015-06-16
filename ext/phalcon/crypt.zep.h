@@ -79,13 +79,13 @@ ZEPHIR_INIT_FUNCS(phalcon_crypt_method_entry) {
 	PHP_ME(Phalcon_Crypt, getMode, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Crypt, setKey, arginfo_phalcon_crypt_setkey, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Crypt, getKey, NULL, ZEND_ACC_PUBLIC)
-	PHP_ME(Phalcon_Crypt, _cryptPadText, arginfo_phalcon_crypt__cryptpadtext, ZEND_ACC_PRIVATE)
-	PHP_ME(Phalcon_Crypt, _cryptUnpadText, arginfo_phalcon_crypt__cryptunpadtext, ZEND_ACC_PRIVATE)
+	PHP_ME(Phalcon_Crypt, _cryptPadText, arginfo_phalcon_crypt__cryptpadtext, ZEND_ACC_PROTECTED)
+	PHP_ME(Phalcon_Crypt, _cryptUnpadText, arginfo_phalcon_crypt__cryptunpadtext, ZEND_ACC_PROTECTED)
 	PHP_ME(Phalcon_Crypt, encrypt, arginfo_phalcon_crypt_encrypt, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Crypt, decrypt, arginfo_phalcon_crypt_decrypt, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Crypt, encryptBase64, arginfo_phalcon_crypt_encryptbase64, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Crypt, decryptBase64, arginfo_phalcon_crypt_decryptbase64, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Crypt, getAvailableCiphers, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Crypt, getAvailableModes, NULL, ZEND_ACC_PUBLIC)
-  PHP_FE_END
+	PHP_FE_END
 };

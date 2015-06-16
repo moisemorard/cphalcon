@@ -27,6 +27,12 @@ namespace Phalcon\Session;
 abstract class Adapter
 {
 
+	const SESSION_ACTIVE = 2;
+
+	const SESSION_NONE = 1;
+
+	const SESSION_DISABLED = 0;
+
 	protected _uniqueId;
 
 	protected _started = false;
@@ -47,15 +53,15 @@ abstract class Adapter
 
 	/**
 	 * Starts the session (if headers are already sent the session will not be started)
-	 *
-	 * @return boolean
 	 */
 	public function start() -> boolean
 	{
 		if !headers_sent() {
-			session_start();
-			let this->_started = true;
-			return true;
+			if !this->_started && this->status() !== self::SESSION_ACTIVE {
+				session_start();
+				let this->_started = true;
+				return true;
+			}
 		}
 		return false;
 	}
@@ -68,8 +74,6 @@ abstract class Adapter
 	 *		'uniqueId' => 'my-private-app'
 	 *	));
 	 *</code>
-	 *
-	 * @param array options
 	 */
 	public function setOptions(array! options)
 	{
@@ -84,10 +88,8 @@ abstract class Adapter
 
 	/**
 	 * Get internal options
-	 *
-	 * @return array
 	 */
-	public function getOptions()
+	public function getOptions() -> array
 	{
 		return this->_options;
 	}
@@ -106,12 +108,10 @@ abstract class Adapter
 
 		let key = this->_uniqueId . index;
 		if fetch value, _SESSION[key] {
-			if !empty value {
-				if remove {
-					unset _SESSION[key];
-				}
-				return value;
+			if remove {
+				unset _SESSION[key];
 			}
+			return value;
 		}
 		return defaultValue;
 	}
@@ -137,8 +137,6 @@ abstract class Adapter
 	 *<code>
 	 *	var_dump($session->has('auth'));
 	 *</code>
-	 *
-	 * @param string index
 	 */
 	public function has(string index) -> boolean
 	{
@@ -175,8 +173,6 @@ abstract class Adapter
 	 *<code>
 	 *	$session->setId($id);
 	 *</code>
-	 *
-	 * @param string id
 	 */
 	public function setId(string id)
 	{
@@ -199,13 +195,44 @@ abstract class Adapter
 	 * Destroys the active session
 	 *
 	 *<code>
-	 *	var_dump(session->destroy());
+	 *	var_dump($session->destroy());
 	 *</code>
 	 */
 	public function destroy() -> boolean
 	{
 		let this->_started = false;
 		return session_destroy();
+	}
+
+	/**
+	 * Returns the status of the current session. For PHP 5.3 this function will always return SESSION_NONE
+	 *
+	 *<code>
+	 *	var_dump($session->status());
+	 *
+	 *  // PHP 5.4 and above will give meaningful messages, 5.3 gets SESSION_NONE always
+	 *  if ($session->status() !== $session::SESSION_ACTIVE) {
+	 *      $session->start();
+	 *  }
+	 *</code>
+	 */
+	public function status() -> int
+	{
+		var status;
+
+		if !is_php_version("5.3") {
+			let status = session_status();
+
+			switch status {
+				case PHP_SESSION_DISABLED:
+					return self::SESSION_DISABLED;
+
+				case PHP_SESSION_ACTIVE:
+					return self::SESSION_ACTIVE;
+			}
+		}
+
+		return self::SESSION_NONE;
 	}
 
 	/**
@@ -232,8 +259,6 @@ abstract class Adapter
 
 	/**
 	 * Alias: Check whether a session variable is set in an application context
-	 *
-	 * @param string index
 	 */
 	public function __isset(string index) -> boolean
 	{

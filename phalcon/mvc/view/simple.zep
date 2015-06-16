@@ -21,13 +21,14 @@ namespace Phalcon\Mvc\View;
 
 use Phalcon\Di\Injectable;
 use Phalcon\Mvc\View\Exception;
+use Phalcon\Mvc\ViewBaseInterface;
 use Phalcon\Cache\BackendInterface;
 use Phalcon\Mvc\View\Engine\Php as PhpEngine;
 
 /**
  * Phalcon\Mvc\View\Simple
  *
- * This component allows to render views without hicherquical levels
+ * This component allows to render views without hierarchical levels
  *
  *<code>
  * $view = new \Phalcon\Mvc\View\Simple();
@@ -35,9 +36,8 @@ use Phalcon\Mvc\View\Engine\Php as PhpEngine;
  * //or with filename with extension
  * echo $view->render('templates/my-view.volt', array('content' => $html));
  *</code>
- *
  */
-class Simple extends Injectable
+class Simple extends Injectable implements ViewBaseInterface
 {
 
 	protected _options;
@@ -82,10 +82,8 @@ class Simple extends Injectable
 
 	/**
 	 * Gets views directory
-	 *
-	 * @return string
 	 */
-	public function getViewsDir()
+	public function getViewsDir() -> string
 	{
 		return this->_viewsDir;
 	}
@@ -222,7 +220,10 @@ class Simple extends Injectable
 			if file_exists(viewsDirPath . extension) {
 				let viewEnginePath = viewsDirPath . extension;
 			} else {
-				//if passed filename with engine extension
+
+				/**
+				 * if passed filename with engine extension
+				 */
 				if extension && substr(viewsDirPath, -strlen(extension)) == extension && file_exists(viewsDirPath) {
 					let viewEnginePath = viewsDirPath;
 				} else {
@@ -391,7 +392,7 @@ class Simple extends Injectable
 		var viewParams, mergedParams;
 
 		/**
-		 * Start ouput buffering
+		 * Start output buffering
 		 */
 		ob_start();
 
@@ -499,10 +500,8 @@ class Simple extends Injectable
 
 	/**
 	 * Returns the cache instance used to cache
-	 *
-	 * @return Phalcon\Cache\BackendInterface
 	 */
-	public function getCache()
+	public function getCache() -> <BackendInterface>
 	{
 		var cache;
 
@@ -521,9 +520,6 @@ class Simple extends Injectable
 	 *<code>
 	 *  $this->view->cache(array('key' => 'my-key', 'lifetime' => 86400));
 	 *</code>
-	 *
-	 * @param boolean|array options
-	 * @return Phalcon\Mvc\View\Simple
 	 */
 	public function cache(var options = true) -> <Simple>
 	{
@@ -545,10 +541,6 @@ class Simple extends Injectable
 	 *<code>
 	 *	$this->view->setParamToView('products', $products);
 	 *</code>
-	 *
-	 * @param string $key
-	 * @param mixed $value
-	 * @return Phalcon\Mvc\View\Simple
 	 */
 	public function setParamToView(string! key, var value) -> <Simple>
 	{
@@ -588,10 +580,6 @@ class Simple extends Injectable
 	 *<code>
 	 *	$this->view->setVar('products', $products);
 	 *</code>
-	 *
-	 * @param string key
-	 * @param mixed  value
-	 * @return Phalcon\Mvc\View\Simple
 	 */
 	public function setVar(string! key, value) -> <Simple>
 	{
@@ -638,11 +626,9 @@ class Simple extends Injectable
 	}
 
 	/**
-	 * Returns cached ouput from another view stage
-	 *
-	 * @return string
+	 * Returns cached output from another view stage
 	 */
-	public function getContent()
+	public function getContent() -> string
 	{
 		return this->_content;
 	}
@@ -663,11 +649,8 @@ class Simple extends Injectable
 	 *<code>
 	 *	$this->view->products = $products;
 	 *</code>
-	 *
-	 * @param string key
-	 * @param mixed  value
 	 */
-	public function __set(string! key, value)
+	public function __set(string! key, var value)
 	{
 		let this->_viewParams[key] = value;
 	}

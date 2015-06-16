@@ -71,17 +71,15 @@ class Status implements StatusInterface
 
 	/**
 	 * Returns the messages produced because of a failed operation
-	 *
-	 * @return Phalcon\Mvc\Model\MessageInterface[]
 	 */
-	public function getMessages()
+	public function getMessages() -> <\Phalcon\Mvc\Model\MessageInterface[]>
 	{
 		var model;
 		let model = this->_model;
-		if typeof model == "object" {
-			return model->getMessages();
+		if typeof model != "object" {
+			return [];
 		}
-		return [];
+		return model->getMessages();
 	}
 
 	/**

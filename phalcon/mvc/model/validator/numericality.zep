@@ -37,17 +37,16 @@ use Phalcon\Mvc\Model\ValidatorInterface;
  *
  *  public function validation()
  *  {
- *      this->validate(new NumericalityValidator(array(
+ *      $this->validate(new NumericalityValidator(array(
  *          "field" => 'price'
  *      )));
- *      if (this->validationHasFailed() == true) {
+ *      if ($this->validationHasFailed() == true) {
  *          return false;
  *      }
  *  }
  *
  *}
  *</code>
- *
  */
 class Numericality extends Validator implements ValidatorInterface
 {

@@ -47,8 +47,8 @@ use Phalcon\Cache\FrontendInterface;
  *
  *</code>
  */
- class Xcache extends Backend implements BackendInterface
- {
+class Xcache extends Backend implements BackendInterface
+{
 
 	/**
 	 * Phalcon\Cache\Backend\Xcache constructor
@@ -105,7 +105,7 @@ use Phalcon\Cache\FrontendInterface;
 	 * @param boolean stopBuffer
 	 * @TODO implement tags completely
 	 */
-	public function save(keyName = null, content = null, lifetime = null, stopBuffer = true, tags = null)
+	public function save(keyName = null, content = null, lifetime = null, boolean stopBuffer = true, tags = null)
 	{
 		var lastKey, frontend, cachedContent, preparedContent, tmp, tt1, success, isBuffering,
 			options, keys, specialKey;
@@ -132,8 +132,8 @@ use Phalcon\Cache\FrontendInterface;
 		}
 
 		/**
-		* Take the lifetime from the frontend or read it from the set in start()
-		*/
+		 * Take the lifetime from the frontend or read it from the set in start()
+		 */
 		if !lifetime {
 			let tmp = this->_lastLifetime;
 			if !tmp {
@@ -167,8 +167,8 @@ use Phalcon\Cache\FrontendInterface;
 			let options = this->_options;
 
 			if !fetch specialKey, this->_options["statsKey"] {
-	                        throw new Exception("Unexpected inconsistency in options");
-        	        }
+				throw new Exception("Unexpected inconsistency in options");
+			}
 
 			/**
 			 * xcache_list() is available only to the administrator (unless XCache was
@@ -216,7 +216,7 @@ use Phalcon\Cache\FrontendInterface;
 	 * @param string prefix
 	 * @return array
 	 */
-	public function queryKeys(prefix = null)
+	public function queryKeys(prefix = null) -> array
 	{
 		var options, prefixed, specialKey, keys, retval, key, realKey;
 
@@ -226,10 +226,10 @@ use Phalcon\Cache\FrontendInterface;
 			let prefixed = "_PHCX" . prefix;
 		}
 
- 		let options = this->_options;
+		let options = this->_options;
 
 		if !fetch specialKey, this->_options["statsKey"] {
-                	throw new Exception("Unexpected inconsistency in options");
+			throw new Exception("Unexpected inconsistency in options");
 		}
 
 		let retval = [];
@@ -258,7 +258,7 @@ use Phalcon\Cache\FrontendInterface;
 	 * @param   long lifetime
 	 * @return boolean
 	 */
-	public function exists(var keyName = null, lifetime = null)
+	public function exists(var keyName = null, lifetime = null) -> boolean
 	{
 		var lastKey;
 
@@ -340,8 +340,6 @@ use Phalcon\Cache\FrontendInterface;
 
 	/**
 	 * Immediately invalidates all existing items.
-	 *
-	 * @return boolean
 	 */
 	public function flush() -> boolean
 	{

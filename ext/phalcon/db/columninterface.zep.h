@@ -5,7 +5,7 @@ ZEPHIR_INIT_CLASS(Phalcon_Db_ColumnInterface);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_db_columninterface___construct, 0, 0, 2)
 	ZEND_ARG_INFO(0, columnName)
-	ZEND_ARG_INFO(0, definition)
+	ZEND_ARG_ARRAY_INFO(0, definition, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_db_columninterface___set_state, 0, 0, 1)
@@ -31,5 +31,5 @@ ZEPHIR_INIT_FUNCS(phalcon_db_columninterface_method_entry) {
 	PHP_ABSTRACT_ME(Phalcon_Db_ColumnInterface, getBindType, NULL)
 	PHP_ABSTRACT_ME(Phalcon_Db_ColumnInterface, getDefault, NULL)
 	ZEND_FENTRY(__set_state, NULL, arginfo_phalcon_db_columninterface___set_state, ZEND_ACC_STATIC|ZEND_ACC_ABSTRACT|ZEND_ACC_PUBLIC)
-  PHP_FE_END
+	PHP_FE_END
 };

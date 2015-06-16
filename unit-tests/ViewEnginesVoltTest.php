@@ -899,6 +899,9 @@ class ViewEnginesVoltTest extends PHPUnit_Framework_TestCase
 		$compilation = $volt->compileString("{{ image('img/logo.png', 'width': 80) }}");
 		$this->assertEquals($compilation, "<?php echo \$this->tag->image(array('img/logo.png', 'width' => 80)); ?>");
 
+		$compilation = $volt->compileString("{{ email_field('email', 'class': 'form-control', 'placeholder': 'Email Address') }}");
+		$this->assertEquals($compilation, "<?php echo \$this->tag->emailField(array('email', 'class' => 'form-control', 'placeholder' => 'Email Address')); ?>");
+
 		//Filters
 		$compilation = $volt->compileString('{{ "hello"|e }}');
 		$this->assertEquals($compilation, '<?php echo $this->escaper->escapeHtml(\'hello\'); ?>');
@@ -941,6 +944,9 @@ class ViewEnginesVoltTest extends PHPUnit_Framework_TestCase
 		$compilation = $volt->compileString('{% if a!=b %} hello {% endif %}');
 		$this->assertEquals($compilation, '<?php if ($a != $b) { ?> hello <?php } ?>');
 
+		$compilation = $volt->compileString('{% if a is not b %} hello {% endif %}');
+		$this->assertEquals($compilation, '<?php if ($a != $b) { ?> hello <?php } ?>');
+
 		$compilation = $volt->compileString('{% if a<b %} hello {% endif %}');
 		$this->assertEquals($compilation, '<?php if ($a < $b) { ?> hello <?php } ?>');
 
@@ -974,14 +980,26 @@ class ViewEnginesVoltTest extends PHPUnit_Framework_TestCase
 		$compilation = $volt->compileString('{% if a is empty %} hello {% endif %}');
 		$this->assertEquals($compilation, '<?php if (empty($a)) { ?> hello <?php } ?>');
 
+		$compilation = $volt->compileString('{% if a is not empty %} hello {% endif %}');
+		$this->assertEquals($compilation, '<?php if (!empty($a)) { ?> hello <?php } ?>');
+
 		$compilation = $volt->compileString('{% if a is numeric %} hello {% endif %}');
 		$this->assertEquals($compilation, '<?php if (is_numeric($a)) { ?> hello <?php } ?>');
+
+		$compilation = $volt->compileString('{% if a is not numeric %} hello {% endif %}');
+		$this->assertEquals($compilation, '<?php if (!is_numeric($a)) { ?> hello <?php } ?>');
 
 		$compilation = $volt->compileString('{% if a is scalar %} hello {% endif %}');
 		$this->assertEquals($compilation, '<?php if (is_scalar($a)) { ?> hello <?php } ?>');
 
+		$compilation = $volt->compileString('{% if a is not scalar %} hello {% endif %}');
+		$this->assertEquals($compilation, '<?php if (!is_scalar($a)) { ?> hello <?php } ?>');
+
 		$compilation = $volt->compileString('{% if a is iterable %} hello {% endif %}');
 		$this->assertEquals($compilation, '<?php if ((is_array($a) || ($a) instanceof Traversable)) { ?> hello <?php } ?>');
+
+		$compilation = $volt->compileString('{% if a is not iterable %} hello {% endif %}');
+		$this->assertEquals($compilation, '<?php if (!(is_array($a) || ($a) instanceof Traversable)) { ?> hello <?php } ?>');
 
 		$compilation = $volt->compileString('{% if a is sameas(false) %} hello {% endif %}');
 		$this->assertEquals($compilation, '<?php if (($a) === (false)) { ?> hello <?php } ?>');
@@ -1066,6 +1084,9 @@ class ViewEnginesVoltTest extends PHPUnit_Framework_TestCase
 		// Cache statement
 		$compilation = $volt->compileString('{% cache somekey %} hello {% endcache %}');
 		$this->assertEquals($compilation, '<?php $_cache[$somekey] = $this->di->get(\'viewCache\'); $_cacheKey[$somekey] = $_cache[$somekey]->start($somekey); if ($_cacheKey[$somekey] === null) { ?> hello <?php $_cache[$somekey]->save($somekey); } else { echo $_cacheKey[$somekey]; } ?>');
+
+		$compilation = $volt->compileString('{% set lifetime = 500 %}{% cache somekey lifetime %} hello {% endcache %}');
+		$this->assertEquals($compilation, '<?php $lifetime = 500; ?><?php $_cache[$somekey] = $this->di->get(\'viewCache\'); $_cacheKey[$somekey] = $_cache[$somekey]->start($somekey, $lifetime); if ($_cacheKey[$somekey] === null) { ?> hello <?php $_cache[$somekey]->save($somekey, null, $lifetime); } else { echo $_cacheKey[$somekey]; } ?>');
 
 		$compilation = $volt->compileString('{% cache somekey 500 %} hello {% endcache %}');
 		$this->assertEquals($compilation, '<?php $_cache[$somekey] = $this->di->get(\'viewCache\'); $_cacheKey[$somekey] = $_cache[$somekey]->start($somekey, 500); if ($_cacheKey[$somekey] === null) { ?> hello <?php $_cache[$somekey]->save($somekey, null, 500); } else { echo $_cacheKey[$somekey]; } ?>');
@@ -1298,7 +1319,7 @@ Clearly, the song is: <?php echo $this->getContent(); ?>.
 		$view->setRenderLevel(Phalcon\Mvc\View::LEVEL_LAYOUT);
 		$view->render('test10', 'index');
 		$view->finish();
-		$this->assertEquals($view->getContent(), 'Clearly, the song is: Hello Rock n roll!.'."\n");
+		$this->assertEquals($view->getContent(), 'Clearly, the song is: Hello Rock n roll!.'.PHP_EOL);
 
 		//Refreshing generated view
 		file_put_contents('unit-tests/views/test10/other.volt', '{{song}} {{song}}');
@@ -1315,7 +1336,7 @@ Clearly, the song is: <?php echo $this->getContent(); ?>.
 		$view->setRenderLevel(Phalcon\Mvc\View::LEVEL_LAYOUT);
 		$view->render('test10', 'other');
 		$view->finish();
-		$this->assertEquals($view->getContent(), 'Clearly, the song is: Le Song Le Song.'."\n");
+		$this->assertEquals($view->getContent(), 'Clearly, the song is: Le Song Le Song.'.PHP_EOL);
 
 		//Change the view
 		file_put_contents('unit-tests/views/test10/other.volt', 'Two songs: {{song}} {{song}}');
@@ -1324,7 +1345,7 @@ Clearly, the song is: <?php echo $this->getContent(); ?>.
 		$view->setRenderLevel(Phalcon\Mvc\View::LEVEL_LAYOUT);
 		$view->render('test10', 'other');
 		$view->finish();
-		$this->assertEquals($view->getContent(), 'Clearly, the song is: Two songs: Le Song Le Song.'."\n");
+		$this->assertEquals($view->getContent(), 'Clearly, the song is: Two songs: Le Song Le Song.'.PHP_EOL);
 
 	}
 
@@ -1352,6 +1373,6 @@ Clearly, the song is: <?php echo $this->getContent(); ?>.
 		$view->render('test11', 'index');
 		$view->finish();
 
-		$this->assertEquals($view->getContent(), 'Length Array: 4Length Object: 4Length String: 5Length No String: 4Slice Array: 1,2,3,4Slice Array: 2,3Slice Array: 1,2,3Slice Object: 2,3,4Slice Object: 2Slice Object: 1Slice String: helSlice String: elSlice String: lloSlice No String: 123Slice No String: 23Slice No String: 34');
+		$this->assertEquals($view->getContent(), 'Length Array: 4Length Object: 4Length String: 5Length No String: 4Slice Array: 1,2,3,4Slice Array: 2,3Slice Array: 1,2,3Slice Object: 2,3,4Slice Object: 2,3Slice Object: 1,2Slice String: helSlice String: elSlice String: lloSlice No String: 123Slice No String: 23Slice No String: 34');
 	}
 }

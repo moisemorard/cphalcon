@@ -77,10 +77,8 @@ class Data implements FrontendInterface
 
 	/**
 	 * Returns the cache lifetime
-	 *
-	 * @return integer
 	 */
-	public function getLifetime()
+	public function getLifetime() -> int
 	{
 		var options, lifetime;
 		let options = this->_frontendOptions;
@@ -94,8 +92,6 @@ class Data implements FrontendInterface
 
 	/**
 	 * Check whether if frontend is buffering output
-	 *
-	 * @return boolean
 	 */
 	public function isBuffering() -> boolean
 	{
@@ -130,9 +126,6 @@ class Data implements FrontendInterface
 
 	/**
 	 * Serializes data before storing them
-	 *
-	 * @param mixed data
-	 * @return string
 	 */
 	public function beforeStore(var data)
 	{
@@ -140,10 +133,7 @@ class Data implements FrontendInterface
 	}
 
 	/**
-	 * Unserializes data after retrieval
-	 *
-	 * @param mixed data
-	 * @return mixed
+	 * Unserializes data after retrieval	 
 	 */
 	public function afterRetrieve(var data)
 	{

@@ -26,7 +26,7 @@ namespace Phalcon;
  */
 class Debug
 {
-	public _uri = "http://static.phalconphp.com/debug/1.2.0/";
+	public _uri = "http://static.phalconphp.com/debug/2.0.0/";
 
 	public _theme = "default";
 
@@ -107,7 +107,8 @@ class Debug
 	 */
 	public function listenLowSeverity() -> <Debug>
 	{
-		set_exception_handler([this, "onUncaughtLowSeverity"]);
+		set_error_handler([this, "onUncaughtLowSeverity"]);
+		set_exception_handler([this, "onUncaughtException"]);
 		return this;
 	}
 
@@ -156,46 +157,47 @@ class Debug
 		var numberArguments, dump, varDump, k, v;
 
 		let numberArguments = count(argument);
-		if n < 3 {
-			if numberArguments > 0 {
-				if numberArguments < 10 {
 
-					let dump = [];
-					for  k, v in argument {
-						if is_scalar(v) {
-							if v == "" {
-								let varDump = "[" . k . "] =&gt; (empty string)";
-							} else {
-								let varDump = "[" . k . "] =&gt; " . this->_escapeString(v);
-							}
-							let dump[] = varDump;
-						} else {
-
-							if typeof v == "array" {
-								let dump[] = "[" . k . "] =&gt; Array(" . this->_getArrayDump(v, n + 1) . ")";
-								continue;
-							}
-
-							if typeof v == "object" {
-								let dump[] = "[" . k . "] =&gt; Object(" . get_class(v) . ")";
-								continue;
-							}
-
-							if typeof v == "null" {
-								let dump[] = "[" . k . "] =&gt; null";
-								continue;
-							}
-
-							let dump[] = "[" . k . "] =&gt; " . v;
-						}
-					}
-
-					return join(", ", dump);
-				}
-				return numberArguments;
-			}
+		if n >= 3 || numberArguments == 0 {
+			return null;
 		}
-		return null;
+
+		if numberArguments >= 10 {
+			return numberArguments;
+		}
+
+		let dump = [];
+		for k, v in argument {
+
+			if is_scalar(v) {
+				if v == "" {
+					let varDump = "[" . k . "] =&gt; (empty string)";
+				} else {
+					let varDump = "[" . k . "] =&gt; " . this->_escapeString(v);
+				}
+				let dump[] = varDump;
+				continue;
+			}
+
+			if typeof v == "array" {
+				let dump[] = "[" . k . "] =&gt; Array(" . this->_getArrayDump(v, n + 1) . ")";
+				continue;
+			}
+
+			if typeof v == "object" {
+				let dump[] = "[" . k . "] =&gt; Object(" . get_class(v) . ")";
+				continue;
+			}
+
+			if typeof v == "null" {
+				let dump[] = "[" . k . "] =&gt; null";
+				continue;
+			}
+
+			let dump[] = "[" . k . "] =&gt; " . v;
+		}
+
+		return join(", ", dump);
 	}
 
 	/**
@@ -332,7 +334,6 @@ class Debug
 	 */
 	protected final function showTraceItem(int n, array! trace)
 	{
-
 		var space, twoSpaces, underscore, minus, className, namespaceSeparator,
 			prepareInternalClass, preparedFunctionName, html, classReflection, prepareUriClass,
 			functionName, functionReflection, traceArgs, arguments, argument,
@@ -585,6 +586,16 @@ class Debug
 	}
 
 	/**
+	 * Throws an exception when a notice or warning is raised
+	 */
+	public function onUncaughtLowSeverity(severity, message, file, line)
+	{
+		if error_reporting() & severity {
+			throw new \ErrorException(message, 0, severity, file, line);
+		}
+	}
+
+	/**
 	 * Handles uncaught exceptions
 	 */
 	public function onUncaughtException(<\Exception> exception) -> boolean
@@ -610,7 +621,7 @@ class Debug
 		}
 
 		/**
-		 * Globally block the debug component to avoid other exceptions must be shown
+		 * Globally block the debug component to avoid other exceptions to be shown
 		 */
 		let self::_isActive = true;
 
@@ -682,7 +693,11 @@ class Debug
 			let html .= "<div id=\"error-tabs-2\"><table cellspacing=\"0\" align=\"center\" class=\"superglobal-detail\">";
 			let html .= "<tr><th>Key</th><th>Value</th></tr>";
 			for keyRequest, value in _REQUEST {
-				let html .= "<tr><td class=\"key\">" . keyRequest . "</td><td>" . value . "</td></tr>";
+				if typeof value != "array" {
+					let html .= "<tr><td class=\"key\">" . keyRequest . "</td><td>" . value . "</td></tr>";
+				} else {
+					let html .= "<tr><td class=\"key\">" . keyRequest . "</td><td>" . print_r(value, true) . "</td></tr>";
+				}
 			}
 			let html .= "</table></div>";
 
@@ -699,7 +714,6 @@ class Debug
 			/**
 			 * Show included files
 			 */
-
 			let html .= "<div id=\"error-tabs-4\"><table cellspacing=\"0\" align=\"center\" class=\"superglobal-detail\">";
 			let html .= "<tr><th>#</th><th>Path</th></tr>";
 			for keyFile, value in get_included_files() {

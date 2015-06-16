@@ -37,17 +37,16 @@ use Phalcon\Mvc\ModelInterface;
  *
  *  public function validation()
  *  {
- *      this->validate(new UrlValidator(array(
+ *      $this->validate(new UrlValidator(array(
  *          'field' => 'source_url'
  *      )));
- *      if (this->validationHasFailed() == true) {
+ *      if ($this->validationHasFailed() == true) {
  *          return false;
  *      }
  *  }
  *
  *}
  *</code>
- *
  */
 class Url extends Validator implements ValidatorInterface
 {

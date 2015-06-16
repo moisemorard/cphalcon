@@ -3,7 +3,7 @@ extern zend_class_entry *phalcon_http_responseinterface_ce;
 
 ZEPHIR_INIT_CLASS(Phalcon_Http_ResponseInterface);
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_http_responseinterface_setstatuscode, 0, 0, 2)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_http_responseinterface_setstatuscode, 0, 0, 1)
 	ZEND_ARG_INFO(0, code)
 	ZEND_ARG_INFO(0, message)
 ZEND_END_ARG_INFO()
@@ -67,5 +67,5 @@ ZEPHIR_INIT_FUNCS(phalcon_http_responseinterface_method_entry) {
 	PHP_ABSTRACT_ME(Phalcon_Http_ResponseInterface, sendCookies, NULL)
 	PHP_ABSTRACT_ME(Phalcon_Http_ResponseInterface, send, NULL)
 	PHP_ABSTRACT_ME(Phalcon_Http_ResponseInterface, setFileToSend, arginfo_phalcon_http_responseinterface_setfiletosend)
-  PHP_FE_END
+	PHP_FE_END
 };

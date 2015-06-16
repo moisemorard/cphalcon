@@ -251,24 +251,31 @@ class Annotations extends Router
 		/**
 		 * Find if the route is for adding routes
 		 */
-		if name == "Route" {
-			let isRoute = true;
-		} else {
-			if name == "Get" {
+		switch name {
+
+			case "Route":
+				let isRoute = true;
+				break;
+
+			case "Get":
 				let isRoute = true, methods = "GET";
-			} else {
-				if name == "Post" {
-					let isRoute = true, methods = "POST";
-				} else {
-					if name == "Put" {
-						let isRoute = true, methods = "PUT";
-					} else {
-						if name == "Options" {
-							let isRoute = true, methods = "OPTIONS";
-						}
-					}
-				}
-			}
+				break;
+
+			case "Post":
+				let isRoute = true, methods = "POST";
+				break;
+
+			case "Put":
+				let isRoute = true, methods = "PUT";
+				break;
+
+			case "Delete":
+				let isRoute = true, methods = "DELETE";
+				break;
+
+			case "Options":
+				let isRoute = true, methods = "OPTIONS";
+				break;
 		}
 
 		if isRoute === true {
@@ -310,7 +317,11 @@ class Annotations extends Router
 				if value != "/" {
 					let uri = routePrefix . value;
 				} else {
-					let uri = routePrefix;
+					if typeof routePrefix !== "null" {
+						let uri = routePrefix;
+					} else {
+						let uri = value;
+					}
 				}
 			} else {
 				let uri = routePrefix . actionName;
@@ -364,7 +375,6 @@ class Annotations extends Router
 
 			return true;
 		}
-
 	}
 
 	/**

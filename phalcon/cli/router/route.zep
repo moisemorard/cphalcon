@@ -85,11 +85,8 @@ class Route
 
 	/**
 	 * Replaces placeholders from pattern returning a valid PCRE regular expression
-	 *
-	 * @param string pattern
-	 * @return string
 	 */
-	public function compilePattern(string! pattern)
+	public function compilePattern(string! pattern) -> string
 	{
 		var idPattern, part;
 
@@ -162,7 +159,6 @@ class Route
 	 */
 	public function extractNamedParams(string! pattern)
 	{
-
 		char ch;
 		var tmp, matches;
 		boolean notValid;
@@ -317,15 +313,18 @@ class Route
 
 				// Create the array paths dynamically
 				switch count(parts) {
+
 					case 3:
 						let moduleName = parts[0],
 							taskName = parts[1],
 							actionName = parts[2];
 						break;
+
 					case 2:
 						let taskName = parts[0],
 							actionName = parts[1];
 						break;
+
 					case 1:
 						let taskName = parts[0];
 						break;
@@ -423,8 +422,6 @@ class Route
 
 	/**
 	 * Returns the route's name
-	 *
-	 * @return string
 	 */
 	public function getName() -> string
 	{
@@ -439,9 +436,6 @@ class Route
 	 *     'controller' => 'about'
 	 * ))->setName('about');
 	 *</code>
-	 *
-	 * @param string name
-	 * @return Phalcon\Cli\Router\Route
 	 */
 	public function setName(string! name) -> <Route>
 	{
@@ -475,8 +469,6 @@ class Route
 
 	/**
 	 * Returns the route's id
-	 *
-	 * @return string
 	 */
 	public function getRouteId() -> string
 	{
@@ -485,8 +477,6 @@ class Route
 
 	/**
 	 * Returns the route's pattern
-	 *
-	 * @return string
 	 */
 	public function getPattern() -> string
 	{
@@ -495,8 +485,6 @@ class Route
 
 	/**
 	 * Returns the route's compiled pattern
-	 *
-	 * @return string
 	 */
 	public function getCompiledPattern() -> string
 	{
@@ -505,20 +493,16 @@ class Route
 
 	/**
 	 * Returns the paths
-	 *
-	 * @return array
 	 */
-	public function getPaths()
+	public function getPaths() -> array
 	{
 		return this->_paths;
 	}
 
 	/**
 	 * Returns the paths using positions as keys and names as values
-	 *
-	 * @return array
 	 */
-	public function getReversedPaths()
+	public function getReversedPaths() -> array
 	{
 		var reversed, path, position;
 
@@ -544,10 +528,8 @@ class Route
 
 	/**
 	 * Returns the router converter
-	 *
-	 * @return array
 	 */
-	public function getConverters()
+	public function getConverters() -> array
 	{
 		return this->_converters;
 	}
@@ -570,8 +552,6 @@ class Route
 
 	/**
 	 * Get routing delimiter
-	 *
-	 * @return string
 	 */
 	public static function getDelimiter() -> string
 	{

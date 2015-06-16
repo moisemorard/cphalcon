@@ -3,7 +3,7 @@
   +------------------------------------------------------------------------+
   | Phalcon Framework                                                      |
   +------------------------------------------------------------------------+
-  | Copyright (c) 2011-2014 Phalcon Team (http://www.phalconphp.com)       |
+  | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
   +------------------------------------------------------------------------+
   | This source file is subject to the New BSD License that is bundled     |
   | with this package in the file docs/LICENSE.txt.                        |
@@ -76,7 +76,7 @@ int phql_get_token(phql_scanner_state *s, phql_scanner_token *token) {
 			token->len = YYCURSOR - q - 1;
 			q = YYCURSOR;
 			return 0;
-		}
+		}		
 
 		'UPDATE' {
 			token->opcode = PHQL_T_UPDATE;
@@ -258,6 +258,11 @@ int phql_get_token(phql_scanner_state *s, phql_scanner_token *token) {
 			return 0;
 		}
 
+		'ALL' {
+			token->opcode = PHQL_T_ALL;
+			return 0;
+		}
+
 		'BETWEEN' {
 			token->opcode = PHQL_T_BETWEEN;
 			return 0;
@@ -278,6 +283,11 @@ int phql_get_token(phql_scanner_state *s, phql_scanner_token *token) {
 			return 0;
 		}
 
+        'EXISTS' {
+			token->opcode = PHQL_T_EXISTS;
+			return 0;
+		}
+
 		'TRUE' {
 			token->opcode = PHQL_T_TRUE;
 			return 0;
@@ -285,6 +295,31 @@ int phql_get_token(phql_scanner_state *s, phql_scanner_token *token) {
 
 		'FALSE' {
 			token->opcode = PHQL_T_FALSE;
+			return 0;
+		}
+
+        'CASE' {
+			token->opcode = PHQL_T_CASE;
+			return 0;
+		}
+
+        'WHEN' {
+			token->opcode = PHQL_T_WHEN;
+			return 0;
+		}
+
+        'THEN' {
+			token->opcode = PHQL_T_THEN;
+			return 0;
+		}
+
+        'ELSE' {
+			token->opcode = PHQL_T_ELSE;
+			return 0;
+		}
+
+        'END' {
+			token->opcode = PHQL_T_END;
 			return 0;
 		}
 
@@ -297,7 +332,7 @@ int phql_get_token(phql_scanner_state *s, phql_scanner_token *token) {
 			return 0;
 		}
 
-		IDENTIFIER = [\\]?[a-zA-Z\_][a-zA-Z0-9\_\\]*;
+		IDENTIFIER = [\\]?[a-zA-Z\_][a-zA-Z0-9\_\\:]*;
 		IDENTIFIER {
 			token->opcode = PHQL_T_IDENTIFIER;
 			if ((YYCURSOR - q) > 1) {
@@ -316,7 +351,7 @@ int phql_get_token(phql_scanner_state *s, phql_scanner_token *token) {
 			return 0;
 		}
 
-		EIDENTIFIER = [\[] [a-zA-Z\\\_][a-zA-Z0-9\_\\]* [\]];
+		EIDENTIFIER = [\[] [a-zA-Z\\\_][a-zA-Z0-9\_\\:]* [\]];
 		EIDENTIFIER {
 			token->opcode = PHQL_T_IDENTIFIER;
 			token->value = estrndup(q, YYCURSOR - q - 1);
@@ -407,6 +442,36 @@ int phql_get_token(phql_scanner_state *s, phql_scanner_token *token) {
 
 		"=" {
 			token->opcode = PHQL_T_EQUALS;
+			return 0;
+		}
+
+		'@@' {
+			token->opcode = PHQL_T_TS_MATCHES;
+			return 0;
+		}
+
+		"||" {
+			token->opcode = PHQL_T_TS_OR;
+			return 0;
+		}
+
+		"&&" {
+			token->opcode = PHQL_T_TS_AND;
+			return 0;
+		}
+
+		"!!" {
+			token->opcode = PHQL_T_TS_NEGATE;
+			return 0;
+		}
+
+		"@>" {
+			token->opcode = PHQL_T_TS_CONTAINS_ANOTHER;
+			return 0;
+		}
+
+		"@>" {
+			token->opcode = PHQL_T_TS_CONTAINS_IN;
 			return 0;
 		}
 

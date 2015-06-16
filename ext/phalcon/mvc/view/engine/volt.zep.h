@@ -38,14 +38,14 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_view_engine_volt_convertencoding, 0, 
 	ZEND_ARG_INFO(0, to)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_view_engine_volt_slice, 0, 0, 2)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_view_engine_volt_slice, 0, 0, 1)
 	ZEND_ARG_INFO(0, value)
 	ZEND_ARG_INFO(0, start)
 	ZEND_ARG_INFO(0, end)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_mvc_view_engine_volt_sort, 0, 0, 1)
-	ZEND_ARG_INFO(0, value)
+	ZEND_ARG_ARRAY_INFO(0, value, 0)
 ZEND_END_ARG_INFO()
 
 ZEPHIR_INIT_FUNCS(phalcon_mvc_view_engine_volt_method_entry) {
@@ -58,5 +58,5 @@ ZEPHIR_INIT_FUNCS(phalcon_mvc_view_engine_volt_method_entry) {
 	PHP_ME(Phalcon_Mvc_View_Engine_Volt, convertEncoding, arginfo_phalcon_mvc_view_engine_volt_convertencoding, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Mvc_View_Engine_Volt, slice, arginfo_phalcon_mvc_view_engine_volt_slice, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Mvc_View_Engine_Volt, sort, arginfo_phalcon_mvc_view_engine_volt_sort, ZEND_ACC_PUBLIC)
-  PHP_FE_END
+	PHP_FE_END
 };

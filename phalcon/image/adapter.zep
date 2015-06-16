@@ -20,11 +20,9 @@
 namespace Phalcon\Image;
 
 use Phalcon\Image;
-use Phalcon\Image\Adapter;
-use Phalcon\Image\Exception;
 
 /**
- * Phalcon\Image
+ * Phalcon\Image\Adapter
  *
  * All image adapters must use this class
  */
@@ -37,34 +35,34 @@ abstract class Adapter
 
 	protected _realpath { get };
 
-    /**
-     * Image width
-     *
-     * @var int
-     */
+	/**
+	 * Image width
+	 *
+	 * @var int
+	 */
 	protected _width { get };
 
-    /**
-     * Image height
-     *
-     * @var int
-     */
+	/**
+	 * Image height
+	 *
+	 * @var int
+	 */
 	protected _height { get };
 
-    /**
-     * Image type
-     *
-     * Driver dependent
-     *
-     * @var int
-     */
+	/**
+	 * Image type
+	 *
+	 * Driver dependent
+	 *
+	 * @var int
+	 */
 	protected _type { get };
 
-    /**
-     * Image mime type
-     *
-     * @var string
-     */
+	/**
+	 * Image mime type
+	 *
+	 * @var string
+	 */
 	protected _mime { get };
 
 	protected static _checked = false;
@@ -72,8 +70,7 @@ abstract class Adapter
 	/**
  	 * Resize the image to the given size
  	 */
-	//Phalcon\Image::AUTO
-	public function resize(int width = null, int height = null, int master = 7) -> <Adapter>
+	public function resize(int width = null, int height = null, int master = Image::AUTO) -> <Adapter>
 	{
 		var ratio;
 
@@ -120,11 +117,9 @@ abstract class Adapter
 					break;
 
 				case Image::PRECISE:
-
 					if !width || !height {
 						throw new Exception("width and height must be specified");
 					}
-
 					let ratio = this->_width / this->_height;
 
 					if (width / height) > ratio {
@@ -135,14 +130,13 @@ abstract class Adapter
 					break;
 
 				case Image::NONE:
+					if !width {
+						let width = (int) this->_width;
+					}
 
-						if !width {
-							let width = (int) this->_width;
-						}
-
-						if !height {
-							let width = (int) this->_height;
-						}
+					if !height {
+						let width = (int) this->_height;
+					}
 					break;
 			}
 		}
@@ -251,10 +245,8 @@ abstract class Adapter
 	{
 		if amount > 100 {
 			let amount = 100;
-		} else {
-			if amount < 1 {
-				let amount = 1;
-			}
+		} elseif amount < 1 {
+			let amount = 1;
 		}
 
 		this->{"_sharpen"}(amount);
@@ -292,28 +284,22 @@ abstract class Adapter
 
 		if offsetX < 0 {
 			let offsetX = 0;
-		} else {
-			if offsetX > tmp {
-				let offsetX = tmp;
-			}
+		} elseif offsetX > tmp {
+			let offsetX = tmp;
 		}
 
 		let tmp = this->_height - watermark->getHeight();
 
 		if offsetY < 0 {
 			let offsetY = 0;
-		} else {
-			if offsetY > tmp {
-				let offsetY = tmp;
-			}
+		} elseif offsetY > tmp {
+			let offsetY = tmp;
 		}
 
 		if opacity < 0 {
 			let opacity = 0;
-		} else {
-			if opacity > 100 {
-				let opacity = 100;
-			}
+		} elseif opacity > 100 {
+			let opacity = 100;
 		}
 
 		this->{"_watermark"}(watermark, offsetX, offsetY, opacity);
@@ -330,10 +316,8 @@ abstract class Adapter
 
 		if opacity < 0 {
 			let opacity = 0;
-		} else {
-			if opacity > 100 {
-				let opacity = 100;
-			}
+		} elseif opacity > 100 {
+			let opacity = 100;
 		}
 
 		if strlen(color) > 1 && substr(color, 0, 1) === "#" {
@@ -353,8 +337,6 @@ abstract class Adapter
 
 	/**
  	 * Composite one image onto another
- 	 *
- 	 * @param Phalcon\Image\Adapter watermark
  	 */
 	public function mask(<Adapter> watermark) -> <Adapter>
 	{
@@ -390,10 +372,8 @@ abstract class Adapter
 	{
 		if radius < 1 {
 			let radius = 1;
-		} else {
-			if radius > 100 {
-				let radius = 100;
-			}
+		} elseif radius > 100 {
+			let radius = 100;
 		}
 
 		this->{"_blur"}(radius);
@@ -424,10 +404,8 @@ abstract class Adapter
 
 		if quality < 1 {
 			let quality = 1;
-		} else {
-			if quality > 100 {
-				let quality = 100;
-			}
+		} elseif quality > 100 {
+			let quality = 100;
 		}
 
 		this->{"_save"}(file, quality);
@@ -449,10 +427,8 @@ abstract class Adapter
 
 		if quality < 1 {
 			let quality = 1;
-		} else {
-			if quality > 100 {
-				let quality = 100;
-			}
+		} elseif quality > 100 {
+			let quality = 100;
 		}
 
 		return this->{"_render"}(ext, quality);

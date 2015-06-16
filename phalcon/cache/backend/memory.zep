@@ -42,7 +42,7 @@ use Phalcon\Cache\Exception;
  *
  *</code>
  */
-class Memory extends Backend implements BackendInterface
+class Memory extends Backend implements BackendInterface, \Serializable
 {
 
 	protected _data;
@@ -84,7 +84,7 @@ class Memory extends Backend implements BackendInterface
 	 * @param boolean stopBuffer
 	 * @TODO implement tags completely
 	 */
-	public function save(var keyName = null, var content = null, lifetime = null, stopBuffer = true, tags = null) -> void
+	public function save(var keyName = null, var content = null, lifetime = null, boolean stopBuffer = true, tags = null) -> void
 	{
 		var lastKey, frontend, cachedContent, preparedContent, isBuffering;
 
@@ -149,14 +149,14 @@ class Memory extends Backend implements BackendInterface
 	 */
 	public function queryKeys(var prefix = null) -> array
 	{
-		var data, index;
-		array keys = [];
+		var data, index, keys;
 
 		let data = this->_data;
 		if typeof data == "array" {
 			if !prefix {
 				let keys = (array) array_keys(data);
 			} else {
+			    	let keys = [];
 				for index, _ in data {
 					let keys[] = index;
 				}
@@ -267,12 +267,35 @@ class Memory extends Backend implements BackendInterface
 
 	/**
 	 * Immediately invalidates all existing items.
-	 *
-	 * @return boolean
 	 */
 	public function flush() -> boolean
 	{
 		let this->_data = null;
 		return true;
+	}
+
+	/**
+	 * Required for interface \Serializable
+	 */
+	public function serialize() -> string
+	{
+		return serialize([
+			"frontend": this->_frontend
+		]);
+	}
+
+	/**
+	 * Required for interface \Serializable
+	 */
+	public function unserialize(var data)
+	{
+		var unserialized;
+
+		let unserialized = unserialize(data);
+		if typeof unserialized != "array" {
+			throw new \Exception("Unserialized data must be an array");
+		}
+
+		let this->_frontend = unserialized["frontend"];
 	}
 }

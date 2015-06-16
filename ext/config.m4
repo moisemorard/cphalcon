@@ -9,7 +9,7 @@ if test "$PHP_PHALCON" = "yes"; then
 	fi
 
 	AC_DEFINE(HAVE_PHALCON, 1, [Whether you have Phalcon])
-	phalcon_sources="phalcon.c kernel/main.c kernel/memory.c kernel/exception.c kernel/hash.c kernel/debug.c kernel/backtrace.c kernel/object.c kernel/array.c kernel/extended/array.c kernel/string.c kernel/fcall.c kernel/extended/fcall.c kernel/require.c kernel/file.c kernel/operators.c kernel/concat.c kernel/variables.c kernel/filter.c kernel/iterator.c kernel/time.c kernel/exit.c phalcon/acl.zep.c
+	phalcon_sources="phalcon.c kernel/main.c kernel/memory.c kernel/exception.c kernel/hash.c kernel/debug.c kernel/backtrace.c kernel/object.c kernel/array.c kernel/extended/array.c kernel/string.c kernel/fcall.c kernel/extended/fcall.c kernel/require.c kernel/file.c kernel/operators.c kernel/math.c kernel/concat.c kernel/variables.c kernel/filter.c kernel/iterator.c kernel/time.c kernel/exit.c phalcon/acl.zep.c
 	phalcon/acl/adapter.zep.c
 	phalcon/acl/adapter/memory.zep.c
 	phalcon/acl/adapterinterface.zep.c
@@ -197,6 +197,10 @@ if test "$PHP_PHALCON" = "yes"; then
 	phalcon/mvc/application.zep.c
 	phalcon/mvc/application/exception.zep.c
 	phalcon/mvc/collection.zep.c
+	phalcon/mvc/collection/behavior.zep.c
+	phalcon/mvc/collection/behavior/softdelete.zep.c
+	phalcon/mvc/collection/behavior/timestampable.zep.c
+	phalcon/mvc/collection/behaviorinterface.zep.c
 	phalcon/mvc/collection/document.zep.c
 	phalcon/mvc/collection/exception.zep.c
 	phalcon/mvc/collection/manager.zep.c
@@ -274,6 +278,7 @@ if test "$PHP_PHALCON" = "yes"; then
 	phalcon/mvc/router/annotations.zep.c
 	phalcon/mvc/router/exception.zep.c
 	phalcon/mvc/router/group.zep.c
+	phalcon/mvc/router/groupinterface.zep.c
 	phalcon/mvc/router/route.zep.c
 	phalcon/mvc/router/routeinterface.zep.c
 	phalcon/mvc/routerinterface.zep.c
@@ -291,7 +296,9 @@ if test "$PHP_PHALCON" = "yes"; then
 	phalcon/mvc/view/engineinterface.zep.c
 	phalcon/mvc/view/exception.zep.c
 	phalcon/mvc/view/simple.zep.c
+	phalcon/mvc/viewbaseinterface.zep.c
 	phalcon/mvc/viewinterface.zep.c
+	phalcon/paginator/adapter.zep.c
 	phalcon/paginator/adapter/model.zep.c
 	phalcon/paginator/adapter/nativearray.zep.c
 	phalcon/paginator/adapter/querybuilder.zep.c

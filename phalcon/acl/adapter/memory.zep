@@ -19,9 +19,12 @@
 
 namespace Phalcon\Acl\Adapter;
 
+use Phalcon\Acl;
 use Phalcon\Acl\Adapter;
+use Phalcon\Acl\Role;
 use Phalcon\Acl\Resource;
 use Phalcon\Acl\Exception;
+use Phalcon\Events\Manager as EventsManager;
 
 /**
  * Phalcon\Acl\Adapter\Memory
@@ -161,7 +164,7 @@ class Memory extends Adapter
 			let roleObject = role;
 		} else {
 			let roleName = role;
-			let roleObject = new \Phalcon\Acl\Role(role);
+			let roleObject = new Role(role);
 		}
 
 		if isset this->_rolesNames[roleName] {
@@ -182,9 +185,9 @@ class Memory extends Adapter
 	/**
 	 * Do a role inherit from another existing role
 	 */
-	public function addInherit(string roleName, var roleToInherit)
+	public function addInherit(string roleName, var roleToInherit) -> boolean
 	{
-		var roleInheritName, rolesNames;
+		var roleInheritName, rolesNames, deepInheritName;
 
 		let rolesNames = this->_rolesNames;
 		if !isset rolesNames[roleName] {
@@ -195,6 +198,15 @@ class Memory extends Adapter
 			let roleInheritName = roleToInherit->getName();
 		} else {
 			let roleInheritName = roleToInherit;
+		}
+
+		/**
+		 * Deep inherits
+		 */
+		if isset this->_roleInherits[roleInheritName] {
+			for deepInheritName in this->_roleInherits[roleInheritName] {
+				this->addInherit(roleName, deepInheritName);
+			}
 		}
 
 		/**
@@ -431,10 +443,10 @@ class Memory extends Adapter
 		var innerRoleName;
 
 		if roleName != "*" {
-			return this->_allowOrDeny(roleName, resourceName, access, \Phalcon\Acl::ALLOW);
+			return this->_allowOrDeny(roleName, resourceName, access, Acl::ALLOW);
 		} else {
 			for innerRoleName, _ in this->_rolesNames {
-				this->_allowOrDeny(innerRoleName, resourceName, access, \Phalcon\Acl::ALLOW);
+				this->_allowOrDeny(innerRoleName, resourceName, access, Acl::ALLOW);
 			}
 		}
 	}
@@ -464,25 +476,25 @@ class Memory extends Adapter
 		var innerRoleName;
 
 		if roleName != "*" {
-			return this->_allowordeny(roleName, resourceName, access, \Phalcon\Acl::DENY);
+			return this->_allowordeny(roleName, resourceName, access, Acl::DENY);
 		} else {
 			for innerRoleName, _ in this->_rolesNames {
-				this->_allowordeny(innerRoleName, resourceName, access, \Phalcon\Acl::DENY);
+				this->_allowordeny(innerRoleName, resourceName, access, Acl::DENY);
 			}
 		}
 	}
 
 	/**
-	  * Check whether a role is allowed to access an action from a resource
-	  *
-	  * <code>
-	  * //Does andres have access to the customers resource to create?
-	  * $acl->isAllowed('andres', 'Products', 'create');
-	  *
-	  * //Do guests have access to any resource to edit?
-	  * $acl->isAllowed('guests', '*', 'edit');
-	  * </code>
-	  */
+	 * Check whether a role is allowed to access an action from a resource
+	 *
+	 * <code>
+	 * //Does andres have access to the customers resource to create?
+	 * $acl->isAllowed('andres', 'Products', 'create');
+	 *
+	 * //Do guests have access to any resource to edit?
+	 * $acl->isAllowed('guests', '*', 'edit');
+	 * </code>
+	 */
 	public function isAllowed(string roleName, string resourceName, string access) -> boolean
 	{
 		var eventsManager, accessList, accessKey,
@@ -493,7 +505,7 @@ class Memory extends Adapter
 		let this->_activeResource = resourceName;
 		let this->_activeAccess = access;
 		let accessList = this->_access;
-		let eventsManager = <\Phalcon\Events\Manager> this->_eventsManager;
+		let eventsManager = <EventsManager> this->_eventsManager;
 
 		if typeof eventsManager == "object" {
 			if eventsManager->fire("acl:beforeCheckAccess", this) === false {
@@ -506,7 +518,7 @@ class Memory extends Adapter
 		 */
 		let rolesNames = this->_rolesNames;
 		if !isset rolesNames[roleName] {
-			return (this->_defaultAccess == \Phalcon\Acl::ALLOW);
+			return (this->_defaultAccess == Acl::ALLOW);
 		}
 
 		let accessKey = roleName . "!" . resourceName . "!" . access;
@@ -607,25 +619,21 @@ class Memory extends Adapter
 			return false;
 		}
 
-		return (haveAccess == \Phalcon\Acl::ALLOW);
+		return (haveAccess == Acl::ALLOW);
 	}
 
 	/**
 	 * Return an array with every role registered in the list
-	 *
-	 * @return Phalcon\Acl\Role[]
 	 */
-	public function getRoles()
+	public function getRoles() -> <Role[]>
 	{
 		return this->_roles;
 	}
 
 	/**
 	 * Return an array with every resource registered in the list
-	 *
-	 * @return Phalcon\Acl\Resource[]
 	 */
-	public function getResources()
+	public function getResources() -> <$Resource[]>
 	{
 		return this->_resources;
 	}

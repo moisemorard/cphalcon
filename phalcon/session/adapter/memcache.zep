@@ -49,22 +49,16 @@ use Phalcon\Cache\Frontend\Data as FrontendData;
 class Memcache extends Adapter implements AdapterInterface
 {
 
-	protected _memcache = NULL { get };
+	protected _memcache = null { get };
 
 	protected _lifetime = 8600 { get };
 
 	/**
 	 * Phalcon\Session\Adapter\Memcache constructor
-	 *
-	 * @param array options
 	 */
-	public function __construct(options = null)
+	public function __construct(array options = [])
 	{
 		var lifetime;
-
-		if typeof options != "array" {
-			let options = [];
-		}
 
 		if !isset options["host"] {
 			let options["host"] = "127.0.0.1";
@@ -115,41 +109,41 @@ class Memcache extends Adapter implements AdapterInterface
 	 * @param string sessionId
 	 * @return mixed
 	 */
-    public function read(sessionId)
-    {
-        return this->_memcache->get(sessionId, this->_lifetime);
-    }
+	public function read(sessionId)
+	{
+		return this->_memcache->get(sessionId, this->_lifetime);
+	}
 
-    /**
-     * {@inheritdoc}
-     *
-     * @param string sessionId
-     * @param string data
-     */
-    public function write(sessionId, data)
-    {
-        this->_memcache->save(sessionId, data, this->_lifetime);
-    }
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @param string sessionId
+	 * @param string data
+	 */
+	public function write(sessionId, data)
+	{
+		this->_memcache->save(sessionId, data, this->_lifetime);
+	}
 
-    /**
-     * {@inheritdoc}
-     *
-     * @param  string  sessionId
-     * @return boolean
-     */
-    public function destroy(session_id = null)
-    {
-        if session_id === null {
-            let session_id = this->getId();
-        }
-        return this->_memcache->delete(session_id);
-    }
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @param  string  sessionId
+	 * @return boolean
+	 */
+	public function destroy(sessionId = null) -> boolean
+	{
+		if sessionId === null {
+			let sessionId = this->getId();
+		}
+		return this->_memcache->delete(sessionId);
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function gc()
-    {
+	/**
+	 * {@inheritdoc}
+	 */
+	public function gc()
+	{
 		return true;
 	}
 }

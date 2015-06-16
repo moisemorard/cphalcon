@@ -37,7 +37,7 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalcon_db_adapter_pdo_executeprepared, 0, 0, 3)
 	ZEND_ARG_OBJ_INFO(0, statement, PDOStatement, 0)
-	ZEND_ARG_INFO(0, placeholders)
+	ZEND_ARG_ARRAY_INFO(0, placeholders, 0)
 	ZEND_ARG_INFO(0, dataTypes)
 ZEND_END_ARG_INFO()
 
@@ -102,5 +102,5 @@ ZEPHIR_INIT_FUNCS(phalcon_db_adapter_pdo_method_entry) {
 	PHP_ME(Phalcon_Db_Adapter_Pdo, isUnderTransaction, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Db_Adapter_Pdo, getInternalHandler, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalcon_Db_Adapter_Pdo, getErrorInfo, NULL, ZEND_ACC_PUBLIC)
-  PHP_FE_END
+	PHP_FE_END
 };

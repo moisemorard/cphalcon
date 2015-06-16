@@ -38,8 +38,6 @@ class Multiple
 
 	/**
 	 * Pushes a logger to the logger tail
-	 *
-	 * @param Phalcon\Logger\AdapterInterface logger
 	 */
 	public function push(<AdapterInterface> logger)
 	{
@@ -48,8 +46,6 @@ class Multiple
 
 	/**
 	 * Sets a global formatter
-	 *
-	 * @param Phalcon\Logger\FormatterInterface formatter
 	 */
 	public function setFormatter(<FormatterInterface> formatter)
 	{
@@ -66,90 +62,80 @@ class Multiple
 
 	/**
 	 * Sends a message to each registered logger
-	 *
-	 * @param string message
-	 * @param int type
 	 */
-	public function log(string message, int type = 7)
+	public function log(var type, var message = null, array! context = null)
 	{
 		var loggers, logger;
 
 		let loggers = this->_loggers;
 		if typeof loggers == "array" {
 			for logger in loggers {
-				logger->log(type, message);
+				logger->log(type, message, context);
 			}
 		}
 	}
 
 	/**
- 	 * Sends/Writes an emergency message to the log
- 	 *
- 	 * @param string message
+ 	 * Sends/Writes an critical message to the log
  	 */
-	public function emergency(string message)
+	public function critical(string! message, array! context = null)
 	{
-		this->log(message, Logger::EMERGENCY);
+		this->log(Logger::CRITICAL, message, context);
+	}
+
+	/**
+ 	 * Sends/Writes an emergency message to the log
+ 	 */
+	public function emergency(string! message, array! context = null)
+	{
+		this->log(Logger::EMERGENCY, message, context);
 	}
 
 	/**
  	 * Sends/Writes a debug message to the log
- 	 *
- 	 * @param string message
- 	 * @param ing type
  	 */
-	public function debug(string message)
+	public function debug(string! message, array! context = null)
 	{
-		this->log(message, Logger::DEBUG);
+		this->log(Logger::DEBUG, message, context);
 	}
 
 	/**
  	 * Sends/Writes an error message to the log
- 	 *
- 	 * @param string message
  	 */
-	public function error(string message)
+	public function error(string! message, array! context = null)
 	{
-		this->log(message, Logger::ERROR);
+		this->log(Logger::ERROR, message, context);
 	}
 
 	/**
  	 * Sends/Writes an info message to the log
- 	 *
- 	 * @param string message
  	 */
-	public function info(string message)
+	public function info(string! message, array! context = null)
 	{
-		this->log(message, Logger::INFO);
+		this->log(Logger::INFO, message, context);
 	}
 
 	/**
  	 * Sends/Writes a notice message to the log
- 	 *
- 	 * @param string message
  	 */
-	public function notice(string message)
+	public function notice(string! message, array! context = null)
 	{
-		this->log(message, Logger::NOTICE);
+		this->log(Logger::NOTICE, message, context);
 	}
 
 	/**
  	 * Sends/Writes a warning message to the log
- 	 *
- 	 * @param string message
  	 */
-	public function warning(string message)
+	public function warning(string! message, array! context = null)
 	{
-		this->log(message, Logger::WARNING);
+		this->log(Logger::WARNING, message, context);
 	}
 
 	/**
  	 * Sends/Writes an alert message to the log
- 	 *
- 	 * @param string message
  	 */
-	public function alert(string message)
+	public function alert(string! message, array! context = null)
 	{
-		this->log(message, Logger::ALERT);
+		this->log(Logger::ALERT, message, context);
 	}
 }

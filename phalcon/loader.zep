@@ -249,7 +249,7 @@ class Loader implements EventsAwareInterface
 	}
 
 	/**
-	 * Autoloades the registered classes
+	 * Autoloads the registered classes
 	 */
 	public function autoLoad(string! className) -> boolean
 	{
@@ -298,7 +298,7 @@ class Loader implements EventsAwareInterface
 					/**
 					 * Append the namespace separator to the prefix
 					 */
-					let fileName = str_replace(nsPrefix . namespaceSeparator, "", className);
+					let fileName = substr(className, strlen(nsPrefix . namespaceSeparator));
 					let fileName = str_replace(namespaceSeparator, ds, fileName);
 
 					if fileName {

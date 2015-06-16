@@ -208,21 +208,21 @@ PHP_METHOD(Phalcon_Db_Reference, __construct) {
 	if (zephir_array_isset_string_fetch(&referencedTable, definition, SS("referencedTable"), 0 TSRMLS_CC)) {
 		zephir_update_property_this(this_ptr, SL("_referencedTable"), referencedTable TSRMLS_CC);
 	} else {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_db_exception_ce, "Referenced table is required", "phalcon/db/reference.zep", 102);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_db_exception_ce, "Referenced table is required", "phalcon/db/reference.zep", 99);
 		return;
 	}
 	ZEPHIR_OBS_VAR(columns);
 	if (zephir_array_isset_string_fetch(&columns, definition, SS("columns"), 0 TSRMLS_CC)) {
 		zephir_update_property_this(this_ptr, SL("_columns"), columns TSRMLS_CC);
 	} else {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_db_exception_ce, "Foreign key columns are required", "phalcon/db/reference.zep", 108);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_db_exception_ce, "Foreign key columns are required", "phalcon/db/reference.zep", 105);
 		return;
 	}
 	ZEPHIR_OBS_VAR(referencedColumns);
 	if (zephir_array_isset_string_fetch(&referencedColumns, definition, SS("referencedColumns"), 0 TSRMLS_CC)) {
 		zephir_update_property_this(this_ptr, SL("_referencedColumns"), referencedColumns TSRMLS_CC);
 	} else {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_db_exception_ce, "Referenced columns of the foreign key are required", "phalcon/db/reference.zep", 114);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_db_exception_ce, "Referenced columns of the foreign key are required", "phalcon/db/reference.zep", 111);
 		return;
 	}
 	ZEPHIR_OBS_VAR(schema);
@@ -242,7 +242,7 @@ PHP_METHOD(Phalcon_Db_Reference, __construct) {
 		zephir_update_property_this(this_ptr, SL("_onUpdate"), onUpdate TSRMLS_CC);
 	}
 	if (zephir_fast_count_int(columns TSRMLS_CC) != zephir_fast_count_int(referencedColumns TSRMLS_CC)) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_db_exception_ce, "Number of columns is not equals than the number of columns referenced", "phalcon/db/reference.zep", 134);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_db_exception_ce, "Number of columns is not equals than the number of columns referenced", "phalcon/db/reference.zep", 131);
 		return;
 	}
 	ZEPHIR_MM_RESTORE();
@@ -254,7 +254,6 @@ PHP_METHOD(Phalcon_Db_Reference, __construct) {
  */
 PHP_METHOD(Phalcon_Db_Reference, __set_state) {
 
-	zephir_nts_static zephir_fcall_cache_entry *_1 = NULL;
 	int ZEPHIR_LAST_CALL_STATUS;
 	zval *data_param = NULL, *referencedSchema, *referencedTable, *columns, *referencedColumns, *constraintName = NULL, *onDelete, *onUpdate;
 	zval *data = NULL, *_0;
@@ -270,7 +269,7 @@ PHP_METHOD(Phalcon_Db_Reference, __set_state) {
 	if (!(zephir_array_isset_string_fetch(&constraintName, data, SS("_referenceName"), 0 TSRMLS_CC))) {
 		ZEPHIR_OBS_NVAR(constraintName);
 		if (!(zephir_array_isset_string_fetch(&constraintName, data, SS("_name"), 0 TSRMLS_CC))) {
-			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_db_exception_ce, "_name parameter is required", "phalcon/db/reference.zep", 149);
+			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_db_exception_ce, "_name parameter is required", "phalcon/db/reference.zep", 146);
 			return;
 		}
 	}
@@ -289,7 +288,7 @@ PHP_METHOD(Phalcon_Db_Reference, __set_state) {
 	zephir_array_update_string(&_0, SL("referencedColumns"), &referencedColumns, PH_COPY | PH_SEPARATE);
 	zephir_array_update_string(&_0, SL("onDelete"), &onDelete, PH_COPY | PH_SEPARATE);
 	zephir_array_update_string(&_0, SL("onUpdate"), &onUpdate, PH_COPY | PH_SEPARATE);
-	ZEPHIR_CALL_METHOD(NULL, return_value, "__construct", &_1, constraintName, _0);
+	ZEPHIR_CALL_METHOD(NULL, return_value, "__construct", NULL, 77, constraintName, _0);
 	zephir_check_call_status();
 	RETURN_MM();
 

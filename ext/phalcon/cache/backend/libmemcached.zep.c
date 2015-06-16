@@ -78,7 +78,7 @@ ZEPHIR_INIT_CLASS(Phalcon_Cache_Backend_Libmemcached) {
 PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, __construct) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zephir_nts_static zephir_fcall_cache_entry *_2 = NULL;
+	zephir_fcall_cache_entry *_2 = NULL;
 	zval *_0;
 	zval *frontend, *options = NULL, *servers, *_1;
 
@@ -112,7 +112,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, __construct) {
 		ZVAL_STRING(_1, "_PHCM", 1);
 		zephir_array_update_string(&options, SL("statsKey"), &_1, PH_COPY | PH_SEPARATE);
 	}
-	ZEPHIR_CALL_PARENT(NULL, phalcon_cache_backend_libmemcached_ce, this_ptr, "__construct", &_2, frontend, options);
+	ZEPHIR_CALL_PARENT(NULL, phalcon_cache_backend_libmemcached_ce, this_ptr, "__construct", &_2, 36, frontend, options);
 	zephir_check_call_status();
 	ZEPHIR_MM_RESTORE();
 
@@ -132,7 +132,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, _connect) {
 	zephir_read_property_this(&options, this_ptr, SL("_options"), PH_NOISY_CC);
 	ZEPHIR_INIT_VAR(memcache);
 	object_init_ex(memcache, zephir_get_internal_ce(SS("memcached") TSRMLS_CC));
-	ZEPHIR_CALL_METHOD(NULL, memcache, "__construct", NULL);
+	ZEPHIR_CALL_METHOD(NULL, memcache, "__construct", NULL, 0);
 	zephir_check_call_status();
 	ZEPHIR_OBS_VAR(servers);
 	if (!(zephir_array_isset_string_fetch(&servers, options, SS("servers"), 0 TSRMLS_CC))) {
@@ -143,22 +143,20 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, _connect) {
 		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Servers must be an array", "phalcon/cache/backend/libmemcached.zep", 108);
 		return;
 	}
-	ZEPHIR_CALL_METHOD(&_0, memcache, "addservers", NULL, servers);
+	ZEPHIR_CALL_METHOD(&_0, memcache, "addservers", NULL, 0, servers);
 	zephir_check_call_status();
 	if (!(zephir_is_true(_0))) {
 		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Cannot connect to Memcached server", "phalcon/cache/backend/libmemcached.zep", 112);
 		return;
 	}
-	if (zephir_array_isset_string(options, SS("client"))) {
-		ZEPHIR_OBS_VAR(client);
-		zephir_array_fetch_string(&client, options, SL("client"), PH_NOISY, "phalcon/cache/backend/libmemcached.zep", 116 TSRMLS_CC);
-		if (Z_TYPE_P(client) == IS_ARRAY) {
-			ZEPHIR_CALL_METHOD(NULL, memcache, "setoptions", NULL, client);
-			zephir_check_call_status();
-		} else {
-			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Client options must be instance of array", "phalcon/cache/backend/libmemcached.zep", 120);
+	ZEPHIR_OBS_VAR(client);
+	if (zephir_array_isset_string_fetch(&client, options, SS("client"), 0 TSRMLS_CC)) {
+		if (Z_TYPE_P(client) != IS_ARRAY) {
+			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Client options must be instance of array", "phalcon/cache/backend/libmemcached.zep", 117);
 			return;
 		}
+		ZEPHIR_CALL_METHOD(NULL, memcache, "setoptions", NULL, 0, client);
+		zephir_check_call_status();
 	}
 	zephir_update_property_this(this_ptr, SL("_memcache"), memcache TSRMLS_CC);
 	ZEPHIR_MM_RESTORE();
@@ -188,7 +186,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, get) {
 	ZEPHIR_OBS_VAR(memcache);
 	zephir_read_property_this(&memcache, this_ptr, SL("_memcache"), PH_NOISY_CC);
 	if (Z_TYPE_P(memcache) != IS_OBJECT) {
-		ZEPHIR_CALL_METHOD(NULL, this_ptr, "_connect", NULL);
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "_connect", NULL, 0);
 		zephir_check_call_status();
 		ZEPHIR_OBS_NVAR(memcache);
 		zephir_read_property_this(&memcache, this_ptr, SL("_memcache"), PH_NOISY_CC);
@@ -197,7 +195,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, get) {
 	ZEPHIR_INIT_VAR(prefixedKey);
 	ZEPHIR_CONCAT_VV(prefixedKey, _0, keyName);
 	zephir_update_property_this(this_ptr, SL("_lastKey"), prefixedKey TSRMLS_CC);
-	ZEPHIR_CALL_METHOD(&cachedContent, memcache, "get", NULL, prefixedKey);
+	ZEPHIR_CALL_METHOD(&cachedContent, memcache, "get", NULL, 0, prefixedKey);
 	zephir_check_call_status();
 	if (!(zephir_is_true(cachedContent))) {
 		RETURN_MM_NULL();
@@ -206,7 +204,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, get) {
 		RETURN_CCTOR(cachedContent);
 	} else {
 		_1 = zephir_fetch_nproperty_this(this_ptr, SL("_frontend"), PH_NOISY_CC);
-		ZEPHIR_RETURN_CALL_METHOD(_1, "afterretrieve", NULL, cachedContent);
+		ZEPHIR_RETURN_CALL_METHOD(_1, "afterretrieve", NULL, 0, cachedContent);
 		zephir_check_call_status();
 		RETURN_MM();
 	}
@@ -224,10 +222,11 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, get) {
 PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, save) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zval *keyName = NULL, *content = NULL, *lifetime = NULL, *stopBuffer = NULL, *lastKey = NULL, *frontend, *memcache = NULL, *cachedContent = NULL, *preparedContent = NULL, *tmp, *tt1 = NULL, *success = NULL, *options, *specialKey, *keys = NULL, *isBuffering = NULL, *_0;
+	zend_bool stopBuffer;
+	zval *keyName = NULL, *content = NULL, *lifetime = NULL, *stopBuffer_param = NULL, *lastKey = NULL, *frontend, *memcache = NULL, *cachedContent = NULL, *preparedContent = NULL, *tmp, *tt1 = NULL, *success = NULL, *options, *specialKey, *keys = NULL, *isBuffering = NULL, *_0;
 
 	ZEPHIR_MM_GROW();
-	zephir_fetch_params(1, 0, 4, &keyName, &content, &lifetime, &stopBuffer);
+	zephir_fetch_params(1, 0, 4, &keyName, &content, &lifetime, &stopBuffer_param);
 
 	if (!keyName) {
 		keyName = ZEPHIR_GLOBAL(global_null);
@@ -238,8 +237,10 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, save) {
 	if (!lifetime) {
 		lifetime = ZEPHIR_GLOBAL(global_null);
 	}
-	if (!stopBuffer) {
-		stopBuffer = ZEPHIR_GLOBAL(global_true);
+	if (!stopBuffer_param) {
+		stopBuffer = 1;
+	} else {
+		stopBuffer = zephir_get_boolval(stopBuffer_param);
 	}
 
 
@@ -252,7 +253,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, save) {
 		ZEPHIR_CONCAT_VV(lastKey, _0, keyName);
 	}
 	if (!(zephir_is_true(lastKey))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Cache must be started first", "phalcon/cache/backend/libmemcached.zep", 179);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Cache must be started first", "phalcon/cache/backend/libmemcached.zep", 177);
 		return;
 	}
 	ZEPHIR_OBS_VAR(frontend);
@@ -260,26 +261,26 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, save) {
 	ZEPHIR_OBS_VAR(memcache);
 	zephir_read_property_this(&memcache, this_ptr, SL("_memcache"), PH_NOISY_CC);
 	if (Z_TYPE_P(memcache) != IS_OBJECT) {
-		ZEPHIR_CALL_METHOD(NULL, this_ptr, "_connect", NULL);
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "_connect", NULL, 0);
 		zephir_check_call_status();
 		ZEPHIR_OBS_NVAR(memcache);
 		zephir_read_property_this(&memcache, this_ptr, SL("_memcache"), PH_NOISY_CC);
 	}
 	if (!(zephir_is_true(content))) {
-		ZEPHIR_CALL_METHOD(&cachedContent, frontend, "getcontent", NULL);
+		ZEPHIR_CALL_METHOD(&cachedContent, frontend, "getcontent", NULL, 0);
 		zephir_check_call_status();
 	} else {
 		ZEPHIR_CPY_WRT(cachedContent, content);
 	}
 	if (!(zephir_is_numeric(cachedContent))) {
-		ZEPHIR_CALL_METHOD(&preparedContent, frontend, "beforestore", NULL, cachedContent);
+		ZEPHIR_CALL_METHOD(&preparedContent, frontend, "beforestore", NULL, 0, cachedContent);
 		zephir_check_call_status();
 	}
 	if (!(zephir_is_true(lifetime))) {
 		ZEPHIR_OBS_VAR(tmp);
 		zephir_read_property_this(&tmp, this_ptr, SL("_lastLifetime"), PH_NOISY_CC);
 		if (!(zephir_is_true(tmp))) {
-			ZEPHIR_CALL_METHOD(&tt1, frontend, "getlifetime", NULL);
+			ZEPHIR_CALL_METHOD(&tt1, frontend, "getlifetime", NULL, 0);
 			zephir_check_call_status();
 		} else {
 			ZEPHIR_CPY_WRT(tt1, tmp);
@@ -288,25 +289,25 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, save) {
 		ZEPHIR_CPY_WRT(tt1, lifetime);
 	}
 	if (zephir_is_numeric(cachedContent)) {
-		ZEPHIR_CALL_METHOD(&success, memcache, "set", NULL, lastKey, cachedContent, tt1);
+		ZEPHIR_CALL_METHOD(&success, memcache, "set", NULL, 0, lastKey, cachedContent, tt1);
 		zephir_check_call_status();
 	} else {
-		ZEPHIR_CALL_METHOD(&success, memcache, "set", NULL, lastKey, preparedContent, tt1);
+		ZEPHIR_CALL_METHOD(&success, memcache, "set", NULL, 0, lastKey, preparedContent, tt1);
 		zephir_check_call_status();
 	}
 	if (!(zephir_is_true(success))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Failed storing data in memcached", "phalcon/cache/backend/libmemcached.zep", 225);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Failed storing data in memcached", "phalcon/cache/backend/libmemcached.zep", 223);
 		return;
 	}
 	ZEPHIR_OBS_VAR(options);
 	zephir_read_property_this(&options, this_ptr, SL("_options"), PH_NOISY_CC);
 	ZEPHIR_OBS_VAR(specialKey);
 	if (!(zephir_array_isset_string_fetch(&specialKey, options, SS("statsKey"), 0 TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/libmemcached.zep", 231);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/libmemcached.zep", 229);
 		return;
 	}
 	if (!ZEPHIR_IS_STRING(specialKey, "")) {
-		ZEPHIR_CALL_METHOD(&keys, memcache, "get", NULL, specialKey);
+		ZEPHIR_CALL_METHOD(&keys, memcache, "get", NULL, 0, specialKey);
 		zephir_check_call_status();
 		if (Z_TYPE_P(keys) != IS_ARRAY) {
 			ZEPHIR_INIT_NVAR(keys);
@@ -314,14 +315,14 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, save) {
 		}
 		if (!(zephir_array_isset(keys, lastKey))) {
 			zephir_array_update_zval(&keys, lastKey, &tt1, PH_COPY | PH_SEPARATE);
-			ZEPHIR_CALL_METHOD(NULL, memcache, "set", NULL, specialKey, keys);
+			ZEPHIR_CALL_METHOD(NULL, memcache, "set", NULL, 0, specialKey, keys);
 			zephir_check_call_status();
 		}
 	}
-	ZEPHIR_CALL_METHOD(&isBuffering, frontend, "isbuffering", NULL);
+	ZEPHIR_CALL_METHOD(&isBuffering, frontend, "isbuffering", NULL, 0);
 	zephir_check_call_status();
-	if (ZEPHIR_IS_TRUE_IDENTICAL(stopBuffer)) {
-		ZEPHIR_CALL_METHOD(NULL, frontend, "stop", NULL);
+	if (stopBuffer == 1) {
+		ZEPHIR_CALL_METHOD(NULL, frontend, "stop", NULL, 0);
 		zephir_check_call_status();
 	}
 	if (ZEPHIR_IS_TRUE_IDENTICAL(isBuffering)) {
@@ -351,7 +352,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, delete) {
 	ZEPHIR_OBS_VAR(memcache);
 	zephir_read_property_this(&memcache, this_ptr, SL("_memcache"), PH_NOISY_CC);
 	if (Z_TYPE_P(memcache) != IS_OBJECT) {
-		ZEPHIR_CALL_METHOD(NULL, this_ptr, "_connect", NULL);
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "_connect", NULL, 0);
 		zephir_check_call_status();
 		ZEPHIR_OBS_NVAR(memcache);
 		zephir_read_property_this(&memcache, this_ptr, SL("_memcache"), PH_NOISY_CC);
@@ -363,19 +364,19 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, delete) {
 	zephir_read_property_this(&options, this_ptr, SL("_options"), PH_NOISY_CC);
 	ZEPHIR_OBS_VAR(specialKey);
 	if (!(zephir_array_isset_string_fetch(&specialKey, options, SS("statsKey"), 0 TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/libmemcached.zep", 282);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/libmemcached.zep", 280);
 		return;
 	}
 	if (!ZEPHIR_IS_STRING(specialKey, "")) {
-		ZEPHIR_CALL_METHOD(&keys, memcache, "get", NULL, specialKey);
+		ZEPHIR_CALL_METHOD(&keys, memcache, "get", NULL, 0, specialKey);
 		zephir_check_call_status();
 		if (Z_TYPE_P(keys) == IS_ARRAY) {
 			zephir_array_unset(&keys, prefixedKey, PH_SEPARATE);
-			ZEPHIR_CALL_METHOD(NULL, memcache, "set", NULL, specialKey, keys);
+			ZEPHIR_CALL_METHOD(NULL, memcache, "set", NULL, 0, specialKey, keys);
 			zephir_check_call_status();
 		}
 	}
-	ZEPHIR_CALL_METHOD(&ret, memcache, "delete", NULL, prefixedKey);
+	ZEPHIR_CALL_METHOD(&ret, memcache, "delete", NULL, 0, prefixedKey);
 	zephir_check_call_status();
 	RETURN_CCTOR(ret);
 
@@ -406,7 +407,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, queryKeys) {
 	ZEPHIR_OBS_VAR(memcache);
 	zephir_read_property_this(&memcache, this_ptr, SL("_memcache"), PH_NOISY_CC);
 	if (Z_TYPE_P(memcache) != IS_OBJECT) {
-		ZEPHIR_CALL_METHOD(NULL, this_ptr, "_connect", NULL);
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "_connect", NULL, 0);
 		zephir_check_call_status();
 		ZEPHIR_OBS_NVAR(memcache);
 		zephir_read_property_this(&memcache, this_ptr, SL("_memcache"), PH_NOISY_CC);
@@ -415,20 +416,20 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, queryKeys) {
 	zephir_read_property_this(&options, this_ptr, SL("_options"), PH_NOISY_CC);
 	ZEPHIR_OBS_VAR(specialKey);
 	if (!(zephir_array_isset_string_fetch(&specialKey, options, SS("statsKey"), 0 TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/libmemcached.zep", 320);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/libmemcached.zep", 318);
 		return;
 	}
 	if (ZEPHIR_IS_STRING(specialKey, "")) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Cached keys were disabled (options['statsKey'] == ''), you shouldn't use this function", "phalcon/cache/backend/libmemcached.zep", 324);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Cached keys were disabled (options['statsKey'] == ''), you shouldn't use this function", "phalcon/cache/backend/libmemcached.zep", 322);
 		return;
 	}
-	ZEPHIR_CALL_METHOD(&keys, memcache, "get", NULL, specialKey);
+	ZEPHIR_CALL_METHOD(&keys, memcache, "get", NULL, 0, specialKey);
 	zephir_check_call_status();
 	if (Z_TYPE_P(keys) == IS_ARRAY) {
 		ZEPHIR_INIT_VAR(_0);
 		zephir_array_keys(_0, keys TSRMLS_CC);
 		ZEPHIR_CPY_WRT(keys, _0);
-		zephir_is_iterable(keys, &_2, &_1, 1, 0, "phalcon/cache/backend/libmemcached.zep", 338);
+		zephir_is_iterable(keys, &_2, &_1, 1, 0, "phalcon/cache/backend/libmemcached.zep", 336);
 		for (
 		  ; zephir_hash_get_current_data_ex(_2, (void**) &_3, &_1) == SUCCESS
 		  ; zephir_hash_move_forward_ex(_2, &_1)
@@ -482,12 +483,12 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, exists) {
 		ZEPHIR_OBS_VAR(memcache);
 		zephir_read_property_this(&memcache, this_ptr, SL("_memcache"), PH_NOISY_CC);
 		if (Z_TYPE_P(memcache) != IS_OBJECT) {
-			ZEPHIR_CALL_METHOD(NULL, this_ptr, "_connect", NULL);
+			ZEPHIR_CALL_METHOD(NULL, this_ptr, "_connect", NULL, 0);
 			zephir_check_call_status();
 			ZEPHIR_OBS_NVAR(memcache);
 			zephir_read_property_this(&memcache, this_ptr, SL("_memcache"), PH_NOISY_CC);
 		}
-		ZEPHIR_CALL_METHOD(&value, memcache, "get", NULL, lastKey);
+		ZEPHIR_CALL_METHOD(&value, memcache, "get", NULL, 0, lastKey);
 		zephir_check_call_status();
 		if (!(zephir_is_true(value))) {
 			RETURN_MM_BOOL(0);
@@ -526,7 +527,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, increment) {
 	ZEPHIR_OBS_VAR(memcache);
 	zephir_read_property_this(&memcache, this_ptr, SL("_memcache"), PH_NOISY_CC);
 	if (Z_TYPE_P(memcache) != IS_OBJECT) {
-		ZEPHIR_CALL_METHOD(NULL, this_ptr, "_connect", NULL);
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "_connect", NULL, 0);
 		zephir_check_call_status();
 		ZEPHIR_OBS_NVAR(memcache);
 		zephir_read_property_this(&memcache, this_ptr, SL("_memcache"), PH_NOISY_CC);
@@ -545,7 +546,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, increment) {
 		ZEPHIR_INIT_NVAR(value);
 		ZVAL_LONG(value, 1);
 	}
-	ZEPHIR_RETURN_CALL_METHOD(memcache, "increment", NULL, lastKey, value);
+	ZEPHIR_RETURN_CALL_METHOD(memcache, "increment", NULL, 0, lastKey, value);
 	zephir_check_call_status();
 	RETURN_MM();
 
@@ -579,7 +580,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, decrement) {
 	ZEPHIR_OBS_VAR(memcache);
 	zephir_read_property_this(&memcache, this_ptr, SL("_memcache"), PH_NOISY_CC);
 	if (Z_TYPE_P(memcache) != IS_OBJECT) {
-		ZEPHIR_CALL_METHOD(NULL, this_ptr, "_connect", NULL);
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "_connect", NULL, 0);
 		zephir_check_call_status();
 		ZEPHIR_OBS_NVAR(memcache);
 		zephir_read_property_this(&memcache, this_ptr, SL("_memcache"), PH_NOISY_CC);
@@ -598,7 +599,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, decrement) {
 		ZEPHIR_INIT_NVAR(value);
 		ZVAL_LONG(value, 1);
 	}
-	ZEPHIR_RETURN_CALL_METHOD(memcache, "decrement", NULL, lastKey, value);
+	ZEPHIR_RETURN_CALL_METHOD(memcache, "decrement", NULL, 0, lastKey, value);
 	zephir_check_call_status();
 	RETURN_MM();
 
@@ -606,8 +607,6 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, decrement) {
 
 /**
  * Immediately invalidates all existing items.
- *
- * @return boolean
  */
 PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, flush) {
 
@@ -622,7 +621,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, flush) {
 	ZEPHIR_OBS_VAR(memcache);
 	zephir_read_property_this(&memcache, this_ptr, SL("_memcache"), PH_NOISY_CC);
 	if (Z_TYPE_P(memcache) != IS_OBJECT) {
-		ZEPHIR_CALL_METHOD(NULL, this_ptr, "_connect", NULL);
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "_connect", NULL, 0);
 		zephir_check_call_status();
 		ZEPHIR_OBS_NVAR(memcache);
 		zephir_read_property_this(&memcache, this_ptr, SL("_memcache"), PH_NOISY_CC);
@@ -631,28 +630,28 @@ PHP_METHOD(Phalcon_Cache_Backend_Libmemcached, flush) {
 	zephir_read_property_this(&options, this_ptr, SL("_options"), PH_NOISY_CC);
 	ZEPHIR_OBS_VAR(specialKey);
 	if (!(zephir_array_isset_string_fetch(&specialKey, options, SS("statsKey"), 0 TSRMLS_CC))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/libmemcached.zep", 461);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/libmemcached.zep", 457);
 		return;
 	}
 	if (ZEPHIR_IS_STRING(specialKey, "")) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Cached keys were disabled (options['statsKey'] == ''), flush of memcached phalcon-related keys isn't implemented for now", "phalcon/cache/backend/libmemcached.zep", 465);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Cached keys were disabled (options['statsKey'] == ''), flush of memcached phalcon-related keys isn't implemented for now", "phalcon/cache/backend/libmemcached.zep", 461);
 		return;
 	}
-	ZEPHIR_CALL_METHOD(&keys, memcache, "get", NULL, specialKey);
+	ZEPHIR_CALL_METHOD(&keys, memcache, "get", NULL, 0, specialKey);
 	zephir_check_call_status();
 	if (Z_TYPE_P(keys) == IS_ARRAY) {
 		ZEPHIR_INIT_VAR(_0);
 		zephir_array_keys(_0, keys TSRMLS_CC);
-		zephir_is_iterable(_0, &_2, &_1, 0, 0, "phalcon/cache/backend/libmemcached.zep", 476);
+		zephir_is_iterable(_0, &_2, &_1, 0, 0, "phalcon/cache/backend/libmemcached.zep", 472);
 		for (
 		  ; zephir_hash_get_current_data_ex(_2, (void**) &_3, &_1) == SUCCESS
 		  ; zephir_hash_move_forward_ex(_2, &_1)
 		) {
 			ZEPHIR_GET_HVALUE(key, _3);
-			ZEPHIR_CALL_METHOD(NULL, memcache, "delete", &_4, key);
+			ZEPHIR_CALL_METHOD(NULL, memcache, "delete", &_4, 0, key);
 			zephir_check_call_status();
 		}
-		ZEPHIR_CALL_METHOD(NULL, memcache, "set", NULL, specialKey, keys);
+		ZEPHIR_CALL_METHOD(NULL, memcache, "set", NULL, 0, specialKey, keys);
 		zephir_check_call_status();
 	}
 	RETURN_MM_BOOL(1);

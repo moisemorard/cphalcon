@@ -19,6 +19,8 @@
 
 namespace Phalcon\Validation\Validator;
 
+use Phalcon\Validation\Validator;
+
 /**
  * Phalcon\Validation\Validator\PresenceOf
  *
@@ -32,22 +34,18 @@ namespace Phalcon\Validation\Validator;
  *)));
  *</code>
  */
-class PresenceOf extends \Phalcon\Validation\Validator implements \Phalcon\Validation\ValidatorInterface
+class PresenceOf extends Validator
 {
 
 	/**
 	 * Executes the validation
-	 *
-	 * @param Phalcon\Validation validation
-	 * @param string field
-	 * @return boolean
 	 */
-	public function validate(<\Phalcon\Validation> validation, string! field)
+	public function validate(<\Phalcon\Validation> validation, string! field) -> boolean
 	{
 		var value, message, label, replacePairs;
 
 		let value = validation->getValue(field);
-		if empty value {
+		if value === null || value === "" {
 
 			let label = this->getOption("label");
 			if empty label {

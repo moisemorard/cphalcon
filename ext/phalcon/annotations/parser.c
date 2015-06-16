@@ -7,22 +7,17 @@
 // 28 "parser.lemon"
 
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#include "php.h"
-#include "ext/standard/php_smart_str.h"
 #include "php_phalcon.h"
 #include "phalcon.h"
+
+#include <ext/standard/php_smart_str.h>
+#include <main/spprintf.h>
 
 #include "parser.h"
 #include "scanner.h"
 #include "annot.h"
 
 #include "kernel/main.h"
-#include "kernel/memory.h"
-#include "kernel/fcall.h"
 #include "kernel/exception.h"
 
 static zval *phannot_ret_literal_zval(int type, phannot_parser_token *T)
@@ -30,7 +25,7 @@ static zval *phannot_ret_literal_zval(int type, phannot_parser_token *T)
 	zval *ret;
 
 	MAKE_STD_ZVAL(ret);
-	array_init(ret);
+	array_init_size(ret, 2);
 	add_assoc_long(ret, "type", type);
 	if (T) {
 		add_assoc_stringl(ret, "value", T->token, T->token_len, 0);
@@ -45,7 +40,7 @@ static zval *phannot_ret_array(zval *items)
 	zval *ret;
 
 	MAKE_STD_ZVAL(ret);
-	array_init(ret);
+	array_init_size(ret, 2);
 	add_assoc_long(ret, "type", PHANNOT_T_ARRAY);
 
 	if (items) {
@@ -57,7 +52,6 @@ static zval *phannot_ret_array(zval *items)
 
 static zval *phannot_ret_zval_list(zval *list_left, zval *right_list)
 {
-
 	zval *ret;
 	HashPosition pos;
 	HashTable *list;
@@ -98,7 +92,7 @@ static zval *phannot_ret_named_item(phannot_parser_token *name, zval *expr)
 	zval *ret;
 
 	MAKE_STD_ZVAL(ret);
-	array_init(ret);
+	array_init_size(ret, 2);
 	add_assoc_zval(ret, "expr", expr);
 	if (name != NULL) {
 		add_assoc_stringl(ret, "name", name->token, name->token_len, 0);
@@ -110,11 +104,10 @@ static zval *phannot_ret_named_item(phannot_parser_token *name, zval *expr)
 
 static zval *phannot_ret_annotation(phannot_parser_token *name, zval *arguments, phannot_scanner_state *state)
 {
-
 	zval *ret;
 
 	MAKE_STD_ZVAL(ret);
-	array_init(ret);
+	array_init_size(ret, 5);
 
 	add_assoc_long(ret, "type", PHANNOT_T_ANNOTATION);
 
@@ -127,22 +120,21 @@ static zval *phannot_ret_annotation(phannot_parser_token *name, zval *arguments,
 		add_assoc_zval(ret, "arguments", arguments);
 	}
 
-	Z_ADDREF_P(state->active_file);
-	add_assoc_zval(ret, "file", state->active_file);
+	add_assoc_string(ret, "file", (char*)state->active_file, !IS_INTERNED(state->active_file));
 	add_assoc_long(ret, "line", state->active_line);
 
 	return ret;
 }
 
 
-// 139 "parser.c"
+// 131 "parser.c"
 /* Next is all token values, in a form suitable for use by makeheaders.
 ** This section will be null unless lemon is run with the -m switch.
 */
-/*
+/* 
 ** These constants (all generated automatically by the parser generator)
 ** specify the various kinds of tokens (terminals) that the parser
-** understands.
+** understands. 
 **
 ** Each symbol here is a terminal symbol in the grammar.
 */
@@ -153,107 +145,107 @@ static zval *phannot_ret_annotation(phannot_parser_token *name, zval *arguments,
 #endif
 /* The next thing included is series of defines which control
 ** various aspects of the generated parser.
-**    JJCODETYPE         is the data type used for storing terminal
+**    AACODETYPE         is the data type used for storing terminal
 **                       and nonterminal numbers.  "unsigned char" is
 **                       used if there are fewer than 250 terminals
 **                       and nonterminals.  "int" is used otherwise.
-**    JJNOCODE           is a number of type JJCODETYPE which corresponds
+**    AANOCODE           is a number of type AACODETYPE which corresponds
 **                       to no legal terminal or nonterminal number.  This
-**                       number is used to fill in empty slots of the hash
+**                       number is used to fill in empty slots of the hash 
 **                       table.
-**    JJFALLBACK         If defined, this indicates that one or more tokens
+**    AAFALLBACK         If defined, this indicates that one or more tokens
 **                       have fall-back values which should be used if the
 **                       original value of the token will not parse.
-**    JJACTIONTYPE       is the data type used for storing terminal
+**    AAACTIONTYPE       is the data type used for storing terminal
 **                       and nonterminal numbers.  "unsigned char" is
 **                       used if there are fewer than 250 rules and
 **                       states combined.  "int" is used otherwise.
-**    phannot_JTOKENTYPE     is the data type used for minor tokens given
+**    phannot_TOKENTYPE     is the data type used for minor tokens given 
 **                       directly to the parser from the tokenizer.
-**    JJMINORTYPE        is the data type used for all minor tokens.
+**    AAMINORTYPE        is the data type used for all minor tokens.
 **                       This is typically a union of many types, one of
-**                       which is phannot_JTOKENTYPE.  The entry in the union
-**                       for base tokens is called "jj0".
-**    JJSTACKDEPTH       is the maximum depth of the parser's stack.
+**                       which is phannot_TOKENTYPE.  The entry in the union
+**                       for base tokens is called "aa0".
+**    AASTACKDEPTH       is the maximum depth of the parser's stack.
 **    phannot_ARG_SDECL     A static variable declaration for the %extra_argument
 **    phannot_ARG_PDECL     A parameter declaration for the %extra_argument
-**    phannot_ARG_STORE     Code to store %extra_argument into jjpParser
-**    phannot_ARG_FETCH     Code to extract %extra_argument from jjpParser
-**    JJNSTATE           the combined number of states.
-**    JJNRULE            the number of rules in the grammar
-**    JJERRORSYMBOL      is the code number of the error symbol.  If not
+**    phannot_ARG_STORE     Code to store %extra_argument into aapParser
+**    phannot_ARG_FETCH     Code to extract %extra_argument from aapParser
+**    AANSTATE           the combined number of states.
+**    AANRULE            the number of rules in the grammar
+**    AAERRORSYMBOL      is the code number of the error symbol.  If not
 **                       defined, then do no error processing.
 */
-#define JJCODETYPE unsigned char
-#define JJNOCODE 28
-#define JJACTIONTYPE unsigned char
-#define phannot_JTOKENTYPE phannot_parser_token*
+#define AACODETYPE unsigned char
+#define AANOCODE 28
+#define AAACTIONTYPE unsigned char
+#define phannot_TOKENTYPE phannot_parser_token*
 typedef union {
-  phannot_JTOKENTYPE jj0;
-  zval* jj36;
-  int jj55;
-} JJMINORTYPE;
-#define JJSTACKDEPTH 100
+  phannot_TOKENTYPE aa0;
+  zval* aa36;
+  int aa55;
+} AAMINORTYPE;
+#define AASTACKDEPTH 100
 #define phannot_ARG_SDECL phannot_parser_status *status;
 #define phannot_ARG_PDECL ,phannot_parser_status *status
-#define phannot_ARG_FETCH phannot_parser_status *status = jjpParser->status
-#define phannot_ARG_STORE jjpParser->status = status
-#define JJNSTATE 40
-#define JJNRULE 25
-#define JJERRORSYMBOL 18
-#define JJERRSYMDT jj55
-#define JJ_NO_ACTION      (JJNSTATE+JJNRULE+2)
-#define JJ_ACCEPT_ACTION  (JJNSTATE+JJNRULE+1)
-#define JJ_ERROR_ACTION   (JJNSTATE+JJNRULE)
+#define phannot_ARG_FETCH phannot_parser_status *status = aapParser->status
+#define phannot_ARG_STORE aapParser->status = status
+#define AANSTATE 40
+#define AANRULE 25
+#define AAERRORSYMBOL 18
+#define AAERRSYMDT aa55
+#define AA_NO_ACTION      (AANSTATE+AANRULE+2)
+#define AA_ACCEPT_ACTION  (AANSTATE+AANRULE+1)
+#define AA_ERROR_ACTION   (AANSTATE+AANRULE)
 
 /* Next are that tables used to determine what action to take based on the
 ** current state and lookahead token.  These tables are used to implement
 ** functions that take a state number and lookahead value and return an
-** action integer.
+** action integer.  
 **
 ** Suppose the action integer is N.  Then the action is determined as
 ** follows
 **
-**   0 <= N < JJNSTATE                  Shift N.  That is, push the lookahead
+**   0 <= N < AANSTATE                  Shift N.  That is, push the lookahead
 **                                      token onto the stack and goto state N.
 **
-**   JJNSTATE <= N < JJNSTATE+JJNRULE   Reduce by rule N-JJNSTATE.
+**   AANSTATE <= N < AANSTATE+AANRULE   Reduce by rule N-AANSTATE.
 **
-**   N == JJNSTATE+JJNRULE              A syntax error has occurred.
+**   N == AANSTATE+AANRULE              A syntax error has occurred.
 **
-**   N == JJNSTATE+JJNRULE+1            The parser accepts its input.
+**   N == AANSTATE+AANRULE+1            The parser accepts its input.
 **
-**   N == JJNSTATE+JJNRULE+2            No such action.  Denotes unused
-**                                      slots in the jj_action[] table.
+**   N == AANSTATE+AANRULE+2            No such action.  Denotes unused
+**                                      slots in the aa_action[] table.
 **
-** The action table is constructed as a single large table named jj_action[].
+** The action table is constructed as a single large table named aa_action[].
 ** Given state S and lookahead X, the action is computed as
 **
-**      jj_action[ jj_shift_ofst[S] + X ]
+**      aa_action[ aa_shift_ofst[S] + X ]
 **
-** If the index value jj_shift_ofst[S]+X is out of range or if the value
-** jj_lookahead[jj_shift_ofst[S]+X] is not equal to X or if jj_shift_ofst[S]
-** is equal to JJ_SHIFT_USE_DFLT, it means that the action is not in the table
-** and that jj_default[S] should be used instead.
+** If the index value aa_shift_ofst[S]+X is out of range or if the value
+** aa_lookahead[aa_shift_ofst[S]+X] is not equal to X or if aa_shift_ofst[S]
+** is equal to AA_SHIFT_USE_DFLT, it means that the action is not in the table
+** and that aa_default[S] should be used instead.  
 **
 ** The formula above is for computing the action when the lookahead is
 ** a terminal symbol.  If the lookahead is a non-terminal (as occurs after
-** a reduce action) then the jj_reduce_ofst[] array is used in place of
-** the jj_shift_ofst[] array and JJ_REDUCE_USE_DFLT is used in place of
-** JJ_SHIFT_USE_DFLT.
+** a reduce action) then the aa_reduce_ofst[] array is used in place of
+** the aa_shift_ofst[] array and AA_REDUCE_USE_DFLT is used in place of
+** AA_SHIFT_USE_DFLT.
 **
 ** The following are the tables generated in this section:
 **
-**  jj_action[]        A single table containing all actions.
-**  jj_lookahead[]     A table containing the lookahead for each entry in
-**                     jj_action.  Used to detect hash collisions.
-**  jj_shift_ofst[]    For each state, the offset into jj_action for
+**  aa_action[]        A single table containing all actions.
+**  aa_lookahead[]     A table containing the lookahead for each entry in
+**                     aa_action.  Used to detect hash collisions.
+**  aa_shift_ofst[]    For each state, the offset into aa_action for
 **                     shifting terminals.
-**  jj_reduce_ofst[]   For each state, the offset into jj_action for
+**  aa_reduce_ofst[]   For each state, the offset into aa_action for
 **                     shifting non-terminals after a reduce.
-**  jj_default[]       Default action for each state.
+**  aa_default[]       Default action for each state.
 */
-static JJACTIONTYPE jj_action[] = {
+static AAACTIONTYPE aa_action[] = {
  /*     0 */     4,   28,   15,   38,   12,   14,   16,   18,   20,   21,
  /*    10 */    22,   23,   24,    4,   31,    4,   28,   15,   40,   12,
  /*    20 */    30,   16,   18,   20,   21,   22,   23,   24,    3,   31,
@@ -265,7 +257,7 @@ static JJACTIONTYPE jj_action[] = {
  /*    80 */     9,   29,   34,   54,   54,   54,   54,   54,   26,   54,
  /*    90 */    54,   54,   54,   54,   54,   54,   33,
 };
-static JJCODETYPE jj_lookahead[] = {
+static AACODETYPE aa_lookahead[] = {
  /*     0 */     2,    3,   22,    5,    6,   25,   26,    9,   10,   11,
  /*    10 */    12,   13,   14,    2,   16,    2,    3,   22,    0,    6,
  /*    20 */    25,   26,    9,   10,   11,   12,   13,   14,   22,   16,
@@ -277,31 +269,31 @@ static JJCODETYPE jj_lookahead[] = {
  /*    80 */     1,    7,    8,   27,   27,   27,   27,   27,   15,   27,
  /*    90 */    27,   27,   27,   27,   27,   27,   17,
 };
-#define JJ_SHIFT_USE_DFLT (-3)
-static signed char jj_shift_ofst[] = {
+#define AA_SHIFT_USE_DFLT (-3)
+static signed char aa_shift_ofst[] = {
  /*     0 */    11,   18,   66,   -3,   40,   29,   -2,   72,   -3,   13,
  /*    10 */    -3,   -3,   71,   28,   -3,   -3,   -3,   -3,   -3,   -3,
  /*    20 */    -3,   -3,   -3,   -3,   13,   73,   -3,   -3,   74,   28,
  /*    30 */    -3,   13,   79,   -3,   28,   -3,   28,   -3,   -3,   -3,
 };
-#define JJ_REDUCE_USE_DFLT (-21)
-static signed char jj_reduce_ofst[] = {
+#define AA_REDUCE_USE_DFLT (-21)
+static signed char aa_reduce_ofst[] = {
  /*     0 */    43,  -21,    6,  -21,  -21,  -21,   23,  -21,  -21,   45,
  /*    10 */   -21,  -21,  -21,  -20,  -21,  -21,  -21,  -21,  -21,  -21,
  /*    20 */   -21,  -21,  -21,  -21,   30,  -21,  -21,  -21,  -21,   -5,
  /*    30 */   -21,   35,  -21,  -21,   10,  -21,   50,  -21,  -21,  -21,
 };
-static JJACTIONTYPE jj_default[] = {
+static AAACTIONTYPE aa_default[] = {
  /*     0 */    65,   65,   65,   42,   65,   46,   65,   65,   44,   65,
  /*    10 */    47,   49,   58,   65,   50,   54,   55,   56,   57,   58,
  /*    20 */    59,   60,   61,   62,   65,   65,   63,   48,   56,   65,
  /*    30 */    52,   65,   65,   64,   65,   53,   65,   51,   45,   43,
 };
-#define JJ_SZ_ACTTAB (sizeof(jj_action)/sizeof(jj_action[0]))
+#define AA_SZ_ACTTAB (sizeof(aa_action)/sizeof(aa_action[0]))
 
 /* The next table maps tokens into fallback tokens.  If a construct
 ** like the following:
-**
+** 
 **      %fallback ID X Y Z.
 **
 ** appears in the grammer, then ID becomes a fallback token for X, Y,
@@ -309,10 +301,10 @@ static JJACTIONTYPE jj_default[] = {
 ** but it does not parse, the type of the token is changed to ID and
 ** the parse is retried before an error is thrown.
 */
-#ifdef JJFALLBACK
-static const JJCODETYPE jjFallback[] = {
+#ifdef AAFALLBACK
+static const AACODETYPE aaFallback[] = {
 };
-#endif /* JJFALLBACK */
+#endif /* AAFALLBACK */
 
 /* The following structure represents a single element of the
 ** parser's stack.  Information stored includes:
@@ -326,36 +318,36 @@ static const JJCODETYPE jjFallback[] = {
 **      the information used by the action routines in the grammar.
 **      It is sometimes called the "minor" token.
 */
-struct jjStackEntry {
+struct aaStackEntry {
   int stateno;       /* The state-number */
   int major;         /* The major token value.  This is the code
                      ** number for the token at this stack level */
-  JJMINORTYPE minor; /* The user-supplied minor token value.  This
+  AAMINORTYPE minor; /* The user-supplied minor token value.  This
                      ** is the value of the token  */
 };
-typedef struct jjStackEntry jjStackEntry;
+typedef struct aaStackEntry aaStackEntry;
 
 /* The state of the parser is completely contained in an instance of
 ** the following structure */
-struct jjParser {
-  int jjidx;                    /* Index of top element in stack */
-  int jjerrcnt;                 /* Shifts left before out of the error */
+struct aaParser {
+  int aaidx;                    /* Index of top element in stack */
+  int aaerrcnt;                 /* Shifts left before out of the error */
   phannot_ARG_SDECL                /* A place to hold %extra_argument */
-  jjStackEntry jjstack[JJSTACKDEPTH];  /* The parser's stack */
+  aaStackEntry aastack[AASTACKDEPTH];  /* The parser's stack */
 };
-typedef struct jjParser jjParser;
+typedef struct aaParser aaParser;
 
 #ifndef NDEBUG
 #include <stdio.h>
-static FILE *jjTraceFILE = 0;
-static char *jjTracePrompt = 0;
+static FILE *aaTraceFILE = 0;
+static char *aaTracePrompt = 0;
 #endif /* NDEBUG */
 
 #ifndef NDEBUG
-/*
+/* 
 ** Turn parser tracing on by giving a stream to which to write the trace
 ** and a prompt to preface each trace message.  Tracing is turned off
-** by making either argument NULL
+** by making either argument NULL 
 **
 ** Inputs:
 ** <ul>
@@ -370,31 +362,31 @@ static char *jjTracePrompt = 0;
 ** None.
 */
 void phannot_Trace(FILE *TraceFILE, char *zTracePrompt){
-  jjTraceFILE = TraceFILE;
-  jjTracePrompt = zTracePrompt;
-  if( jjTraceFILE==0 ) jjTracePrompt = 0;
-  else if( jjTracePrompt==0 ) jjTraceFILE = 0;
+  aaTraceFILE = TraceFILE;
+  aaTracePrompt = zTracePrompt;
+  if( aaTraceFILE==0 ) aaTracePrompt = 0;
+  else if( aaTracePrompt==0 ) aaTraceFILE = 0;
 }
 #endif /* NDEBUG */
 
 #ifndef NDEBUG
 /* For tracing shifts, the names of all terminals and nonterminals
 ** are required.  The following table supplies these names */
-static const char *jjTokenName[] = {
-  "$",             "COMMA",         "AT",            "IDENTIFIER",
-  "PARENTHESES_OPEN",  "PARENTHESES_CLOSE",  "STRING",        "EQUALS",
-  "COLON",         "INTEGER",       "DOUBLE",        "NULL",
+static const char *aaTokenName[] = { 
+  "$",             "COMMA",         "AT",            "IDENTIFIER",  
+  "PARENTHESES_OPEN",  "PARENTHESES_CLOSE",  "STRING",        "EQUALS",      
+  "COLON",         "INTEGER",       "DOUBLE",        "NULL",        
   "FALSE",         "TRUE",          "BRACKET_OPEN",  "BRACKET_CLOSE",
-  "SBRACKET_OPEN",  "SBRACKET_CLOSE",  "error",         "program",
+  "SBRACKET_OPEN",  "SBRACKET_CLOSE",  "error",         "program",     
   "annotation_language",  "annotation_list",  "annotation",    "argument_list",
-  "argument_item",  "expr",          "array",
+  "argument_item",  "expr",          "array",       
 };
 #endif /* NDEBUG */
 
 #ifndef NDEBUG
 /* For tracing reduce actions, the names of all rules are required.
 */
-static const char *jjRuleName[] = {
+static const char *aaRuleName[] = {
  /*   0 */ "program ::= annotation_language",
  /*   1 */ "annotation_language ::= annotation_list",
  /*   2 */ "annotation_list ::= annotation_list annotation",
@@ -429,8 +421,8 @@ static const char *jjRuleName[] = {
 */
 const char *phannot_TokenName(int tokenType){
 #ifndef NDEBUG
-  if( tokenType>0 && tokenType<(sizeof(jjTokenName)/sizeof(jjTokenName[0])) ){
-    return jjTokenName[tokenType];
+  if( tokenType>0 && tokenType<(sizeof(aaTokenName)/sizeof(aaTokenName[0])) ){
+    return aaTokenName[tokenType];
   }else{
     return "Unknown";
   }
@@ -439,7 +431,7 @@ const char *phannot_TokenName(int tokenType){
 #endif
 }
 
-/*
+/* 
 ** This function allocates a new parser.
 ** The only argument is a pointer to a function which works like
 ** malloc.
@@ -452,25 +444,25 @@ const char *phannot_TokenName(int tokenType){
 ** to phannot_ and phannot_Free.
 */
 void *phannot_Alloc(void *(*mallocProc)(size_t)){
-  jjParser *pParser;
-  pParser = (jjParser*)(*mallocProc)( (size_t)sizeof(jjParser) );
+  aaParser *pParser;
+  pParser = (aaParser*)(*mallocProc)( (size_t)sizeof(aaParser) );
   if( pParser ){
-    pParser->jjidx = -1;
+    pParser->aaidx = -1;
   }
   return pParser;
 }
 
 /* The following function deletes the value associated with a
 ** symbol.  The symbol can be either a terminal or nonterminal.
-** "jjmajor" is the symbol code, and "jjpminor" is a pointer to
+** "aamajor" is the symbol code, and "aapminor" is a pointer to
 ** the value.
 */
-static void jj_destructor(JJCODETYPE jjmajor, JJMINORTYPE *jjpminor){
-  switch( jjmajor ){
+static void aa_destructor(AACODETYPE aamajor, AAMINORTYPE *aapminor){
+  switch( aamajor ){
     /* Here is inserted the actions which take place when a
     ** terminal or non-terminal is destroyed.  This can happen
     ** when the symbol is popped from the stack during a
-    ** reduce or during error processing or when a parser is
+    ** reduce or during error processing or when a parser is 
     ** being destroyed before it is finished parsing.
     **
     ** Note: during a reduce, the only symbols destroyed are those
@@ -494,16 +486,16 @@ static void jj_destructor(JJCODETYPE jjmajor, JJMINORTYPE *jjpminor){
     case 15:
     case 16:
     case 17:
-// 222 "parser.lemon"
+// 196 "parser.lemon"
 {
-	if ((jjpminor->jj0)) {
-		if ((jjpminor->jj0)->free_flag) {
-			efree((jjpminor->jj0)->token);
+	if ((aapminor->aa0)) {
+		if ((aapminor->aa0)->free_flag) {
+			efree((aapminor->aa0)->token);
 		}
-		efree((jjpminor->jj0));
+		efree((aapminor->aa0));
 	}
 }
-// 507 "parser.c"
+// 499 "parser.c"
       break;
     case 20:
     case 21:
@@ -511,9 +503,9 @@ static void jj_destructor(JJCODETYPE jjmajor, JJMINORTYPE *jjpminor){
     case 23:
     case 24:
     case 25:
-// 235 "parser.lemon"
-{ zval_ptr_dtor(&(jjpminor->jj36)); }
-// 517 "parser.c"
+// 209 "parser.lemon"
+{ zval_ptr_dtor(&(aapminor->aa36)); }
+// 509 "parser.c"
       break;
     default:  break;   /* If no destructor action specified: do nothing */
   }
@@ -527,25 +519,25 @@ static void jj_destructor(JJCODETYPE jjmajor, JJMINORTYPE *jjpminor){
 **
 ** Return the major token number for the symbol popped.
 */
-static int jj_pop_parser_stack(jjParser *pParser){
-  JJCODETYPE jjmajor;
-  jjStackEntry *jjtos = &pParser->jjstack[pParser->jjidx];
+static int aa_pop_parser_stack(aaParser *pParser){
+  AACODETYPE aamajor;
+  aaStackEntry *aatos = &pParser->aastack[pParser->aaidx];
 
-  if( pParser->jjidx<0 ) return 0;
+  if( pParser->aaidx<0 ) return 0;
 #ifndef NDEBUG
-  if( jjTraceFILE && pParser->jjidx>=0 ){
-    fprintf(jjTraceFILE,"%sPopping %s\n",
-      jjTracePrompt,
-      jjTokenName[jjtos->major]);
+  if( aaTraceFILE && pParser->aaidx>=0 ){
+    fprintf(aaTraceFILE,"%sPopping %s\n",
+      aaTracePrompt,
+      aaTokenName[aatos->major]);
   }
 #endif
-  jjmajor = jjtos->major;
-  jj_destructor( jjmajor, &jjtos->minor);
-  pParser->jjidx--;
-  return jjmajor;
+  aamajor = aatos->major;
+  aa_destructor( aamajor, &aatos->minor);
+  pParser->aaidx--;
+  return aamajor;
 }
 
-/*
+/* 
 ** Deallocate and destroy a parser.  Destructors are all called for
 ** all stack elements before shutting the parser down.
 **
@@ -561,9 +553,9 @@ void phannot_Free(
   void *p,                    /* The parser to be deleted */
   void (*freeProc)(void*)     /* Function used to reclaim memory */
 ){
-  jjParser *pParser = (jjParser*)p;
+  aaParser *pParser = (aaParser*)p;
   if( pParser==0 ) return;
-  while( pParser->jjidx>=0 ) jj_pop_parser_stack(pParser);
+  while( pParser->aaidx>=0 ) aa_pop_parser_stack(pParser);
   (*freeProc)((void*)pParser);
 }
 
@@ -571,43 +563,43 @@ void phannot_Free(
 ** Find the appropriate action for a parser given the terminal
 ** look-ahead token iLookAhead.
 **
-** If the look-ahead token is JJNOCODE, then check to see if the action is
+** If the look-ahead token is AANOCODE, then check to see if the action is
 ** independent of the look-ahead.  If it is, return the action, otherwise
-** return JJ_NO_ACTION.
+** return AA_NO_ACTION.
 */
-static int jj_find_shift_action(
-  jjParser *pParser,        /* The parser */
+static int aa_find_shift_action(
+  aaParser *pParser,        /* The parser */
   int iLookAhead            /* The look-ahead token */
 ){
   int i;
-  int stateno = pParser->jjstack[pParser->jjidx].stateno;
-
-  /* if( pParser->jjidx<0 ) return JJ_NO_ACTION;  */
-  i = jj_shift_ofst[stateno];
-  if( i==JJ_SHIFT_USE_DFLT ){
-    return jj_default[stateno];
+  int stateno = pParser->aastack[pParser->aaidx].stateno;
+ 
+  /* if( pParser->aaidx<0 ) return AA_NO_ACTION;  */
+  i = aa_shift_ofst[stateno];
+  if( i==AA_SHIFT_USE_DFLT ){
+    return aa_default[stateno];
   }
-  if( iLookAhead==JJNOCODE ){
-    return JJ_NO_ACTION;
+  if( iLookAhead==AANOCODE ){
+    return AA_NO_ACTION;
   }
   i += iLookAhead;
-  if( i<0 || i>=JJ_SZ_ACTTAB || jj_lookahead[i]!=iLookAhead ){
-#ifdef JJFALLBACK
+  if( i<0 || i>=AA_SZ_ACTTAB || aa_lookahead[i]!=iLookAhead ){
+#ifdef AAFALLBACK
     int iFallback;            /* Fallback token */
-    if( iLookAhead<sizeof(jjFallback)/sizeof(jjFallback[0])
-           && (iFallback = jjFallback[iLookAhead])!=0 ){
+    if( iLookAhead<sizeof(aaFallback)/sizeof(aaFallback[0])
+           && (iFallback = aaFallback[iLookAhead])!=0 ){
 #ifndef NDEBUG
-      if( jjTraceFILE ){
-        fprintf(jjTraceFILE, "%sFALLBACK %s => %s\n",
-           jjTracePrompt, jjTokenName[iLookAhead], jjTokenName[iFallback]);
+      if( aaTraceFILE ){
+        fprintf(aaTraceFILE, "%sFALLBACK %s => %s\n",
+           aaTracePrompt, aaTokenName[iLookAhead], aaTokenName[iFallback]);
       }
 #endif
-      return jj_find_shift_action(pParser, iFallback);
+      return aa_find_shift_action(pParser, iFallback);
     }
 #endif
-    return jj_default[stateno];
+    return aa_default[stateno];
   }else{
-    return jj_action[i];
+    return aa_action[i];
   }
 }
 
@@ -615,69 +607,69 @@ static int jj_find_shift_action(
 ** Find the appropriate action for a parser given the non-terminal
 ** look-ahead token iLookAhead.
 **
-** If the look-ahead token is JJNOCODE, then check to see if the action is
+** If the look-ahead token is AANOCODE, then check to see if the action is
 ** independent of the look-ahead.  If it is, return the action, otherwise
-** return JJ_NO_ACTION.
+** return AA_NO_ACTION.
 */
-static int jj_find_reduce_action(
-  jjParser *pParser,        /* The parser */
+static int aa_find_reduce_action(
+  aaParser *pParser,        /* The parser */
   int iLookAhead            /* The look-ahead token */
 ){
   int i;
-  int stateno = pParser->jjstack[pParser->jjidx].stateno;
-
-  i = jj_reduce_ofst[stateno];
-  if( i==JJ_REDUCE_USE_DFLT ){
-    return jj_default[stateno];
+  int stateno = pParser->aastack[pParser->aaidx].stateno;
+ 
+  i = aa_reduce_ofst[stateno];
+  if( i==AA_REDUCE_USE_DFLT ){
+    return aa_default[stateno];
   }
-  if( iLookAhead==JJNOCODE ){
-    return JJ_NO_ACTION;
+  if( iLookAhead==AANOCODE ){
+    return AA_NO_ACTION;
   }
   i += iLookAhead;
-  if( i<0 || i>=JJ_SZ_ACTTAB || jj_lookahead[i]!=iLookAhead ){
-    return jj_default[stateno];
+  if( i<0 || i>=AA_SZ_ACTTAB || aa_lookahead[i]!=iLookAhead ){
+    return aa_default[stateno];
   }else{
-    return jj_action[i];
+    return aa_action[i];
   }
 }
 
 /*
 ** Perform a shift action.
 */
-static void jj_shift(
-  jjParser *jjpParser,          /* The parser to be shifted */
-  int jjNewState,               /* The new state to shift in */
-  int jjMajor,                  /* The major token to shift in */
-  JJMINORTYPE *jjpMinor         /* Pointer ot the minor token to shift in */
+static void aa_shift(
+  aaParser *aapParser,          /* The parser to be shifted */
+  int aaNewState,               /* The new state to shift in */
+  int aaMajor,                  /* The major token to shift in */
+  AAMINORTYPE *aapMinor         /* Pointer ot the minor token to shift in */
 ){
-  jjStackEntry *jjtos;
-  jjpParser->jjidx++;
-  if( jjpParser->jjidx>=JJSTACKDEPTH ){
+  aaStackEntry *aatos;
+  aapParser->aaidx++;
+  if( aapParser->aaidx>=AASTACKDEPTH ){
      phannot_ARG_FETCH;
-     jjpParser->jjidx--;
+     aapParser->aaidx--;
 #ifndef NDEBUG
-     if( jjTraceFILE ){
-       fprintf(jjTraceFILE,"%sStack Overflow!\n",jjTracePrompt);
+     if( aaTraceFILE ){
+       fprintf(aaTraceFILE,"%sStack Overflow!\n",aaTracePrompt);
      }
 #endif
-     while( jjpParser->jjidx>=0 ) jj_pop_parser_stack(jjpParser);
+     while( aapParser->aaidx>=0 ) aa_pop_parser_stack(aapParser);
      /* Here code is inserted which will execute if the parser
      ** stack every overflows */
      phannot_ARG_STORE; /* Suppress warning about unused %extra_argument var */
      return;
   }
-  jjtos = &jjpParser->jjstack[jjpParser->jjidx];
-  jjtos->stateno = jjNewState;
-  jjtos->major = jjMajor;
-  jjtos->minor = *jjpMinor;
+  aatos = &aapParser->aastack[aapParser->aaidx];
+  aatos->stateno = aaNewState;
+  aatos->major = aaMajor;
+  aatos->minor = *aapMinor;
 #ifndef NDEBUG
-  if( jjTraceFILE && jjpParser->jjidx>0 ){
+  if( aaTraceFILE && aapParser->aaidx>0 ){
     int i;
-    fprintf(jjTraceFILE,"%sShift %d\n",jjTracePrompt,jjNewState);
-    fprintf(jjTraceFILE,"%sStack:",jjTracePrompt);
-    for(i=1; i<=jjpParser->jjidx; i++)
-      fprintf(jjTraceFILE," %s",jjTokenName[jjpParser->jjstack[i].major]);
-    fprintf(jjTraceFILE,"\n");
+    fprintf(aaTraceFILE,"%sShift %d\n",aaTracePrompt,aaNewState);
+    fprintf(aaTraceFILE,"%sStack:",aaTracePrompt);
+    for(i=1; i<=aapParser->aaidx; i++)
+      fprintf(aaTraceFILE," %s",aaTokenName[aapParser->aastack[i].major]);
+    fprintf(aaTraceFILE,"\n");
   }
 #endif
 }
@@ -686,9 +678,9 @@ static void jj_shift(
 ** is used during the reduce.
 */
 static struct {
-  JJCODETYPE lhs;         /* Symbol on the left-hand side of the rule */
+  AACODETYPE lhs;         /* Symbol on the left-hand side of the rule */
   unsigned char nrhs;     /* Number of right-hand side symbols in the rule */
-} jjRuleInfo[] = {
+} aaRuleInfo[] = {
   { 19, 1 },
   { 20, 1 },
   { 21, 2 },
@@ -716,32 +708,32 @@ static struct {
   { 26, 3 },
 };
 
-static void jj_accept(jjParser*);  /* Forward Declaration */
+static void aa_accept(aaParser*);  /* Forward Declaration */
 
 /*
 ** Perform a reduce action and the shift that must immediately
 ** follow the reduce.
 */
-static void jj_reduce(
-  jjParser *jjpParser,         /* The parser */
-  int jjruleno                 /* Number of the rule by which to reduce */
+static void aa_reduce(
+  aaParser *aapParser,         /* The parser */
+  int aaruleno                 /* Number of the rule by which to reduce */
 ){
-  int jjgoto;                     /* The next state */
-  int jjact;                      /* The next action */
-  JJMINORTYPE jjgotominor;        /* The LHS of the rule reduced */
-  jjStackEntry *jjmsp;            /* The top of the parser's stack */
-  int jjsize;                     /* Amount to pop the stack */
+  int aagoto;                     /* The next state */
+  int aaact;                      /* The next action */
+  AAMINORTYPE aagotominor;        /* The LHS of the rule reduced */
+  aaStackEntry *aamsp;            /* The top of the parser's stack */
+  int aasize;                     /* Amount to pop the stack */
   phannot_ARG_FETCH;
-  jjmsp = &jjpParser->jjstack[jjpParser->jjidx];
+  aamsp = &aapParser->aastack[aapParser->aaidx];
 #ifndef NDEBUG
-  if( jjTraceFILE && jjruleno>=0
-        && jjruleno<sizeof(jjRuleName)/sizeof(jjRuleName[0]) ){
-    fprintf(jjTraceFILE, "%sReduce [%s].\n", jjTracePrompt,
-      jjRuleName[jjruleno]);
+  if( aaTraceFILE && aaruleno>=0 
+        && aaruleno<sizeof(aaRuleName)/sizeof(aaRuleName[0]) ){
+    fprintf(aaTraceFILE, "%sReduce [%s].\n", aaTracePrompt,
+      aaRuleName[aaruleno]);
   }
 #endif /* NDEBUG */
 
-  switch( jjruleno ){
+  switch( aaruleno ){
   /* Beginning here are the reduction cases.  A typical example
   ** follows:
   **   case 0:
@@ -751,192 +743,192 @@ static void jj_reduce(
   **     break;
   */
       case 0:
-// 231 "parser.lemon"
+// 205 "parser.lemon"
 {
-	status->ret = jjmsp[0].minor.jj36;
+	status->ret = aamsp[0].minor.aa36;
 }
-// 759 "parser.c"
+// 751 "parser.c"
         break;
       case 1:
       case 14:
       case 15:
-// 237 "parser.lemon"
+// 211 "parser.lemon"
 {
-	jjgotominor.jj36 = jjmsp[0].minor.jj36;
+	aagotominor.aa36 = aamsp[0].minor.aa36;
 }
-// 768 "parser.c"
+// 760 "parser.c"
         break;
       case 2:
-// 243 "parser.lemon"
+// 217 "parser.lemon"
 {
-	jjgotominor.jj36 = phannot_ret_zval_list(jjmsp[-1].minor.jj36, jjmsp[0].minor.jj36);
+	aagotominor.aa36 = phannot_ret_zval_list(aamsp[-1].minor.aa36, aamsp[0].minor.aa36);
 }
-// 775 "parser.c"
+// 767 "parser.c"
         break;
       case 3:
       case 8:
-// 247 "parser.lemon"
+// 221 "parser.lemon"
 {
-	jjgotominor.jj36 = phannot_ret_zval_list(NULL, jjmsp[0].minor.jj36);
+	aagotominor.aa36 = phannot_ret_zval_list(NULL, aamsp[0].minor.aa36);
 }
-// 783 "parser.c"
+// 775 "parser.c"
         break;
       case 4:
-// 254 "parser.lemon"
+// 228 "parser.lemon"
 {
-	jjgotominor.jj36 = phannot_ret_annotation(jjmsp[-3].minor.jj0, jjmsp[-1].minor.jj36, status->scanner_state);
-  jj_destructor(2,&jjmsp[-4].minor);
-  jj_destructor(4,&jjmsp[-2].minor);
-  jj_destructor(5,&jjmsp[0].minor);
+	aagotominor.aa36 = phannot_ret_annotation(aamsp[-3].minor.aa0, aamsp[-1].minor.aa36, status->scanner_state);
+  aa_destructor(2,&aamsp[-4].minor);
+  aa_destructor(4,&aamsp[-2].minor);
+  aa_destructor(5,&aamsp[0].minor);
 }
-// 793 "parser.c"
+// 785 "parser.c"
         break;
       case 5:
-// 258 "parser.lemon"
+// 232 "parser.lemon"
 {
-	jjgotominor.jj36 = phannot_ret_annotation(jjmsp[-2].minor.jj0, NULL, status->scanner_state);
-  jj_destructor(2,&jjmsp[-3].minor);
-  jj_destructor(4,&jjmsp[-1].minor);
-  jj_destructor(5,&jjmsp[0].minor);
+	aagotominor.aa36 = phannot_ret_annotation(aamsp[-2].minor.aa0, NULL, status->scanner_state);
+  aa_destructor(2,&aamsp[-3].minor);
+  aa_destructor(4,&aamsp[-1].minor);
+  aa_destructor(5,&aamsp[0].minor);
+}
+// 795 "parser.c"
+        break;
+      case 6:
+// 236 "parser.lemon"
+{
+	aagotominor.aa36 = phannot_ret_annotation(aamsp[0].minor.aa0, NULL, status->scanner_state);
+  aa_destructor(2,&aamsp[-1].minor);
 }
 // 803 "parser.c"
         break;
-      case 6:
-// 262 "parser.lemon"
+      case 7:
+// 242 "parser.lemon"
 {
-	jjgotominor.jj36 = phannot_ret_annotation(jjmsp[0].minor.jj0, NULL, status->scanner_state);
-  jj_destructor(2,&jjmsp[-1].minor);
+	aagotominor.aa36 = phannot_ret_zval_list(aamsp[-2].minor.aa36, aamsp[0].minor.aa36);
+  aa_destructor(1,&aamsp[-1].minor);
 }
 // 811 "parser.c"
         break;
-      case 7:
-// 268 "parser.lemon"
-{
-	jjgotominor.jj36 = phannot_ret_zval_list(jjmsp[-2].minor.jj36, jjmsp[0].minor.jj36);
-  jj_destructor(1,&jjmsp[-1].minor);
-}
-// 819 "parser.c"
-        break;
       case 9:
-// 278 "parser.lemon"
+// 252 "parser.lemon"
 {
-	jjgotominor.jj36 = phannot_ret_named_item(NULL, jjmsp[0].minor.jj36);
+	aagotominor.aa36 = phannot_ret_named_item(NULL, aamsp[0].minor.aa36);
 }
-// 826 "parser.c"
+// 818 "parser.c"
         break;
       case 10:
       case 12:
-// 282 "parser.lemon"
+// 256 "parser.lemon"
 {
-	jjgotominor.jj36 = phannot_ret_named_item(jjmsp[-2].minor.jj0, jjmsp[0].minor.jj36);
-  jj_destructor(7,&jjmsp[-1].minor);
+	aagotominor.aa36 = phannot_ret_named_item(aamsp[-2].minor.aa0, aamsp[0].minor.aa36);
+  aa_destructor(7,&aamsp[-1].minor);
 }
-// 835 "parser.c"
+// 827 "parser.c"
         break;
       case 11:
       case 13:
-// 286 "parser.lemon"
+// 260 "parser.lemon"
 {
-	jjgotominor.jj36 = phannot_ret_named_item(jjmsp[-2].minor.jj0, jjmsp[0].minor.jj36);
-  jj_destructor(8,&jjmsp[-1].minor);
+	aagotominor.aa36 = phannot_ret_named_item(aamsp[-2].minor.aa0, aamsp[0].minor.aa36);
+  aa_destructor(8,&aamsp[-1].minor);
 }
-// 844 "parser.c"
+// 836 "parser.c"
         break;
       case 16:
-// 308 "parser.lemon"
+// 282 "parser.lemon"
 {
-	jjgotominor.jj36 = phannot_ret_literal_zval(PHANNOT_T_IDENTIFIER, jjmsp[0].minor.jj0);
+	aagotominor.aa36 = phannot_ret_literal_zval(PHANNOT_T_IDENTIFIER, aamsp[0].minor.aa0);
 }
-// 851 "parser.c"
+// 843 "parser.c"
         break;
       case 17:
-// 312 "parser.lemon"
+// 286 "parser.lemon"
 {
-	jjgotominor.jj36 = phannot_ret_literal_zval(PHANNOT_T_INTEGER, jjmsp[0].minor.jj0);
+	aagotominor.aa36 = phannot_ret_literal_zval(PHANNOT_T_INTEGER, aamsp[0].minor.aa0);
 }
-// 858 "parser.c"
+// 850 "parser.c"
         break;
       case 18:
-// 316 "parser.lemon"
+// 290 "parser.lemon"
 {
-	jjgotominor.jj36 = phannot_ret_literal_zval(PHANNOT_T_STRING, jjmsp[0].minor.jj0);
+	aagotominor.aa36 = phannot_ret_literal_zval(PHANNOT_T_STRING, aamsp[0].minor.aa0);
 }
-// 865 "parser.c"
+// 857 "parser.c"
         break;
       case 19:
-// 320 "parser.lemon"
+// 294 "parser.lemon"
 {
-	jjgotominor.jj36 = phannot_ret_literal_zval(PHANNOT_T_DOUBLE, jjmsp[0].minor.jj0);
+	aagotominor.aa36 = phannot_ret_literal_zval(PHANNOT_T_DOUBLE, aamsp[0].minor.aa0);
+}
+// 864 "parser.c"
+        break;
+      case 20:
+// 298 "parser.lemon"
+{
+	aagotominor.aa36 = phannot_ret_literal_zval(PHANNOT_T_NULL, NULL);
+  aa_destructor(11,&aamsp[0].minor);
 }
 // 872 "parser.c"
         break;
-      case 20:
-// 324 "parser.lemon"
+      case 21:
+// 302 "parser.lemon"
 {
-	jjgotominor.jj36 = phannot_ret_literal_zval(PHANNOT_T_NULL, NULL);
-  jj_destructor(11,&jjmsp[0].minor);
+	aagotominor.aa36 = phannot_ret_literal_zval(PHANNOT_T_FALSE, NULL);
+  aa_destructor(12,&aamsp[0].minor);
 }
 // 880 "parser.c"
         break;
-      case 21:
-// 328 "parser.lemon"
+      case 22:
+// 306 "parser.lemon"
 {
-	jjgotominor.jj36 = phannot_ret_literal_zval(PHANNOT_T_FALSE, NULL);
-  jj_destructor(12,&jjmsp[0].minor);
+	aagotominor.aa36 = phannot_ret_literal_zval(PHANNOT_T_TRUE, NULL);
+  aa_destructor(13,&aamsp[0].minor);
 }
 // 888 "parser.c"
         break;
-      case 22:
-// 332 "parser.lemon"
-{
-	jjgotominor.jj36 = phannot_ret_literal_zval(PHANNOT_T_TRUE, NULL);
-  jj_destructor(13,&jjmsp[0].minor);
-}
-// 896 "parser.c"
-        break;
       case 23:
-// 336 "parser.lemon"
+// 310 "parser.lemon"
 {
-	jjgotominor.jj36 = phannot_ret_array(jjmsp[-1].minor.jj36);
-  jj_destructor(14,&jjmsp[-2].minor);
-  jj_destructor(15,&jjmsp[0].minor);
+	aagotominor.aa36 = phannot_ret_array(aamsp[-1].minor.aa36);
+  aa_destructor(14,&aamsp[-2].minor);
+  aa_destructor(15,&aamsp[0].minor);
 }
-// 905 "parser.c"
+// 897 "parser.c"
         break;
       case 24:
-// 340 "parser.lemon"
+// 314 "parser.lemon"
 {
-	jjgotominor.jj36 = phannot_ret_array(jjmsp[-1].minor.jj36);
-  jj_destructor(16,&jjmsp[-2].minor);
-  jj_destructor(17,&jjmsp[0].minor);
+	aagotominor.aa36 = phannot_ret_array(aamsp[-1].minor.aa36);
+  aa_destructor(16,&aamsp[-2].minor);
+  aa_destructor(17,&aamsp[0].minor);
 }
-// 914 "parser.c"
+// 906 "parser.c"
         break;
   };
-  jjgoto = jjRuleInfo[jjruleno].lhs;
-  jjsize = jjRuleInfo[jjruleno].nrhs;
-  jjpParser->jjidx -= jjsize;
-  jjact = jj_find_reduce_action(jjpParser,jjgoto);
-  if( jjact < JJNSTATE ){
-    jj_shift(jjpParser,jjact,jjgoto,&jjgotominor);
-  }else if( jjact == JJNSTATE + JJNRULE + 1 ){
-    jj_accept(jjpParser);
+  aagoto = aaRuleInfo[aaruleno].lhs;
+  aasize = aaRuleInfo[aaruleno].nrhs;
+  aapParser->aaidx -= aasize;
+  aaact = aa_find_reduce_action(aapParser,aagoto);
+  if( aaact < AANSTATE ){
+    aa_shift(aapParser,aaact,aagoto,&aagotominor);
+  }else if( aaact == AANSTATE + AANRULE + 1 ){
+    aa_accept(aapParser);
   }
 }
 
 /*
 ** The following code executes when the parse fails
 */
-static void jj_parse_failed(
-  jjParser *jjpParser           /* The parser */
+static void aa_parse_failed(
+  aaParser *aapParser           /* The parser */
 ){
   phannot_ARG_FETCH;
 #ifndef NDEBUG
-  if( jjTraceFILE ){
-    fprintf(jjTraceFILE,"%sFail!\n",jjTracePrompt);
+  if( aaTraceFILE ){
+    fprintf(aaTraceFILE,"%sFail!\n",aaTracePrompt);
   }
 #endif
-  while( jjpParser->jjidx>=0 ) jj_pop_parser_stack(jjpParser);
+  while( aapParser->aaidx>=0 ) aa_pop_parser_stack(aapParser);
   /* Here code is inserted which will be executed whenever the
   ** parser fails */
   phannot_ARG_STORE; /* Suppress warning about unused %extra_argument variable */
@@ -945,93 +937,75 @@ static void jj_parse_failed(
 /*
 ** The following code executes when a syntax error first occurs.
 */
-static void jj_syntax_error(
-  jjParser *jjpParser,           /* The parser */
-  int jjmajor,                   /* The major type of the error token */
-  JJMINORTYPE jjminor            /* The minor type of the error token */
+static void aa_syntax_error(
+  aaParser *aapParser,           /* The parser */
+  int aamajor,                   /* The major type of the error token */
+  AAMINORTYPE aaminor            /* The minor type of the error token */
 ){
   phannot_ARG_FETCH;
-#define JTOKEN (jjminor.jj0)
-// 159 "parser.lemon"
+#define ATOKEN (aaminor.aa0)
+// 151 "parser.lemon"
 
 	if (status->scanner_state->start_length) {
-		{
+		char *token_name = NULL;
+		const phannot_token_names *tokens = phannot_tokens;
+		uint active_token = status->scanner_state->active_token;
+		uint near_length = status->scanner_state->start_length;
 
-			char *token_name = NULL;
-			const phannot_token_names *tokens = phannot_tokens;
-			int token_found = 0;
-			int active_token = status->scanner_state->active_token;
-			int near_length = status->scanner_state->start_length;
+		if (active_token) {
+			do {
+				if (tokens->code == active_token) {
+					token_name = tokens->name;
+					break;
+				}
+				++tokens;
+			} while (tokens[0].code != 0);
+		}
 
-			if (active_token) {
-				do {
-					if (tokens->code == active_token) {
-						token_found = 1;
-						token_name = tokens->name;
-						break;
-					}
-					++tokens;
-				} while (tokens[0].code != 0);
+		if (!token_name) {
+			token_name  = "UNKNOWN";
+		}
+
+		if (near_length > 0) {
+			if (status->token->value) {
+				spprintf(&status->syntax_error, 0, "Syntax error, unexpected token %s(%s), near to '%s' in %s on line %d", token_name, status->token->value, status->scanner_state->start, status->scanner_state->active_file, status->scanner_state->active_line);
+			} else {
+				spprintf(&status->syntax_error, 0, "Syntax error, unexpected token %s, near to '%s' in %s on line %d", token_name, status->scanner_state->start, status->scanner_state->active_file, status->scanner_state->active_line);
 			}
-
-			if (!token_name) {
-				token_found = 0;
-				token_name = estrndup("UNKNOWN", strlen("UNKNOWN"));
-			}
-
-			status->syntax_error_len = 128 + strlen(token_name) + Z_STRLEN_P(status->scanner_state->active_file);
-			status->syntax_error = emalloc(sizeof(char) * status->syntax_error_len);
-
-			if (near_length > 0) {
+		} else {
+			if (active_token != PHANNOT_T_IGNORE) {
 				if (status->token->value) {
-					snprintf(status->syntax_error, status->syntax_error_len, "Syntax error, unexpected token %s(%s), near to '%s' in %s on line %d", token_name, status->token->value, status->scanner_state->start, Z_STRVAL_P(status->scanner_state->active_file), status->scanner_state->active_line);
+					spprintf(&status->syntax_error, 0, "Syntax error, unexpected token %s(%s), at the end of docblock in %s on line %d", token_name, status->token->value, status->scanner_state->active_file, status->scanner_state->active_line);
 				} else {
-					snprintf(status->syntax_error, status->syntax_error_len, "Syntax error, unexpected token %s, near to '%s' in %s on line %d", token_name, status->scanner_state->start, Z_STRVAL_P(status->scanner_state->active_file), status->scanner_state->active_line);
+					spprintf(&status->syntax_error, 0, "Syntax error, unexpected token %s, at the end of docblock in %s on line %d", token_name, status->scanner_state->active_file, status->scanner_state->active_line);
 				}
 			} else {
-				if (active_token != PHANNOT_T_IGNORE) {
-					if (status->token->value) {
-						snprintf(status->syntax_error, status->syntax_error_len, "Syntax error, unexpected token %s(%s), at the end of docblock in %s on line %d", token_name, status->token->value, Z_STRVAL_P(status->scanner_state->active_file), status->scanner_state->active_line);
-					} else {
-						snprintf(status->syntax_error, status->syntax_error_len, "Syntax error, unexpected token %s, at the end of docblock in %s on line %d", token_name, Z_STRVAL_P(status->scanner_state->active_file), status->scanner_state->active_line);
-					}
-				} else {
-					snprintf(status->syntax_error, status->syntax_error_len, "Syntax error, unexpected EOF, at the end of docblock in %s on line %d", Z_STRVAL_P(status->scanner_state->active_file), status->scanner_state->active_line);
-				}
-				status->syntax_error[status->syntax_error_len-1] = '\0';
-			}
-
-			if (!token_found) {
-				if (token_name) {
-					efree(token_name);
-				}
+				spprintf(&status->syntax_error, 0, "Syntax error, unexpected EOF, at the end of docblock in %s on line %d", status->scanner_state->active_file, status->scanner_state->active_line);
 			}
 		}
 	} else {
-		status->syntax_error_len = 48 + Z_STRLEN_P(status->scanner_state->active_file);
-		status->syntax_error = emalloc(sizeof(char) * status->syntax_error_len);
-		sprintf(status->syntax_error, "Syntax error, unexpected EOF in %s", Z_STRVAL_P(status->scanner_state->active_file));
+		spprintf(&status->syntax_error, 0, "Syntax error, unexpected EOF in %s", status->scanner_state->active_file);
 	}
 
 	status->status = PHANNOT_PARSING_FAILED;
 
-// 1019 "parser.c"
+// 993 "parser.c"
   phannot_ARG_STORE; /* Suppress warning about unused %extra_argument variable */
 }
 
 /*
 ** The following is executed when the parser accepts
 */
-static void jj_accept(
-  jjParser *jjpParser           /* The parser */
+static void aa_accept(
+  aaParser *aapParser           /* The parser */
 ){
   phannot_ARG_FETCH;
 #ifndef NDEBUG
-  if( jjTraceFILE ){
-    fprintf(jjTraceFILE,"%sAccept!\n",jjTracePrompt);
+  if( aaTraceFILE ){
+    fprintf(aaTraceFILE,"%sAccept!\n",aaTracePrompt);
   }
 #endif
-  while( jjpParser->jjidx>=0 ) jj_pop_parser_stack(jjpParser);
+  while( aapParser->aaidx>=0 ) aa_pop_parser_stack(aapParser);
   /* Here code is inserted which will be executed whenever the
   ** parser accepts */
   phannot_ARG_STORE; /* Suppress warning about unused %extra_argument variable */
@@ -1057,59 +1031,59 @@ static void jj_accept(
 ** None.
 */
 void phannot_(
-  void *jjp,                   /* The parser */
-  int jjmajor,                 /* The major token code number */
-  phannot_JTOKENTYPE jjminor       /* The value for the token */
+  void *aap,                   /* The parser */
+  int aamajor,                 /* The major token code number */
+  phannot_TOKENTYPE aaminor       /* The value for the token */
   phannot_ARG_PDECL               /* Optional %extra_argument parameter */
 ){
-  JJMINORTYPE jjminorunion;
-  int jjact;            /* The parser action. */
-  int jjendofinput;     /* True if we are at the end of input */
-  int jjerrorhit = 0;   /* True if jjmajor has invoked an error */
-  jjParser *jjpParser;  /* The parser */
+  AAMINORTYPE aaminorunion;
+  int aaact;            /* The parser action. */
+  int aaendofinput;     /* True if we are at the end of input */
+  int aaerrorhit = 0;   /* True if aamajor has invoked an error */
+  aaParser *aapParser;  /* The parser */
 
   /* (re)initialize the parser, if necessary */
-  jjpParser = (jjParser*)jjp;
-  if( jjpParser->jjidx<0 ){
-    if( jjmajor==0 ) return;
-    jjpParser->jjidx = 0;
-    jjpParser->jjerrcnt = -1;
-    jjpParser->jjstack[0].stateno = 0;
-    jjpParser->jjstack[0].major = 0;
+  aapParser = (aaParser*)aap;
+  if( aapParser->aaidx<0 ){
+    if( aamajor==0 ) return;
+    aapParser->aaidx = 0;
+    aapParser->aaerrcnt = -1;
+    aapParser->aastack[0].stateno = 0;
+    aapParser->aastack[0].major = 0;
   }
-  jjminorunion.jj0 = jjminor;
-  jjendofinput = (jjmajor==0);
+  aaminorunion.aa0 = aaminor;
+  aaendofinput = (aamajor==0);
   phannot_ARG_STORE;
 
 #ifndef NDEBUG
-  if( jjTraceFILE ){
-    fprintf(jjTraceFILE,"%sInput %s\n",jjTracePrompt,jjTokenName[jjmajor]);
+  if( aaTraceFILE ){
+    fprintf(aaTraceFILE,"%sInput %s\n",aaTracePrompt,aaTokenName[aamajor]);
   }
 #endif
 
   do{
-    jjact = jj_find_shift_action(jjpParser,jjmajor);
-    if( jjact<JJNSTATE ){
-      jj_shift(jjpParser,jjact,jjmajor,&jjminorunion);
-      jjpParser->jjerrcnt--;
-      if( jjendofinput && jjpParser->jjidx>=0 ){
-        jjmajor = 0;
+    aaact = aa_find_shift_action(aapParser,aamajor);
+    if( aaact<AANSTATE ){
+      aa_shift(aapParser,aaact,aamajor,&aaminorunion);
+      aapParser->aaerrcnt--;
+      if( aaendofinput && aapParser->aaidx>=0 ){
+        aamajor = 0;
       }else{
-        jjmajor = JJNOCODE;
+        aamajor = AANOCODE;
       }
-    }else if( jjact < JJNSTATE + JJNRULE ){
-      jj_reduce(jjpParser,jjact-JJNSTATE);
-    }else if( jjact == JJ_ERROR_ACTION ){
-      int jjmx;
+    }else if( aaact < AANSTATE + AANRULE ){
+      aa_reduce(aapParser,aaact-AANSTATE);
+    }else if( aaact == AA_ERROR_ACTION ){
+      int aamx;
 #ifndef NDEBUG
-      if( jjTraceFILE ){
-        fprintf(jjTraceFILE,"%sSyntax Error!\n",jjTracePrompt);
+      if( aaTraceFILE ){
+        fprintf(aaTraceFILE,"%sSyntax Error!\n",aaTracePrompt);
       }
 #endif
-#ifdef JJERRORSYMBOL
+#ifdef AAERRORSYMBOL
       /* A syntax error has occurred.
       ** The response to an error depends upon whether or not the
-      ** grammar defines an error token "ERROR".
+      ** grammar defines an error token "ERROR".  
       **
       ** This is what we do if the grammar does define ERROR:
       **
@@ -1126,40 +1100,40 @@ void phannot_(
       **    shifted successfully.
       **
       */
-      if( jjpParser->jjerrcnt<0 ){
-        jj_syntax_error(jjpParser,jjmajor,jjminorunion);
+      if( aapParser->aaerrcnt<0 ){
+        aa_syntax_error(aapParser,aamajor,aaminorunion);
       }
-      jjmx = jjpParser->jjstack[jjpParser->jjidx].major;
-      if( jjmx==JJERRORSYMBOL || jjerrorhit ){
+      aamx = aapParser->aastack[aapParser->aaidx].major;
+      if( aamx==AAERRORSYMBOL || aaerrorhit ){
 #ifndef NDEBUG
-        if( jjTraceFILE ){
-          fprintf(jjTraceFILE,"%sDiscard input token %s\n",
-             jjTracePrompt,jjTokenName[jjmajor]);
+        if( aaTraceFILE ){
+          fprintf(aaTraceFILE,"%sDiscard input token %s\n",
+             aaTracePrompt,aaTokenName[aamajor]);
         }
 #endif
-        jj_destructor(jjmajor,&jjminorunion);
-        jjmajor = JJNOCODE;
+        aa_destructor(aamajor,&aaminorunion);
+        aamajor = AANOCODE;
       }else{
          while(
-          jjpParser->jjidx >= 0 &&
-          jjmx != JJERRORSYMBOL &&
-          (jjact = jj_find_shift_action(jjpParser,JJERRORSYMBOL)) >= JJNSTATE
+          aapParser->aaidx >= 0 &&
+          aamx != AAERRORSYMBOL &&
+          (aaact = aa_find_shift_action(aapParser,AAERRORSYMBOL)) >= AANSTATE
         ){
-          jj_pop_parser_stack(jjpParser);
+          aa_pop_parser_stack(aapParser);
         }
-        if( jjpParser->jjidx < 0 || jjmajor==0 ){
-          jj_destructor(jjmajor,&jjminorunion);
-          jj_parse_failed(jjpParser);
-          jjmajor = JJNOCODE;
-        }else if( jjmx!=JJERRORSYMBOL ){
-          JJMINORTYPE u2;
-          u2.JJERRSYMDT = 0;
-          jj_shift(jjpParser,jjact,JJERRORSYMBOL,&u2);
+        if( aapParser->aaidx < 0 || aamajor==0 ){
+          aa_destructor(aamajor,&aaminorunion);
+          aa_parse_failed(aapParser);
+          aamajor = AANOCODE;
+        }else if( aamx!=AAERRORSYMBOL ){
+          AAMINORTYPE u2;
+          u2.AAERRSYMDT = 0;
+          aa_shift(aapParser,aaact,AAERRORSYMBOL,&u2);
         }
       }
-      jjpParser->jjerrcnt = 3;
-      jjerrorhit = 1;
-#else  /* JJERRORSYMBOL is not defined */
+      aapParser->aaerrcnt = 3;
+      aaerrorhit = 1;
+#else  /* AAERRORSYMBOL is not defined */
       /* This is what we do if the grammar does not define ERROR:
       **
       **  * Report an error message, and throw away the input token.
@@ -1169,21 +1143,21 @@ void phannot_(
       ** As before, subsequent error messages are suppressed until
       ** three input tokens have been successfully shifted.
       */
-      if( jjpParser->jjerrcnt<=0 ){
-        jj_syntax_error(jjpParser,jjmajor,jjminorunion);
+      if( aapParser->aaerrcnt<=0 ){
+        aa_syntax_error(aapParser,aamajor,aaminorunion);
       }
-      jjpParser->jjerrcnt = 3;
-      jj_destructor(jjmajor,&jjminorunion);
-      if( jjendofinput ){
-        jj_parse_failed(jjpParser);
+      aapParser->aaerrcnt = 3;
+      aa_destructor(aamajor,&aaminorunion);
+      if( aaendofinput ){
+        aa_parse_failed(aapParser);
       }
-      jjmajor = JJNOCODE;
+      aamajor = AANOCODE;
 #endif
     }else{
-      jj_accept(jjpParser);
-      jjmajor = JJNOCODE;
+      aa_accept(aapParser);
+      aamajor = AANOCODE;
     }
-  }while( jjmajor!=JJNOCODE && jjpParser->jjidx>=0 );
+  }while( aamajor!=AANOCODE && aapParser->aaidx>=0 );
   return;
 }
 
@@ -1191,7 +1165,7 @@ void phannot_(
   +------------------------------------------------------------------------+
   | Phalcon Framework                                                      |
   +------------------------------------------------------------------------+
-  | Copyright (c) 2011-2013 Phalcon Team (http://www.phalconphp.com)       |
+  | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
   +------------------------------------------------------------------------+
   | This source file is subject to the New BSD License that is bundled     |
   | with this package in the file docs/LICENSE.txt.                        |
@@ -1219,7 +1193,7 @@ const phannot_token_names phannot_tokens[] =
 	{ ")",              PHANNOT_T_PARENTHESES_CLOSE },
 	{ "{",              PHANNOT_T_BRACKET_OPEN },
 	{ "}",              PHANNOT_T_BRACKET_CLOSE },
-	{ "[",              PHANNOT_T_SBRACKET_OPEN },
+ 	{ "[",              PHANNOT_T_SBRACKET_OPEN },
 	{ "]",              PHANNOT_T_SBRACKET_CLOSE },
 	{ "ARBITRARY TEXT", PHANNOT_T_ARBITRARY_TEXT },
 	{ NULL, 0 }
@@ -1261,51 +1235,64 @@ static void phannot_parse_with_token(void* phannot_parser, int opcode, int parse
 /**
  * Creates an error message when it's triggered by the scanner
  */
-static void phannot_scanner_error_msg(phannot_parser_status *parser_status, zval **error_msg TSRMLS_DC){
+static void phannot_scanner_error_msg(phannot_parser_status *parser_status, char **error_msg TSRMLS_DC){
 
-	int error_length;
-	char *error, *error_part;
 	phannot_scanner_state *state = parser_status->scanner_state;
 
-	MAKE_STD_ZVAL(*error_msg);
 	if (state->start) {
-		error_length = 128 + state->start_length +  Z_STRLEN_P(state->active_file);
-		error = emalloc(sizeof(char) * error_length);
 		if (state->start_length > 16) {
-			error_part = estrndup(state->start, 16);
-			snprintf(error, 64 + state->start_length, "Scanning error before '%s...' in %s on line %d", error_part, Z_STRVAL_P(state->active_file), state->active_line);
-			efree(error_part);
+			spprintf(error_msg, 0, "Scanning error before '%.16s...' in %s on line %d", state->start, state->active_file, state->active_line);
 		} else {
-			snprintf(error, error_length - 1, "Scanning error before '%s' in %s on line %d", state->start, Z_STRVAL_P(state->active_file), state->active_line);
+			spprintf(error_msg, 0, "Scanning error before '%s' in %s on line %d", state->start, state->active_file, state->active_line);
 		}
-		error[error_length - 1] = '\0';
-		ZVAL_STRING(*error_msg, error, 1);
 	} else {
-		error_length = sizeof(char) * (64 + Z_STRLEN_P(state->active_file));
-		error = emalloc(error_length);
-		snprintf(error, error_length - 1, "Scanning error near to EOF in %s", Z_STRVAL_P(state->active_file));
-		ZVAL_STRING(*error_msg, error, 1);
-		error[error_length - 1] = '\0';
+		spprintf(error_msg, 0, "Scanning error near to EOF in %s", state->active_file);
 	}
-	efree(error);
 }
 
 /**
  * Receives the comment tokenizes and parses it
  */
-int phannot_parse_annotations(zval *result, zval *comment, zval *file_path, zval *line TSRMLS_DC){
+int phannot_parse_annotations(zval *result, zval *comment, zval *file_path, zval *line TSRMLS_DC) {
 
-	zval *error_msg = NULL;
+	char *comment_str;
+	zend_uint comment_len;
+	char *file_path_str;
+	zend_uint line_num;
+
+	char *error_msg = NULL;
 
 	ZVAL_NULL(result);
 
-	if (Z_TYPE_P(comment) != IS_STRING) {
-		ZEPHIR_THROW_EXCEPTION_STR(phalcon_annotations_exception_ce, "Comment must be a string");
-		return FAILURE;
+	if (Z_TYPE_P(comment) == IS_STRING) {
+		comment_str = Z_STRVAL_P(comment);
+		comment_len = Z_STRLEN_P(comment);
+	} else {
+		comment_str = "";
+		comment_len = 0;
 	}
 
-	if (phannot_internal_parse_annotations(&result, comment, file_path, line, &error_msg TSRMLS_CC) == FAILURE){
-		ZEPHIR_THROW_EXCEPTION_STRW(phalcon_annotations_exception_ce, Z_STRVAL_P(error_msg));
+	if (Z_TYPE_P(file_path) == IS_STRING) {
+		file_path_str = Z_STRVAL_P(file_path);
+	} else {
+		file_path_str = "eval";
+	}
+
+	if (Z_TYPE_P(line) == IS_LONG) {
+		line_num = Z_LVAL_P(line);
+	} else {
+		line_num = 0;
+	}
+
+	if (phannot_internal_parse_annotations(&result, comment_str, comment_len, file_path_str, line_num, &error_msg TSRMLS_CC) == FAILURE) {
+		if (likely(error_msg != NULL)) {
+			zephir_throw_exception_string(phalcon_annotations_exception_ce, error_msg, strlen(error_msg) TSRMLS_CC);
+			efree(error_msg);
+		}
+		else {
+			zephir_throw_exception_string(phalcon_annotations_exception_ce, SL("There was an error parsing annotation") TSRMLS_CC);
+		}
+
 		return FAILURE;
 	}
 
@@ -1315,8 +1302,8 @@ int phannot_parse_annotations(zval *result, zval *comment, zval *file_path, zval
 /**
  * Remove comment separators from a docblock
  */
-void phannot_remove_comment_separators(zval *return_value, char *comment, int length, int *start_lines) {
-
+static void phannot_remove_comment_separators(char **ret, zend_uint *ret_len, const char *comment, zend_uint length, zend_uint *start_lines)
+{
 	int start_mode = 1, j, i, open_parentheses;
 	smart_str processed_str = {0};
 	char ch;
@@ -1353,7 +1340,7 @@ void phannot_remove_comment_separators(zval *return_value, char *comment, int le
 
 				if (open_parentheses == 0) {
 
-					if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z')) {
+					if (isalnum(ch) || '_' == ch || '\\' == ch) {
 						smart_str_appendc(&processed_str, ch);
 						continue;
 					}
@@ -1370,15 +1357,11 @@ void phannot_remove_comment_separators(zval *return_value, char *comment, int le
 
 					if (ch == '(') {
 						open_parentheses++;
-					} else {
-						if (ch == ')') {
-							open_parentheses--;
-						} else {
-							if (ch == '\n') {
-								(*start_lines)++;
-								start_mode = 1;
-							}
-						}
+					} else if (ch == ')') {
+						open_parentheses--;
+					} else if (ch == '\n') {
+						(*start_lines)++;
+						start_mode = 1;
 					}
 
 					if (open_parentheses > 0) {
@@ -1401,34 +1384,40 @@ void phannot_remove_comment_separators(zval *return_value, char *comment, int le
 	smart_str_0(&processed_str);
 
 	if (processed_str.len) {
-		RETURN_STRINGL(processed_str.c, processed_str.len, 0);
+		*ret     = processed_str.c;
+		*ret_len = processed_str.len;
 	} else {
-		RETURN_EMPTY_STRING();
+		*ret     = NULL;
+		*ret_len = 0;
 	}
 }
 
 /**
  * Parses a comment returning an intermediate array representation
  */
-int phannot_internal_parse_annotations(zval **result, zval *comment, zval *file_path, zval *line, zval **error_msg TSRMLS_DC) {
-
-	char *error;
+int phannot_internal_parse_annotations(zval **result, const char *comment, zend_uint comment_len, const char *file_path, zend_uint line, char **error_msg TSRMLS_DC)
+{
 	phannot_scanner_state *state;
 	phannot_scanner_token token;
-	int scanner_status, status = SUCCESS, start_lines, error_length;
+	zend_uint start_lines;
+	int scanner_status, status = SUCCESS;
 	phannot_parser_status *parser_status = NULL;
 	void* phannot_parser;
-	zval processed_comment;
+	char *processed_comment;
+	zend_uint processed_comment_len;
+
+	*error_msg = NULL;
 
 	/**
 	 * Check if the comment has content
 	 */
-	if (!Z_STRVAL_P(comment)) {
+	if (UNEXPECTED(!comment)) {
 		ZVAL_BOOL(*result, 0);
+		spprintf(error_msg, 0, "Empty annotation");
 		return FAILURE;
 	}
 
-	if (Z_STRLEN_P(comment) < 2) {
+	if (comment_len < 2) {
 		ZVAL_BOOL(*result, 0);
 		return SUCCESS;
 	}
@@ -1436,11 +1425,14 @@ int phannot_internal_parse_annotations(zval **result, zval *comment, zval *file_
 	/**
 	 * Remove comment separators
 	 */
-	phannot_remove_comment_separators(&processed_comment, Z_STRVAL_P(comment), Z_STRLEN_P(comment), &start_lines);
+	phannot_remove_comment_separators(&processed_comment, &processed_comment_len, comment, comment_len, &start_lines);
 
-	if (Z_STRLEN(processed_comment) < 2) {
+	if (processed_comment_len < 2) {
 		ZVAL_BOOL(*result, 0);
-		str_efree(Z_STRVAL(processed_comment));
+		if (processed_comment) {
+			efree(processed_comment);
+		}
+
 		return SUCCESS;
 	}
 
@@ -1448,9 +1440,13 @@ int phannot_internal_parse_annotations(zval **result, zval *comment, zval *file_
 	 * Start the reentrant parser
 	 */
 	phannot_parser = phannot_Alloc(phannot_wrapper_alloc);
+	if (unlikely(!phannot_parser)) {
+		ZVAL_BOOL(*result, 0);
+		return FAILURE;
+	}
 
-	parser_status = emalloc(sizeof(phannot_parser_status));
-	state = emalloc(sizeof(phannot_scanner_state));
+	parser_status = emalloc(sizeof(phannot_parser_status) + sizeof(phannot_scanner_state));
+	state         = (phannot_scanner_state*)((char*)parser_status + sizeof(phannot_parser_status));
 
 	parser_status->status = PHANNOT_PARSING_OK;
 	parser_status->scanner_state = state;
@@ -1462,7 +1458,7 @@ int phannot_internal_parse_annotations(zval **result, zval *comment, zval *file_
 	 * Initialize the scanner state
 	 */
 	state->active_token = 0;
-	state->start = Z_STRVAL(processed_comment);
+	state->start = processed_comment;
 	state->start_length = 0;
 	state->mode = PHANNOT_MODE_RAW;
 	state->active_file = file_path;
@@ -1473,8 +1469,8 @@ int phannot_internal_parse_annotations(zval **result, zval *comment, zval *file_
 	/**
 	 * Possible start line
 	 */
-	if (Z_TYPE_P(line) == IS_LONG) {
-		state->active_line = Z_LVAL_P(line) - start_lines;
+	if (line) {
+		state->active_line = line - start_lines;
 	} else {
 		state->active_line = 1;
 	}
@@ -1485,7 +1481,7 @@ int phannot_internal_parse_annotations(zval **result, zval *comment, zval *file_
 
 		state->active_token = token.opcode;
 
-		state->start_length = (Z_STRVAL(processed_comment) + Z_STRLEN(processed_comment) - state->start);
+		state->start_length = processed_comment + processed_comment_len - state->start;
 
 		switch (token.opcode) {
 
@@ -1555,13 +1551,7 @@ int phannot_internal_parse_annotations(zval **result, zval *comment, zval *file_
 			default:
 				parser_status->status = PHANNOT_PARSING_FAILED;
 				if (!*error_msg) {
-					error_length = sizeof(char) * (48 + Z_STRLEN_P(state->active_file));
-					error = emalloc(error_length);
-					snprintf(error, error_length - 1, "Scanner: unknown opcode %d on in %s line %d", token.opcode, Z_STRVAL_P(state->active_file), state->active_line);
-					error[error_length - 1] = '\0';
-					MAKE_STD_ZVAL(*error_msg);
-					ZVAL_STRING(*error_msg, error, 1);
-					efree(error);
+					spprintf(error_msg, 0, "Scanner: unknown opcode %d on in %s line %d", token.opcode, state->active_file, state->active_line);
 				}
 				break;
 		}
@@ -1595,10 +1585,11 @@ int phannot_internal_parse_annotations(zval **result, zval *comment, zval *file_
 		status = FAILURE;
 		if (parser_status->syntax_error) {
 			if (!*error_msg) {
-				MAKE_STD_ZVAL(*error_msg);
-				ZVAL_STRING(*error_msg, parser_status->syntax_error, 1);
+				*error_msg = parser_status->syntax_error;
 			}
-			efree(parser_status->syntax_error);
+			else {
+				efree(parser_status->syntax_error);
+			}
 		}
 	}
 
@@ -1616,10 +1607,8 @@ int phannot_internal_parse_annotations(zval **result, zval *comment, zval *file_
 		}
 	}
 
-	efree(Z_STRVAL(processed_comment));
-
+	efree(processed_comment);
 	efree(parser_status);
-	efree(state);
 
 	return status;
 }

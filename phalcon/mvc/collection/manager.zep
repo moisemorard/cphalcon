@@ -24,6 +24,7 @@ use Phalcon\Di\InjectionAwareInterface;
 use Phalcon\Events\EventsAwareInterface;
 use Phalcon\Events\ManagerInterface;
 use Phalcon\Mvc\CollectionInterface;
+use Phalcon\Mvc\Collection\BehaviorInterface;
 
 /**
  * Phalcon\Mvc\Collection\Manager
@@ -60,17 +61,19 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 
 	protected _implicitObjectsIds;
 
+	protected _behaviors;
+
 	/**
-	* Sets the DependencyInjector container
-	*/
+	 * Sets the DependencyInjector container
+	 */
 	public function setDI(<DiInterface> dependencyInjector) -> void
 	{
 		let this->_dependencyInjector = dependencyInjector;
 	}
 
 	/**
-	* Returns the DependencyInjector container
-	*/
+	 * Returns the DependencyInjector container
+	 */
 	public function getDI() -> <DiInterface>
 	{
 		return this->_dependencyInjector;
@@ -146,7 +149,7 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 			*/
 			let eventsManager = this->_eventsManager;
 			if typeof eventsManager == "object" {
-				eventsManager->fire("collectionManager:afterInitialize");
+				eventsManager->fire("collectionManager:afterInitialize", model);
 			}
 
 			let this->_initialized[className] = model;
@@ -156,16 +159,10 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 
 	/**
 	 * Check whether a model is already initialized
-	 *
-	 * @param string $modelName
-	 * @return bool
 	 */
-	public function isInitialized(modelName) -> boolean
+	public function isInitialized(string! modelName) -> boolean
 	{
-		if isset this->_initialized[strtolower(modelName)] {
-			return true;
-		}
-		return false;
+		return isset this->_initialized[strtolower(modelName)];
 	}
 
 	/**
@@ -219,10 +216,6 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 	{
 		var service, connectionService, connection, dependencyInjector, entityName;
 
-		if typeof model != "object" {
-			throw new Exception("A valid collection instance is required");
-		}
-
 		let service = "mongo";
 		let connectionService = this->_connectionServices;
 		if typeof connectionService == "array" {
@@ -258,11 +251,27 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 	 */
 	public function notifyEvent(string! eventName, <CollectionInterface> model)
 	{
-		var eventsManager, status = null, customEventsManager;
+		var behavior, behaviors, modelsBehaviors, eventsManager, status = null, customEventsManager;
+
+		let behaviors = this->_behaviors;
+		if typeof behaviors == "array" {
+			if fetch modelsBehaviors, behaviors[get_class_lower(model)] {
+
+				/**
+				 * Notify all the events on the behavior
+				 */
+				for behavior in modelsBehaviors {
+					let status = behavior->notify(eventName, model);
+					if status === false {
+						return false;
+					}
+				}
+			}
+		}
 
 		/**
-		* Dispatch events to the global events manager
-		*/
+		 * Dispatch events to the global events manager
+		 */
 		let eventsManager = this->_eventsManager;
 		if typeof eventsManager == "object" {
 			let status = eventsManager->fire( "collection:". eventName, model);
@@ -272,8 +281,8 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 		}
 
 		/**
-		* A model can has a specific events manager for it
-		*/
+		 * A model can has a specific events manager for it
+		 */
 		let customEventsManager = this->_customEventsManager;
 		if typeof customEventsManager == "array" {
 			if isset customEventsManager[get_class_lower(model)] {
@@ -285,5 +294,72 @@ class Manager implements InjectionAwareInterface, EventsAwareInterface
 		}
 
 		return status;
+	}
+
+	/**
+	 * Dispatch a event to the listeners and behaviors
+	 * This method expects that the endpoint listeners/behaviors returns true
+	 * meaning that a least one was implemented
+	 */
+	public function missingMethod(<CollectionInterface> model, string! eventName, var data) -> boolean
+	{
+		var behaviors, modelsBehaviors, result, eventsManager, behavior;
+
+		/**
+		 * Dispatch events to the global events manager
+		 */
+		let behaviors = this->_behaviors;
+		if typeof behaviors == "array" {
+
+			if fetch modelsBehaviors, behaviors[get_class_lower(model)] {
+
+				/**
+				 * Notify all the events on the behavior
+				 */
+				for behavior in modelsBehaviors {
+					let result = behavior->missingMethod(model, eventName, data);
+					if result !== null {
+						return result;
+					}
+				}
+			}
+		}
+
+		/**
+		 * Dispatch events to the global events manager
+		 */
+		let eventsManager = this->_eventsManager;
+		if typeof eventsManager == "object" {
+			return eventsManager->fire("model:" . eventName, model, data);
+		}
+
+		return false;
+	}
+
+	/**
+	 * Binds a behavior to a model
+	 */
+	public function addBehavior(<CollectionInterface> model, <BehaviorInterface> behavior)
+	{
+		var entityName, modelsBehaviors;
+
+		let entityName = get_class_lower(model);
+
+		/**
+		 * Get the current behaviors
+		 */
+		if !fetch modelsBehaviors, this->_behaviors[entityName] {
+			let modelsBehaviors = [];
+		}
+
+		/**
+		 * Append the behavior to the list of behaviors
+		 */
+		let modelsBehaviors[] = behavior;
+
+		/**
+		 * Update the behaviors list
+		 */
+		let this->_behaviors[entityName] = modelsBehaviors;
 	}
 }

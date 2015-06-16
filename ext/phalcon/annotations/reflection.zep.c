@@ -76,12 +76,9 @@ PHP_METHOD(Phalcon_Annotations_Reflection, __construct) {
 
 /**
  * Returns the annotations found in the class docblock
- *
- * @return Phalcon\Annotations\Collection|false
  */
 PHP_METHOD(Phalcon_Annotations_Reflection, getClassAnnotations) {
 
-	zephir_nts_static zephir_fcall_cache_entry *_1 = NULL;
 	int ZEPHIR_LAST_CALL_STATUS;
 	zval *annotations, *reflectionClass, *collection, *_0;
 
@@ -93,7 +90,7 @@ PHP_METHOD(Phalcon_Annotations_Reflection, getClassAnnotations) {
 		if (zephir_array_isset_string_fetch(&reflectionClass, _0, SS("class"), 1 TSRMLS_CC)) {
 			ZEPHIR_INIT_VAR(collection);
 			object_init_ex(collection, phalcon_annotations_collection_ce);
-			ZEPHIR_CALL_METHOD(NULL, collection, "__construct", &_1, reflectionClass);
+			ZEPHIR_CALL_METHOD(NULL, collection, "__construct", NULL, 6, reflectionClass);
 			zephir_check_call_status();
 			zephir_update_property_this(this_ptr, SL("_classAnnotations"), collection TSRMLS_CC);
 			RETURN_CCTOR(collection);
@@ -129,7 +126,7 @@ PHP_METHOD(Phalcon_Annotations_Reflection, getMethodsAnnotations) {
 			if (zephir_fast_count_int(reflectionMethods TSRMLS_CC)) {
 				ZEPHIR_INIT_VAR(collections);
 				array_init(collections);
-				zephir_is_iterable(reflectionMethods, &_2, &_1, 0, 0, "phalcon/annotations/reflection.zep", 105);
+				zephir_is_iterable(reflectionMethods, &_2, &_1, 0, 0, "phalcon/annotations/reflection.zep", 102);
 				for (
 				  ; zephir_hash_get_current_data_ex(_2, (void**) &_3, &_1) == SUCCESS
 				  ; zephir_hash_move_forward_ex(_2, &_1)
@@ -138,7 +135,7 @@ PHP_METHOD(Phalcon_Annotations_Reflection, getMethodsAnnotations) {
 					ZEPHIR_GET_HVALUE(reflectionMethod, _3);
 					ZEPHIR_INIT_NVAR(_4);
 					object_init_ex(_4, phalcon_annotations_collection_ce);
-					ZEPHIR_CALL_METHOD(NULL, _4, "__construct", &_5, reflectionMethod);
+					ZEPHIR_CALL_METHOD(NULL, _4, "__construct", &_5, 6, reflectionMethod);
 					zephir_check_call_status();
 					zephir_array_update_zval(&collections, methodName, &_4, PH_COPY | PH_SEPARATE);
 				}
@@ -177,7 +174,7 @@ PHP_METHOD(Phalcon_Annotations_Reflection, getPropertiesAnnotations) {
 			if (zephir_fast_count_int(reflectionProperties TSRMLS_CC)) {
 				ZEPHIR_INIT_VAR(collections);
 				array_init(collections);
-				zephir_is_iterable(reflectionProperties, &_2, &_1, 0, 0, "phalcon/annotations/reflection.zep", 133);
+				zephir_is_iterable(reflectionProperties, &_2, &_1, 0, 0, "phalcon/annotations/reflection.zep", 130);
 				for (
 				  ; zephir_hash_get_current_data_ex(_2, (void**) &_3, &_1) == SUCCESS
 				  ; zephir_hash_move_forward_ex(_2, &_1)
@@ -186,7 +183,7 @@ PHP_METHOD(Phalcon_Annotations_Reflection, getPropertiesAnnotations) {
 					ZEPHIR_GET_HVALUE(reflectionProperty, _3);
 					ZEPHIR_INIT_NVAR(_4);
 					object_init_ex(_4, phalcon_annotations_collection_ce);
-					ZEPHIR_CALL_METHOD(NULL, _4, "__construct", &_5, reflectionProperty);
+					ZEPHIR_CALL_METHOD(NULL, _4, "__construct", &_5, 6, reflectionProperty);
 					zephir_check_call_status();
 					zephir_array_update_zval(&collections, property, &_4, PH_COPY | PH_SEPARATE);
 				}
@@ -220,7 +217,6 @@ PHP_METHOD(Phalcon_Annotations_Reflection, getReflectionData) {
  */
 PHP_METHOD(Phalcon_Annotations_Reflection, __set_state) {
 
-	zephir_nts_static zephir_fcall_cache_entry *_0 = NULL;
 	int ZEPHIR_LAST_CALL_STATUS;
 	zval *data, *reflectionData;
 
@@ -232,13 +228,13 @@ PHP_METHOD(Phalcon_Annotations_Reflection, __set_state) {
 	if (Z_TYPE_P(data) == IS_ARRAY) {
 		if (zephir_array_isset_string_fetch(&reflectionData, data, SS("_reflectionData"), 1 TSRMLS_CC)) {
 			object_init_ex(return_value, phalcon_annotations_reflection_ce);
-			ZEPHIR_CALL_METHOD(NULL, return_value, "__construct", &_0, reflectionData);
+			ZEPHIR_CALL_METHOD(NULL, return_value, "__construct", NULL, 5, reflectionData);
 			zephir_check_call_status();
 			RETURN_MM();
 		}
 	}
 	object_init_ex(return_value, phalcon_annotations_reflection_ce);
-	ZEPHIR_CALL_METHOD(NULL, return_value, "__construct", &_0);
+	ZEPHIR_CALL_METHOD(NULL, return_value, "__construct", NULL, 5);
 	zephir_check_call_status();
 	RETURN_MM();
 
