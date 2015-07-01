@@ -29,6 +29,8 @@ ZEPHIR_INIT_CLASS(Phalcon_Translate_Adapter_Csv) {
 
 	zend_declare_property_null(phalcon_translate_adapter_csv_ce, SL("_translate"), ZEND_ACC_PROTECTED TSRMLS_CC);
 
+	phalcon_translate_adapter_csv_ce->create_object = zephir_init_properties;
+
 	zend_class_implements(phalcon_translate_adapter_csv_ce TSRMLS_CC, 1, phalcon_translate_adapterinterface_ce);
 	zend_class_implements(phalcon_translate_adapter_csv_ce TSRMLS_CC, 1, zend_ce_arrayaccess);
 	return SUCCESS;
@@ -53,9 +55,6 @@ PHP_METHOD(Phalcon_Translate_Adapter_Csv, __construct) {
 
 
 
-	if (EG(called_scope) == phalcon_translate_adapter_csv_ce) {
-		zephir_init_properties(this_ptr TSRMLS_CC);
-	}
 	if (!(zephir_array_isset_string(options, SS("content")))) {
 		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_translate_exception_ce, "Parameter 'content' is required", "phalcon/translate/adapter/csv.zep", 43);
 		return;
@@ -71,7 +70,7 @@ PHP_METHOD(Phalcon_Translate_Adapter_Csv, __construct) {
 	zephir_array_fetch_string(&_2, options, SL("content"), PH_NOISY | PH_READONLY, "phalcon/translate/adapter/csv.zep", 52 TSRMLS_CC);
 	ZEPHIR_SINIT_VAR(_3);
 	ZVAL_STRING(&_3, "rb", 0);
-	ZEPHIR_CALL_FUNCTION(&file, "fopen", NULL, 276, _2, &_3);
+	ZEPHIR_CALL_FUNCTION(&file, "fopen", NULL, 291, _2, &_3);
 	zephir_check_call_status();
 	if (Z_TYPE_P(file) != IS_RESOURCE) {
 		ZEPHIR_INIT_VAR(_4);
@@ -79,7 +78,7 @@ PHP_METHOD(Phalcon_Translate_Adapter_Csv, __construct) {
 		zephir_array_fetch_string(&_5, options, SL("content"), PH_NOISY | PH_READONLY, "phalcon/translate/adapter/csv.zep", 55 TSRMLS_CC);
 		ZEPHIR_INIT_VAR(_6);
 		ZEPHIR_CONCAT_SVS(_6, "Error opening translation file '", _5, "'");
-		ZEPHIR_CALL_METHOD(NULL, _4, "__construct", NULL, 2, _6);
+		ZEPHIR_CALL_METHOD(NULL, _4, "__construct", NULL, 9, _6);
 		zephir_check_call_status();
 		zephir_throw_exception_debug(_4, "phalcon/translate/adapter/csv.zep", 55 TSRMLS_CC);
 		ZEPHIR_MM_RESTORE();
@@ -186,16 +185,24 @@ PHP_METHOD(Phalcon_Translate_Adapter_Csv, exists) {
 
 }
 
-static void zephir_init_properties(zval *this_ptr TSRMLS_DC) {
+static zend_object_value zephir_init_properties(zend_class_entry *class_type TSRMLS_DC) {
 
-	zval *_0;
+		zval *_0, *_1;
 
-	ZEPHIR_MM_GROW();
-
-	ZEPHIR_INIT_VAR(_0);
-	array_init(_0);
-	zephir_update_property_this(this_ptr, SL("_translate"), _0 TSRMLS_CC);
-	ZEPHIR_MM_RESTORE();
+		ZEPHIR_MM_GROW();
+	
+	{
+		zval *this_ptr = NULL;
+		ZEPHIR_CREATE_OBJECT(this_ptr, class_type);
+		_0 = zephir_fetch_nproperty_this(this_ptr, SL("_translate"), PH_NOISY_CC);
+		if (Z_TYPE_P(_0) == IS_NULL) {
+			ZEPHIR_INIT_VAR(_1);
+			array_init(_1);
+			zephir_update_property_this(this_ptr, SL("_translate"), _1 TSRMLS_CC);
+		}
+		ZEPHIR_MM_RESTORE();
+		return Z_OBJVAL_P(this_ptr);
+	}
 
 }
 
